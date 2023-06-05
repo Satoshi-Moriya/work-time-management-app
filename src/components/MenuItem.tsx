@@ -1,8 +1,3 @@
-// import { RxTimer } from "react-icons/rx";
-// import { ImTable2 } from "react-icons/im";
-// import { IoSettingsSharp } from "react-icons/io5";
-// import { IconType } from "react-icons";
-
 type MenuItemProps = {
   icon: React.JSX.Element;
   text: string;

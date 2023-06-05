@@ -1,4 +1,3 @@
-import React from 'react';
 import './App.css';
 import { RxTimer } from "react-icons/rx";
 import { ImTable2 } from "react-icons/im";
@@ -7,11 +6,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 import MenuItem from "../components/MenuItem";
 
-export function add(addNum1: number, addNum2: number): number {
-  return addNum1 + addNum2;
-}
-
-function App() {
+const App = () => {
   return (
     <div className="flex items-stretch">
       <div className="bg-thin-gray h-screen p-5">
