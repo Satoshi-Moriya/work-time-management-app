@@ -9,7 +9,7 @@ import MenuItem from "../components/MenuItem";
 const App = () => {
   return (
     <div className="flex items-stretch">
-      <div className="bg-thin-gray h-screen p-5">
+      <div className="bg-thin-gray h-screen p-5 flex flex-col">
         <time>2023/05/26/15:23:22</time>
         <nav className="">
           <ul>
@@ -18,7 +18,9 @@ const App = () => {
             <MenuItem icon={<IoSettingsSharp />} text="設定" />
           </ul>
         </nav>
-        <a href="/logout" className="flex items-center"><span>ログアウト</span><AiOutlineArrowRight className="ml-1" /></a>
+        <div className="mt-auto mx-auto">
+          <a href="/logout" className="flex items-center"><span>ログアウト</span><AiOutlineArrowRight className="ml-1" /></a>
+        </div>
       </div>
       <main>
 
