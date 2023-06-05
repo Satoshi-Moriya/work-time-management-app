@@ -6,7 +6,8 @@ module.exports = {
   theme: {
     extend: {
       backgroundColor: {
-        "thin-gray": "#F5F5F5"
+        "thin-gray": "#F5F5F5",
+        "dark-gray": "#DCDCDC"
       }
     },
   },
