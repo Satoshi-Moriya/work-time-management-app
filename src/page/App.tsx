@@ -5,12 +5,13 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { AiOutlineArrowRight } from "react-icons/ai";
 
 import MenuItem from "../components/MenuItem";
+import Clock from '../components/Clock';
 
 const App = () => {
   return (
     <div className="flex items-stretch">
       <div className="bg-thin-gray h-screen py-5 flex flex-col">
-        <time className="px-4">2023/05/26/15:23:22</time>
+        <Clock />
         <nav className="mt-2">
           <ul>
             <MenuItem icon={<RxTimer />} text="タイマー" />
