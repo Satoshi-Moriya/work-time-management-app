@@ -23,8 +23,12 @@ const App = () => {
           <a href="/logout" className="flex items-center hover:opacity-50 focus:opacity-50"><span>ログアウト</span><AiOutlineArrowRight className="ml-1" /></a>
         </div>
       </div>
-      <main>
-
+      <main className="grow flex flex-col items-center justify-center">
+        <p className="text-9xl">00:00:00</p>
+        <div className="mt-20 flex">
+          <div><a href="#" className="bg-dark-gray py-3 px-5 rounded-lg text-xl hover:opacity-50 focus:opacity-50">業務開始</a></div>
+          <div className="ml-6"><a href="#" className="bg-dark-gray py-3 px-5 rounded-lg text-xl hover:opacity-50 focus:opacity-50">業務終了</a></div>
+        </div>
       </main>
     </div>
   );
