@@ -6,6 +6,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 import MenuItem from "../components/MenuItem";
 import Clock from '../components/Clock';
+import StopWatch from '../components/StopWatch';
 
 const App = () => {
   return (
@@ -24,11 +25,7 @@ const App = () => {
         </div>
       </div>
       <main className="grow flex flex-col items-center justify-center">
-        <p className="text-9xl">00:00:00</p>
-        <div className="mt-20 flex">
-          <div><a href="#" className="bg-dark-gray py-3 px-5 rounded-lg text-xl hover:opacity-50 focus:opacity-50">業務開始</a></div>
-          <div className="ml-6"><a href="#" className="bg-dark-gray py-3 px-5 rounded-lg text-xl hover:opacity-50 focus:opacity-50">業務終了</a></div>
-        </div>
+        <StopWatch />
       </main>
     </div>
   );
