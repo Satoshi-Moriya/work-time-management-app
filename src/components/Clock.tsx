@@ -29,7 +29,7 @@ const Clock = () => {
   };
 
   return (
-    <div className="px-4 w-[200px]">
+    <div className="px-4 tabular-nums">
       <time>{formatTime(time)}</time>
     </div>
   );

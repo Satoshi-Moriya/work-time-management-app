@@ -57,7 +57,7 @@ const StopWatch = () => {
 
   return (
     <>
-      <p className="text-9xl">
+      <p className="text-9xl tabular-nums">
         <span>{`${time.hours.toString().padStart(2, "0")}:`}</span>
         <span>{`${time.minutes.toString().padStart(2, "0")}:`}</span>
         <span>{`${time.seconds.toString().padStart(2, "0")}`}</span>
