@@ -1,5 +1,4 @@
 import { render, screen, act, waitFor } from "@testing-library/react";
-import App from "../../page/App";
 import StopWatch from "../../components/StopWatch";
 import userEvent from "@testing-library/user-event";
 
@@ -73,20 +72,32 @@ describe("StopWatchコンポーネントの単体テスト", () => {
     });
   });
 
-  test("ストップウォッチが動作中の状態で、他のページに遷移しようとするとアラートが発生する", async() => {
-    const user = userEvent.setup();
-    render(<App />);
-    const startButtonEl = screen.getByRole("button", {name: "業務開始"});
-    const otherPageLinkEl = screen.getAllByRole("link")[1]; // 勤怠表リンクを指定
+  describe("アラートの動作確認", () => {
 
-    user.click(startButtonEl);
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    })
-    user.click(otherPageLinkEl);
+    test("ストップウォッチが動作していない状態で、他のページに遷移しようとしてもアラートは発生しない", async() => {
+      const beforeUnloadEvent = new Event('beforeunload');
+      beforeUnloadEvent.preventDefault = jest.fn();
+      render(<StopWatch />);
 
-    const alert = screen.getByRole("alert");
-    await waitFor(() => expect(alert).toBeInTheDocument());
-    await waitFor(() => expect(startButtonEl).toBeInTheDocument());
+      window.dispatchEvent(beforeUnloadEvent);
+
+      await waitFor(() => expect(beforeUnloadEvent.preventDefault).not.toHaveBeenCalled());
+    });
+
+    test("ストップウォッチが動作中の状態で、他のページに遷移しようとするとアラートが発生する", async() => {
+      const user = userEvent.setup();
+      const beforeUnloadEvent = new Event('beforeunload');
+      beforeUnloadEvent.preventDefault = jest.fn();
+      render(<StopWatch />);
+      const startButtonEl = screen.getByRole("button", {name: "業務開始"});
+
+      user.click(startButtonEl);
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      });
+      window.dispatchEvent(beforeUnloadEvent);
+
+      await waitFor(() => expect(beforeUnloadEvent.preventDefault).toHaveBeenCalled());
+    });
   });
 });

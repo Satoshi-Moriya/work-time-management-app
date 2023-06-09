@@ -28,7 +28,18 @@ const StopWatch = () => {
       }, 1000);
     }
 
+    const pageChangeHandler = (event: BeforeUnloadEvent) => {
+      if (isRunning) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", pageChangeHandler);
+
     return () => {
+      window.removeEventListener("beforeunload", pageChangeHandler);
+
       if (intervalId) {
         clearInterval(intervalId);
         setTime({hours: 0, minutes: 0, seconds: 0});
