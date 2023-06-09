@@ -29,7 +29,7 @@ const Clock = () => {
   };
 
   return (
-    <div className="px-4">
+    <div className="px-4 w-[200px]">
       <time>{formatTime(time)}</time>
     </div>
   );
