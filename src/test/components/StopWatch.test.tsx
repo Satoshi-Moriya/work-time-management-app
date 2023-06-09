@@ -56,14 +56,15 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       render(<StopWatch />);
       const startButtonEl = screen.getByRole("button", {name: "業務開始" });
       const endButtonEl = screen.getByRole("button", {name: "業務終了" });
-      const hoursAndMinutesDisplayEl = screen.getAllByText("00:");
-      const secondsDisplayEl = screen.getByText("00");
 
       user.click(startButtonEl);
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 1500));
       });
-      user.click(endButtonEl)
+      user.click(endButtonEl);
+
+      const hoursAndMinutesDisplayEl = await screen.findAllByText("00:");
+      const secondsDisplayEl = await screen.findByText("00");
 
       await waitFor(() => expect(startButtonEl).toBeEnabled());
       await waitFor(() => expect(endButtonEl).toBeDisabled());

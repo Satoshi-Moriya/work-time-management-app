@@ -31,6 +31,7 @@ const StopWatch = () => {
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
+        setTime({hours: 0, minutes: 0, seconds: 0});
       }
     };
   }, [isRunning]);
