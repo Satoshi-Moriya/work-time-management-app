@@ -1,6 +1,9 @@
 import { render, screen, act, waitFor } from "@testing-library/react";
-import StopWatch from "../../components/StopWatch";
 import userEvent from "@testing-library/user-event";
+import { BrowserRouter } from 'react-router-dom'
+
+import StopWatch from "../../components/StopWatch";
+import App from "../../page/App";
 
 describe("StopWatchコンポーネントの単体テスト", () => {
 
@@ -84,7 +87,7 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       await waitFor(() => expect(beforeUnloadEvent.preventDefault).not.toHaveBeenCalled());
     });
 
-    test("ストップウォッチが動作中の状態で、他のページに遷移しようとするとアラートが発生する", async() => {
+    test("ストップウォッチが動作中の状態で、リロードするとアラートが発生する", async() => {
       const user = userEvent.setup();
       const beforeUnloadEvent = new Event('beforeunload');
       beforeUnloadEvent.preventDefault = jest.fn();
@@ -98,6 +101,23 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       window.dispatchEvent(beforeUnloadEvent);
 
       await waitFor(() => expect(beforeUnloadEvent.preventDefault).toHaveBeenCalled());
+    });
+
+    test("ストップウォッチが動作中の状態で、他のページに遷移しようとするとアラートが発生する", async() => {
+      const user = userEvent.setup();
+      const confirmMock = jest.spyOn(window, "confirm");
+      confirmMock.mockImplementation(() => false);
+      render(<App />, {wrapper: BrowserRouter})
+      const startButtonEl = screen.getByRole("button", {name: "業務開始"});
+
+      user.click(startButtonEl);
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      });
+      const linkEl = screen.getAllByRole("link");
+      user.click(linkEl[1]); // 勤怠表ページに遷移
+
+      await waitFor(() => expect(confirmMock).toHaveBeenCalledWith("業務終了になります、本当にページ遷移しますか？"));
     });
   });
 });
