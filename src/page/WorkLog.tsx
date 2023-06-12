@@ -6,7 +6,7 @@ const date: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
 const WorKLog = () => {
 
   return (
-    <main className="grow flex flex-col">
+    <main className="grow flex flex-col ml-48">
       <div className="w-[1024px] my-24 mx-auto">
         <CustomDatePicker />
         <table className="w-80 mt-10">
