@@ -3,7 +3,7 @@ import { Link, Outlet } from "react-router-dom";
 const Setting = () => {
   return (
     <>
-      <main className="grow flex flex-col items-center justify-center">
+      <main className="grow flex flex-col items-center justify-center ml-48">
         <p>設定ページ</p>
         <div>
           <Link to="changemail">メールアドレス変更</Link>
