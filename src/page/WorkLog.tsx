@@ -1,12 +1,15 @@
+import CustomDatePicker from "../components/CustomDatePicker";
 import StackedBarChart from "../components/StackedBarChart";
 
 const date: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"]
 
 const WorKLog = () => {
+
   return (
     <main className="grow flex flex-col">
       <div className="w-[1024px] my-24 mx-auto">
-        <table className="w-80">
+        <CustomDatePicker />
+        <table className="w-80 mt-10">
           <tbody>
             <tr>
               <th className="border border-gray-500 px-4 py-2 bg-dark-gray">月合計稼働時間</th>
