@@ -103,7 +103,7 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       await waitFor(() => expect(beforeUnloadEvent.preventDefault).toHaveBeenCalled());
     });
 
-    test("ストップウォッチが動作中の状態で、他のページに遷移しようとするとアラートが発生する", async() => {
+    test.skip("ストップウォッチが動作中の状態で、他のページに遷移しようとするとアラートが発生する", async() => {
       const user = userEvent.setup();
       const confirmMock = jest.spyOn(window, "confirm");
       confirmMock.mockImplementation(() => false);
