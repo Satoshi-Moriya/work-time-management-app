@@ -14,7 +14,8 @@ const data = [
         end: 47200,
       }
     ],
-    sumTime: "3:00"
+    // sumTime: "3:00"
+    sumTime: 10800
   },
   {
     date: 2,
@@ -24,7 +25,8 @@ const data = [
         end: 23600
       }
     ],
-    sumTime: "1:00"
+    // sumTime: "1:00"
+    sumTime: 3600
   },
   {
     date: 3,
@@ -38,7 +40,8 @@ const data = [
         end: 86400,
       }
     ],
-    sumTime: "3:15"
+    // sumTime: "3:15"
+    sumTime: 11700
   }
 ]
 
