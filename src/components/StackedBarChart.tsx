@@ -1,9 +1,6 @@
 import React from 'react';
 
-type TimeRange = {
-  start: number;
-  end: number;
-};
+import { TimeRange } from '../types';
 
 type StackedBarChartProps = {
   timeData: TimeRange[];

@@ -1,12 +1,16 @@
 import CustomDatePicker from "../components/CustomDatePicker";
+import MonthlyTotalTime from "../components/MonthlyTotalTime";
 import StackedBarChart from "../components/StackedBarChart";
+import { WorkLogsData } from "../types";
 
-const data = [
+
+// const data: WorkLogsData[]  = [];
+const data: WorkLogsData[]  = [
   {
     date: 1,
     time: [
       {
-        start: 3600, //
+        start: 3600,
         end: 7200,
       },
       {
@@ -14,8 +18,7 @@ const data = [
         end: 47200,
       }
     ],
-    // sumTime: "3:00"
-    sumTime: 10800
+    sumSeconds: 10800
   },
   {
     date: 2,
@@ -25,8 +28,7 @@ const data = [
         end: 23600
       }
     ],
-    // sumTime: "1:00"
-    sumTime: 3600
+    sumSeconds: 3600
   },
   {
     date: 3,
@@ -40,8 +42,7 @@ const data = [
         end: 86400,
       }
     ],
-    // sumTime: "3:15"
-    sumTime: 11700
+    sumSeconds: 11700
   }
 ]
 
@@ -52,18 +53,11 @@ const WorKLog = () => {
       <div className="my-24 mx-auto px-7 w-[1080px] max-w-full">
         <CustomDatePicker />
         <div className="mt-10">
+          <MonthlyTotalTime dateSumSeconds={data.map(data => data.sumSeconds)} />
           {
             !data.length ? <p>選択された月には記録がありません。</p>
           :
           <>
-            <table className="w-80">
-              <tbody>
-                <tr>
-                  <th className="border-y border-l border-gray-500 px-4 py-2 bg-dark-gray">月合計稼働時間</th>
-                  <td className="border border-gray-500 px-4 py-2 text-center bg-white">142:34</td>
-                </tr>
-              </tbody>
-            </table>
             <div className="mt-20 flex justify-end items-center">
               <span className="bg-[#BAD3FF] block w-5 h-5 mr-2"></span>
               <p className="">稼働時間</p>
@@ -103,12 +97,12 @@ const WorKLog = () => {
                     <th className="border-t border-l border-x border-gray-500 px-1 py-1 bg-dark-gray">23</th>
                   </tr>
                 </thead>
-                <tbody className="border-gray-500 border-b">
+                <tbody>
                   {
                     data.map((data, index) => (
                       <tr key={index} className="group">
                         <td className="border-t border-l group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-0 z-10 bg-white">{data.date}（月）</td>
-                        <td className="border-t border-x group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-[112px] z-20 bg-white">{data.sumTime}</td>
+                        <td className="border-t border-x group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-[112px] z-20 bg-white">{data.sumSeconds}</td>
                         <td className="border-t border-r group-last:border-b border-gray-500 px-0 py-3 w-[801px] bg-white relative" colSpan={24} ><StackedBarChart timeData={data.time} /></td>
                       </tr>
                     ))
