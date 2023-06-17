@@ -9,7 +9,7 @@ import Clock from '../components/Clock';
 import Timer from "./Timer";
 import WorKLog from "./WorkLog";
 import Setting from "./Setting";
-import ChangeMail from "./ChangeMail";
+import ChangeMail from "./ChangeEmail";
 import ChangePassword from "./ChangePassword";
 import Cancel from "./Cancel";
 
