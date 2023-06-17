@@ -4,7 +4,7 @@ export const changeMailValidationSchema = z.object({
   password: z
   .string()
   .nonempty("パスワードは必須です。"),
-  mail: z
+  email: z
   .string()
   .nonempty("メールアドレスは必須です。")
   .email("メールアドレスが正しい形式ではありません。")
