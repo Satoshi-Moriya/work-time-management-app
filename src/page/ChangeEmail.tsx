@@ -1,7 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { changeMailValidationSchema } from "../utils/validationSchema";
+import { changeEmailValidationSchema } from "../utils/validationSchema";
 
 // 現在のパスワード（DBを参照して取得してくる事になるはず）
 const nowMailAddress = "nowMailAddress@gmail.com";
@@ -11,7 +11,7 @@ type FormValues = {
   email: string;
 }
 
-const ChangeMail = () => {
+const ChangeEmail = () => {
   const {
     register,
     handleSubmit,
@@ -19,7 +19,7 @@ const ChangeMail = () => {
   } = useForm<FormValues>({
     defaultValues: { email: nowMailAddress },
     mode: "onChange",
-    resolver: zodResolver(changeMailValidationSchema),
+    resolver: zodResolver(changeEmailValidationSchema),
   });
   const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
 
@@ -45,4 +45,4 @@ const ChangeMail = () => {
   );
 }
 
-export default ChangeMail;
+export default ChangeEmail;

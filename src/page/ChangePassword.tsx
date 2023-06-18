@@ -27,7 +27,7 @@ const ChangePassword = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
         <div>
           <label htmlFor="currentPassword">現在のパスワード</label>
-          <input type="password" id="currentPassword" placeholder="パスワード" {...register("currentPassword")} className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 block w-full rounded-md sm:text-sm"/>
+          <input type="password" id="currentPassword" placeholder="現在のパスワード" {...register("currentPassword")} className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 block w-full rounded-md sm:text-sm"/>
           <p className="text-red-500">{errors.currentPassword && errors.currentPassword.message}</p>
         </div>
         <div className="mt-4">

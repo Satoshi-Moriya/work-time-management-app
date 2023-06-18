@@ -11,7 +11,7 @@ const Setting = () => {
             <div className="pr-10 border-r">
               <h2 className="text-3xl font-bold">アカウント設定</h2>
               <div className="flex flex-col items-start ">
-                <SettingNavLink url="changemail">メールアドレス変更</SettingNavLink>
+                <SettingNavLink url="changeemail">メールアドレス変更</SettingNavLink>
                 <SettingNavLink url="changepassword">パスワード変更</SettingNavLink>
                 <SettingNavLink url="cancel">解約</SettingNavLink>
               </div>
