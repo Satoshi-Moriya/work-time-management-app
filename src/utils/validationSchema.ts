@@ -13,7 +13,7 @@ export const changeEmailValidationSchema = z.object({
 export const changePasswordValidationSchema = z.object({
   currentPassword: z
   .string()
-  .nonempty("パスワードは必須です。"),
+  .nonempty("現在のパスワードは必須です。"),
   newPassword: z
   .string()
   .nonempty("新しいパスワードは必須です。")

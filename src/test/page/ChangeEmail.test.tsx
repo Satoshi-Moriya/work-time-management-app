@@ -1,4 +1,4 @@
-import { render, renderHook, screen, waitFor } from "@testing-library/react";
+import { render, renderHook, screen } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
@@ -8,7 +8,7 @@ import ChangeEmail from "../../page/ChangeEmail";
 
 describe("ChangeEmailコンポーネントの単体テスト", () => {
 
-  test("正しい値が送信される", (done) => {
+  test("正しい値が送信される", () => {
     const{ result } = renderHook(() =>
       useForm({
         mode: "onChange",
@@ -24,7 +24,6 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
     handleSubmit((data) => {
       expect(data.password).toBe("testpassdata001");
       expect(data.email).toBe("newEmail@test.com");
-      done();
     })();
   });
 
