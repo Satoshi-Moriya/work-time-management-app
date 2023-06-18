@@ -9,7 +9,7 @@ import Clock from '../components/Clock';
 import Timer from "./Timer";
 import WorKLog from "./WorkLog";
 import Setting from "./Setting";
-import ChangeMail from "./ChangeEmail";
+import ChangeEmail from "./ChangeEmail";
 import ChangePassword from "./ChangePassword";
 import Cancel from "./Cancel";
 
@@ -33,7 +33,7 @@ const App = () => {
         <Route path="/" element={<Timer />}/>
         <Route path="worklog" element={<WorKLog />}/>
         <Route path="setting" element={<Setting />}>
-          <Route path="changemail" element={<ChangeMail />} />
+          <Route path="changeemail" element={<ChangeEmail />} />
           <Route path="changepassword" element={<ChangePassword />} />
           <Route path="cancel" element={<Cancel />} />
         </Route>

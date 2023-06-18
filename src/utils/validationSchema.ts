@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const changeMailValidationSchema = z.object({
+export const changeEmailValidationSchema = z.object({
   password: z
   .string()
   .nonempty("パスワードは必須です。"),
