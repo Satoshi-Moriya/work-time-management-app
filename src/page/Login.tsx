@@ -13,7 +13,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: {errors}
+    formState: {errors, isValid}
   } = useForm<FormValues>({
     resolver: zodResolver(loginValidationSchema),
   });
@@ -33,7 +33,7 @@ const Login = () => {
             <p className="text-red-500">{errors.password && errors.password.message}</p>
           </div>
           <div className="mt-8">
-            <button type="submit" disabled className="bg-orange-400 border-orange-400 rounded-lg text-white font-bold px-3 py-2 w-full disabled:opacity-50 disabled:cursor-not-allowed">ログイン</button>
+            <button type="submit" disabled={!isValid} className="bg-orange-400 border-orange-400 rounded-lg text-white font-bold px-3 py-2 w-full disabled:opacity-50 disabled:cursor-not-allowed">ログイン</button>
           </div>
         </form>
         {/* ToDo テストを通すために一旦コメントアウト（たぶんルーディングを設定すればうまくいくはずうまくいくはず） */}
