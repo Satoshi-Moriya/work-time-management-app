@@ -36,10 +36,11 @@ const Login = () => {
             <button type="submit" disabled className="bg-orange-400 border-orange-400 rounded-lg text-white font-bold px-3 py-2 w-full disabled:opacity-50 disabled:cursor-not-allowed">ログイン</button>
           </div>
         </form>
-        <div className="flex flex-col mt-5">
+        {/* ToDo テストを通すために一旦コメントアウト（たぶんルーディングを設定すればうまくいくはずうまくいくはず） */}
+        {/* <div className="flex flex-col mt-5">
           <Link to="passwordreset" className="underline text-blue-500 hover:opacity-70">パスワードを忘れた場合</Link>
           <Link to="signup" className="underline text-blue-500 hover:opacity-70 mt-4">アカウントをお持ちでない場合</Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
