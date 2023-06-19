@@ -43,3 +43,12 @@ export const changePasswordValidationSchema = z.object({
     });
   }
 });
+
+export const loginValidationSchema = z.object({
+  email: z
+  .string()
+  .nonempty("メールアドレスは必須です。"),
+  password: z
+  .string()
+  .nonempty("パスワードは必須です。"),
+})
