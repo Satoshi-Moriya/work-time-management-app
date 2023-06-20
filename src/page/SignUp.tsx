@@ -38,6 +38,7 @@ const SingUp = () => {
           </div>
           <div className="mt-4">
             <label htmlFor="confirmPassword">パスワード（確認）</label>
+            <p className="mt-1 text-sm text-slate-400">※入力したパスワードを再入力してください。</p>
             <input type="password" id="confirmPassword" placeholder="パスワード（確認）" {...register("confirmPassword")} className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 block w-full rounded-md sm:text-sm"/>
             <p className="text-red-500">{errors.confirmPassword && errors.confirmPassword.message}</p>
           </div>
