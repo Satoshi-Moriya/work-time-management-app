@@ -52,3 +52,31 @@ export const loginValidationSchema = z.object({
   .string()
   .nonempty("パスワードは必須です。"),
 })
+
+export const signUpValidationSchema = z.object({
+  email: z
+  .string()
+  .nonempty("メールアドレスは必須です。")
+  .email("メールアドレスが正しい形式ではありません。"),
+  password: z
+  .string()
+  .nonempty("パスワードは必須です。")
+  .min(8, "パスワードは8文字以上で入力してください。")
+  .max(16, "パスワードは16文字以下で入力してください")
+  .regex(
+    /^(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,16}$/i,
+    "パスワードは半角英数字混合で入力してください"
+  ),
+  confirmPassword: z
+  .string()
+  .nonempty("パスワード（確認）は必須です。")
+})
+.superRefine(({ password, confirmPassword }, ctx) => {
+  if (password !== confirmPassword) {
+    ctx.addIssue({
+      path: ["confirmPassword"],
+      code: "custom",
+      message: "パスワードが一致しません",
+    });
+  }
+});

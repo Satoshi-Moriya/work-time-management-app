@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
 
-import { loginValidationSchema } from "../../utils/validationSchema";
+import { signUpValidationSchema } from "../../utils/validationSchema";
 import SingUp from "../../page/SignUp";
 
 describe("SingUpページの単体テスト", () => {
@@ -39,10 +39,12 @@ describe("SingUpページの単体テスト", () => {
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
 
-    user.type(emailInputEl, "test@test.com");
-    user.type(passwordInputEl, "test1234");
-    user.type(confirmPasswordInputEl, "test1234");
-    await user.clear(emailInputEl);
+    await act(async () => {
+      user.type(emailInputEl, "test@test.com");
+      user.type(passwordInputEl, "test1234");
+      user.type(confirmPasswordInputEl, "test1234");
+    });
+    user.clear(emailInputEl);
 
     await waitFor(() => expect(submitButtonEl).toBeDisabled());
   });
@@ -55,10 +57,12 @@ describe("SingUpページの単体テスト", () => {
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
 
-    user.type(emailInputEl, "test@test.com");
-    user.type(passwordInputEl, "test1234");
-    user.type(confirmPasswordInputEl, "test1234");
-    await user.clear(passwordInputEl);
+    await act(async () => {
+      user.type(emailInputEl, "test@test.com");
+      user.type(passwordInputEl, "test1234");
+      user.type(confirmPasswordInputEl, "test1234");
+    });
+    user.clear(passwordInputEl);
 
     await waitFor(() => expect(submitButtonEl).toBeDisabled());
   });
@@ -71,10 +75,12 @@ describe("SingUpページの単体テスト", () => {
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
 
-    user.type(emailInputEl, "test@test.com");
-    user.type(passwordInputEl, "test1234");
-    user.type(confirmPasswordInputEl, "test1234");
-    await user.clear(confirmPasswordInputEl);
+    await act(async () => {
+      user.type(emailInputEl, "test@test.com");
+      user.type(passwordInputEl, "test1234");
+      user.type(confirmPasswordInputEl, "test1234");
+    });
+    user.clear(confirmPasswordInputEl);
 
     await waitFor(() => expect(submitButtonEl).toBeDisabled());
   });
@@ -82,20 +88,20 @@ describe("SingUpページの単体テスト", () => {
   test("正しい値が送信される", () => {
     const{ result } = renderHook(() =>
       useForm({
-        resolver: zodResolver(loginValidationSchema),
+        resolver: zodResolver(signUpValidationSchema),
       })
     );
 
     const { setValue, handleSubmit } = result.current;
 
     setValue("email", "test@test.com");
-    setValue("newPassword", "test1234");
-    setValue("confirmNewPassword", "test1234");
+    setValue("password", "test1234");
+    setValue("confirmPassword", "test1234");
 
     handleSubmit((data) => {
       expect(data.email).toBe("test@test.com");
-      expect(data.newPassword).toBe("test1234");
-      expect(data.confirmNewPassword).toBe("test1234");
+      expect(data.password).toBe("test1234");
+      expect(data.confirmPassword).toBe("test1234");
     })();
   });
 
