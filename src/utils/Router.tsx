@@ -12,6 +12,7 @@ import Page404 from "../page/Page404";
 import ResetPassword from "../page/ResetPassword";
 import SignUp from "../page/SignUp";
 import PreRegistrationComplete from "../page/PreRegistrationComplete";
+import ResetPasswordSubmitted from "../page/ResetPasswordSubmitted";
 
 const Router = () => {
   return (
@@ -20,6 +21,7 @@ const Router = () => {
       <Route path="resetpassword" element={<ResetPassword />} />
       <Route path="signup" element={<SignUp />} />
       <Route path="preregistrationcomplete" element={<PreRegistrationComplete />} />
+      <Route path="resetpasswordsubmitted" element={<ResetPasswordSubmitted />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Timer />}/>
         <Route path="worklog" element={<WorKLog />}/>

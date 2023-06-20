@@ -2,6 +2,7 @@ import { render, renderHook, screen, act, waitFor } from "@testing-library/react
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
+import { BrowserRouter } from "react-router-dom";
 
 import { resetPasswordValidationSchema } from "../../utils/validationSchema";
 import ResetPassword from "../../page/ResetPassword";
@@ -9,14 +10,14 @@ import ResetPassword from "../../page/ResetPassword";
 describe("ResetPasswordページの単体テスト", () => {
 
   test("初期状態で送信ボタンは非活性", () => {
-    render(<ResetPassword />);
+    render(<ResetPassword />, {wrapper: BrowserRouter});
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
     expect(submitButtonEl).toBeDisabled();
   });
 
   test("メールアドレスを入力すると送信ボタンが活性化する", async() => {
     const user = userEvent.setup();
-    render(<ResetPassword />);
+    render(<ResetPassword />, {wrapper: BrowserRouter});
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
 
@@ -29,7 +30,7 @@ describe("ResetPasswordページの単体テスト", () => {
 
   test("メールアドレスを入力後メールアドレスを削除した場合送信ボタンが非活性化する", async() => {
     const user = userEvent.setup();
-    render(<ResetPassword />);
+    render(<ResetPassword />, {wrapper: BrowserRouter});
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
 
@@ -41,27 +42,11 @@ describe("ResetPasswordページの単体テスト", () => {
     await waitFor(() => expect(submitButtonEl).toBeDisabled());
   });
 
-  test("正しい値が送信される", () => {
-    const{ result } = renderHook(() =>
-      useForm({
-        resolver: zodResolver(ValidationSchema),
-      })
-    );
-
-    const { setValue, handleSubmit } = result.current;
-
-    setValue("email", "test@test.com");
-
-    handleSubmit((data) => {
-      expect(data.email).toBe("test@test.com");
-    })();
-  });
-
   describe("メールアドレスのバリデーションチェック", () => {
 
     test("必須のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<ResetPassword />);
+      render(<ResetPassword />, {wrapper: BrowserRouter});
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
@@ -76,7 +61,7 @@ describe("ResetPasswordページの単体テスト", () => {
 
     test("形式のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<ResetPassword />);
+      render(<ResetPassword />, {wrapper: BrowserRouter});
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
 
       await act(async() => {
@@ -86,5 +71,21 @@ describe("ResetPasswordページの単体テスト", () => {
       const emailFormatErrorMessageEl = await screen.findByText("メールアドレスが正しい形式ではありません。");
       expect(emailFormatErrorMessageEl).toBeInTheDocument();
     });
+  });
+
+  test("正しい値が送信される", () => {
+    const{ result } = renderHook(() =>
+      useForm({
+        resolver: zodResolver(resetPasswordValidationSchema),
+      })
+    );
+
+    const { setValue, handleSubmit } = result.current;
+
+    setValue("email", "test@test.com");
+
+    handleSubmit((data) => {
+      expect(data.email).toBe("test@test.com");
+    })();
   });
 });

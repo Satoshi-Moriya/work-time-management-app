@@ -1,22 +1,27 @@
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { signUpValidationSchema } from "../utils/validationSchema";
+import { resetPasswordValidationSchema } from "../utils/validationSchema";
 
 type FormValues = {
   email: string;
 }
 
 const ResetPassword = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: {errors, isValid}
   } = useForm<FormValues>({
     mode: "onChange",
-    resolver: zodResolver(signUpValidationSchema),
+    resolver: zodResolver(resetPasswordValidationSchema),
   });
-  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    console.log(data); // apiを叩く予定（？）
+    navigate("/resetpasswordsubmitted");
+  }
 
   return (
     <div className="flex justify-center items-center h-screen">
