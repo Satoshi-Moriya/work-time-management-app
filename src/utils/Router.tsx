@@ -11,6 +11,7 @@ import Cancel from "../page/Cancel";
 import Page404 from "../page/Page404";
 import PasswordReset from "../page/PasswordReset";
 import SignUp from "../page/SignUp";
+import PreRegistrationComplete from "../page/PreRegistrationComplete";
 
 const Router = () => {
   return (
@@ -18,6 +19,7 @@ const Router = () => {
       <Route path="login" element={<Login />} />
       <Route path="passwordreset" element={<PasswordReset />} />
       <Route path="signup" element={<SignUp />} />
+      <Route path="preregistrationcomplete" element={<PreRegistrationComplete />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Timer />}/>
         <Route path="worklog" element={<WorKLog />}/>
