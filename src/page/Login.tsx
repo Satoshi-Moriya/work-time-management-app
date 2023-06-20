@@ -37,7 +37,7 @@ const Login = () => {
           </div>
         </form>
         <div className="flex flex-col mt-5">
-          <Link to="../passwordreset" relative="path" className="underline text-blue-500 hover:opacity-70">パスワードを忘れた場合</Link>
+          <Link to="../resetpassword" relative="path" className="underline text-blue-500 hover:opacity-70">パスワードを忘れた場合</Link>
           <Link to="../signup" relative="path" className="underline text-blue-500 hover:opacity-70 mt-4">アカウントをお持ちでない場合</Link>
         </div>
       </div>
