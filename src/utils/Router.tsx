@@ -9,7 +9,7 @@ import ChangeEmail from "../page/ChangeEmail";
 import ChangePassword from "../page/ChangePassword";
 import Cancel from "../page/Cancel";
 import Page404 from "../page/Page404";
-import PasswordReset from "../page/PasswordReset";
+import ResetPassword from "../page/ResetPassword";
 import SignUp from "../page/SignUp";
 import PreRegistrationComplete from "../page/PreRegistrationComplete";
 
@@ -17,7 +17,7 @@ const Router = () => {
   return (
     <Routes>
       <Route path="login" element={<Login />} />
-      <Route path="passwordreset" element={<PasswordReset />} />
+      <Route path="resetpassword" element={<ResetPassword />} />
       <Route path="signup" element={<SignUp />} />
       <Route path="preregistrationcomplete" element={<PreRegistrationComplete />} />
       <Route path="/" element={<Layout />}>
