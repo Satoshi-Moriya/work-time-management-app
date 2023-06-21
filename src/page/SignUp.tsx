@@ -1,5 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 
 import { signUpValidationSchema } from "../utils/validationSchema";
 
@@ -10,6 +11,7 @@ type FormValues = {
 }
 
 const SingUp = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -18,7 +20,10 @@ const SingUp = () => {
     mode: "onChange",
     resolver: zodResolver(signUpValidationSchema),
   });
-  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    console.log(data); // apiを叩く予定（？）
+    navigate("/preregistrationcomplete");
+  }
 
   return (
     <div className="flex justify-center items-center h-screen">

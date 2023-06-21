@@ -6,8 +6,7 @@ const Cancel = () => {
   const accountDeleteHandler = () => {
     const confirm = window.confirm("本当にアカウントを削除してもよろしいですか？")
     if (confirm) {
-      // ToDo ログイン画面に遷移させる予定だが、一旦タイマーページへ遷移
-      navigate("/");
+      navigate("/login");
     }
   }
 
