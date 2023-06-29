@@ -1,5 +1,7 @@
 import { renderHook } from "@testing-library/react";
 
+import useGetLastDayOfMonth from "../../hooks/useGetLastDayOfMonth"
+
 describe("useGetLastDayOfMonthの単体テスト", () => {
 
   test("年月の最終日の取得ができる。（2023年6月）", () => {
