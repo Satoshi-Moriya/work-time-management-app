@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.min.css"
 import MonthlyTotalTime from "../components/MonthlyTotalTime";
 import StackedBarChart from "../components/StackedBarChart";
 import { WorkLogsData, WorkLogData, TimeRange } from "../types";
-import useGetLastDayOfMonth from "../hooks/useGetLastDayOfMonth";
+import getLastDayOfMonth from "../functions/getLastDayOfMonth";
 import '../components/CustomDatePicker.css';
 
 registerLocale('ja', ja);
@@ -17,7 +17,7 @@ const WorKLog = () => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() + 1;
-  const lastDayOfCurrentMonth = useGetLastDayOfMonth(currentYear, currentMonth);
+  const lastDayOfCurrentMonth = getLastDayOfMonth(currentYear, currentMonth);
   const initFromQueryParam = currentYear + currentMonth.toString().padStart(2, "0") + "01";
   const initToQueryParam = currentYear + currentMonth.toString().padStart(2, "0") + lastDayOfCurrentMonth;
 

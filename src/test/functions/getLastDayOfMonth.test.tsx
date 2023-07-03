@@ -1,14 +1,14 @@
 import { renderHook } from "@testing-library/react";
 
-import useGetLastDayOfMonth from "../../hooks/useGetLastDayOfMonth"
+import getLastDayOfMonth from "../../functions/getLastDayOfMonth"
 
-describe("useGetLastDayOfMonthの単体テスト", () => {
+describe("getLastDayOfMonthの単体テスト", () => {
 
   test("年月の最終日の取得ができる。（2023年6月）", () => {
     const selectedYear = 2023;
     const selectedMonth = 6;
     const { result } = renderHook(() =>
-      useGetLastDayOfMonth(selectedYear, selectedMonth)
+      getLastDayOfMonth(selectedYear, selectedMonth)
     );
     expect(result.current).toBe(30);
   })
@@ -17,7 +17,7 @@ describe("useGetLastDayOfMonthの単体テスト", () => {
     const selectedYear = 2023;
     const selectedMonth = 7;
     const { result } = renderHook(() =>
-      useGetLastDayOfMonth(selectedYear, selectedMonth)
+      getLastDayOfMonth(selectedYear, selectedMonth)
     );
     expect(result.current).toBe(31);
   })
@@ -26,7 +26,7 @@ describe("useGetLastDayOfMonthの単体テスト", () => {
     const selectedYear = 2023;
     const selectedMonth = 2;
     const { result } = renderHook(() =>
-      useGetLastDayOfMonth(selectedYear, selectedMonth)
+      getLastDayOfMonth(selectedYear, selectedMonth)
     );
     expect(result.current).toBe(28);
   })
@@ -35,7 +35,7 @@ describe("useGetLastDayOfMonthの単体テスト", () => {
     const selectedYear = 2024;
     const selectedMonth = 2;
     const { result } = renderHook(() =>
-      useGetLastDayOfMonth(selectedYear, selectedMonth)
+      getLastDayOfMonth(selectedYear, selectedMonth)
     );
     expect(result.current).toBe(29);
   })
