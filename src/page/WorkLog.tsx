@@ -16,7 +16,7 @@ const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
 
 export const getWeekdayFromDate = (dateString: string): string => WEEK[new Date(dateString).getDay()];
 
-export const convertToWorkLogDataArray = (convertData: any): WorkLogData[] => {
+export const convertToWorkLogArrayData = (convertData: any): WorkLogData[] => {
   const convertedData = convertData.map((data: any) => {
     const convertedStartTime: number = convertTimeToSeconds(data.workLogStartTime);
     const convertedEndTime: number = convertTimeToSeconds(data.workLogEndTime);
@@ -35,6 +35,32 @@ export const convertToWorkLogDataArray = (convertData: any): WorkLogData[] => {
       workLogSeconds: Number(data.workLogSeconds)
     }
   });
+  return convertedData;
+}
+
+export const convertWorkLogArrayDataToWorkLogsArrayData = (convertData: WorkLogData[]): WorkLogsData[] => {
+  const convertedData = convertData.reduce((result: WorkLogsData[], item: WorkLogData) => {
+    // 既存のデータと一致するかをチェック
+    const existingData = result.find((data) => data.workLogUserId === item.workLogUserId && data.date === item.date);
+
+    if (existingData) {
+      // 一致するデータがある場合は workLogTime を追加し、workLogSumSeconds を更新
+      existingData.workLogTime.push(item.workLogTime);
+      existingData.workLogSumSeconds += item.workLogSeconds;
+    } else {
+      // 一致するデータがない場合は新しいオブジェクトを作成して追加
+      const newData: WorkLogsData = {
+        workLogUserId: item.workLogUserId,
+        date: item.date,
+        day: item.day,
+        workLogTime: [item.workLogTime],
+        workLogSumSeconds: item.workLogSeconds,
+      };
+      result.push(newData);
+    }
+
+    return result;
+  }, []);
   return convertedData;
 }
 
@@ -62,33 +88,8 @@ const WorKLog = () => {
             to: toQuery
           }
         });
-
-        const conversionToWorkLogDataRes = convertToWorkLogDataArray(res.data);
-
-        // 整形処理
-        const workLogsData: WorkLogsData[] = conversionToWorkLogDataRes.reduce((result: WorkLogsData[], item: WorkLogData) => {
-          // 既存のデータと一致するかをチェック
-          const existingData = result.find((data) => data.workLogUserId === item.workLogUserId && data.date === item.date);
-
-          if (existingData) {
-            // 一致するデータがある場合は workLogTime を追加し、workLogSumSeconds を更新
-            existingData.workLogTime.push(item.workLogTime);
-            existingData.workLogSumSeconds += item.workLogSeconds;
-          } else {
-            // 一致するデータがない場合は新しいオブジェクトを作成して追加
-            const newData: WorkLogsData = {
-              workLogUserId: item.workLogUserId,
-              date: item.date,
-              day: item.day,
-              workLogTime: [item.workLogTime],
-              workLogSumSeconds: item.workLogSeconds,
-            };
-            result.push(newData);
-          }
-
-          return result;
-        }, []);
-
+        const conversionToWorkLogDataRes = convertToWorkLogArrayData(res.data);
+        const workLogsData: WorkLogsData[] = convertWorkLogArrayDataToWorkLogsArrayData(conversionToWorkLogDataRes);
         setWorkLogsData(workLogsData);
       } catch (e) {
         setError("接続エラーが起きました。時間をおいて再度お試しください。");

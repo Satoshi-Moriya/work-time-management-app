@@ -3,7 +3,7 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 
-import WorKLog, { getWeekdayFromDate, convertToWorkLogDataArray } from "../../page/WorkLog";
+import WorKLog, { getWeekdayFromDate, convertToWorkLogArrayData, convertWorkLogArrayDataToWorkLogsArrayData } from "../../page/WorkLog";
 import { WorkLogData, TimeRange} from "../../types";
 
 const server = setupServer(
@@ -44,7 +44,7 @@ describe("WorkLogのテスト", () => {
       expect(getWeekdayFromDate(leapYear29thDayOfTheWeek)).toBe("土");
     })
 
-    test("convertToWorkLogDataArrayのテスト", () => {
+    test("convertToWorkLogArrayDataのテスト", () => {
       const selectedMonthlyWorkLogRes = [
         {
           workLogId: 1,
@@ -55,7 +55,7 @@ describe("WorkLogのテスト", () => {
           workLogSeconds: 10741
         },
       ];
-      const comparisonWorkLogData: WorkLogData[] = [
+      const expectedOutput: WorkLogData[] = [
         {
           workLogId: 1,
           workLogUserId: 1,
@@ -68,7 +68,99 @@ describe("WorkLogのテスト", () => {
           workLogSeconds: 10741
         }
       ]
-      expect(convertToWorkLogDataArray(selectedMonthlyWorkLogRes)).toStrictEqual(comparisonWorkLogData);
+      expect(convertToWorkLogArrayData(selectedMonthlyWorkLogRes)).toStrictEqual(expectedOutput);
+    })
+
+    describe("convertWorkLogArrayDataToWorkLogsArrayDataのテスト", () => {
+
+      test("workLogUserIdとdateが一緒のデータが存在する場合", ()=> {
+        const convertData: WorkLogData[] = [
+          { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 5400, end: 9000}, workLogSeconds: 3600 },
+          { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 36000, end: 37800}, workLogSeconds: 1800 },
+        ];
+        const expectedOutput = [
+          {
+            workLogUserId: 1,
+            date: 1,
+            day: "土",
+            workLogTime: [{start: 5400, end: 9000}, {start: 36000, end: 37800}],
+            workLogSumSeconds: 5400,
+          },
+        ];
+        expect(convertWorkLogArrayDataToWorkLogsArrayData(convertData)).toStrictEqual(expectedOutput);
+      })
+
+      test("workLogUserIdが一致しないデータが存在する場合", ()=> {
+        const convertData: WorkLogData[] = [
+          { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 5400, end: 9000}, workLogSeconds: 3600 },
+          { workLogId: 2, workLogUserId: 2, date: 1, day: "土", workLogTime: {start: 36000, end: 37800}, workLogSeconds: 1800 },
+        ];
+        const expectedOutput = [
+          {
+            workLogUserId: 1,
+            date: 1,
+            day: "土",
+            workLogTime: [{start: 5400, end: 9000}],
+            workLogSumSeconds: 3600,
+          },
+          {
+            workLogUserId: 2,
+            date: 1,
+            day: "土",
+            workLogTime: [{start: 36000, end: 37800}],
+            workLogSumSeconds: 1800,
+          },
+        ];
+        expect(convertWorkLogArrayDataToWorkLogsArrayData(convertData)).toStrictEqual(expectedOutput);
+      })
+
+      test("dateが一致しないデータが存在する場合", ()=> {
+        const convertData: WorkLogData[] = [
+          { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 5400, end: 9000}, workLogSeconds: 3600 },
+          { workLogId: 2, workLogUserId: 1, date: 2, day: "日", workLogTime: {start: 36000, end: 37800}, workLogSeconds: 1800 },
+        ];
+        const expectedOutput = [
+          {
+            workLogUserId: 1,
+            date: 1,
+            day: "土",
+            workLogTime: [{start: 5400, end: 9000}],
+            workLogSumSeconds: 3600,
+          },
+          {
+            workLogUserId: 1,
+            date: 2,
+            day: "日",
+            workLogTime: [{start: 36000, end: 37800}],
+            workLogSumSeconds: 1800,
+          },
+        ];
+        expect(convertWorkLogArrayDataToWorkLogsArrayData(convertData)).toStrictEqual(expectedOutput);
+      })
+
+      test("workLogUserIdとdateが一致しないデータが存在する場合", ()=> {
+        const convertData: WorkLogData[] = [
+          { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 5400, end: 9000}, workLogSeconds: 3600 },
+          { workLogId: 2, workLogUserId: 2, date: 2, day: "日", workLogTime: {start: 36000, end: 37800}, workLogSeconds: 1800 },
+        ];
+        const expectedOutput = [
+          {
+            workLogUserId: 1,
+            date: 1,
+            day: "土",
+            workLogTime: [{start: 5400, end: 9000}],
+            workLogSumSeconds: 3600,
+          },
+          {
+            workLogUserId: 2,
+            date: 2,
+            day: "日",
+            workLogTime: [{start: 36000, end: 37800}],
+            workLogSumSeconds: 1800,
+          },
+        ];
+        expect(convertWorkLogArrayDataToWorkLogsArrayData(convertData)).toStrictEqual(expectedOutput);
+      })
     })
   })
 
