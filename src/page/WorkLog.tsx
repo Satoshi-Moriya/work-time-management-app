@@ -14,6 +14,8 @@ import convertTimeToSeconds from "../functions/convertTimeToSeconds";
 registerLocale('ja', ja);
 const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
 
+export const getWeekdayFromDate = (dateString: string): string => WEEK[new Date(dateString).getDay()];
+
 const WorKLog = () => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -41,12 +43,8 @@ const WorKLog = () => {
         const typeConversionRes: WorkLogData[] = res.data.map((data: any) => {
           const convertedStartTime: number = convertTimeToSeconds(data.workLogStartTime);
           const convertedEndTime: number = convertTimeToSeconds(data.workLogEndTime);
-
           const convertedDate: number = Number(data.workLogDate.substring(data.workLogDate.length - 2));
-          const year = Number(data.workLogDate.substring(0, 4));
-          const month = Number(data.workLogDate.substring(5, 7));
-          const date = Number(data.workLogDate.substring(8, 10));
-          const day: string = WEEK[new Date(year, month - 1, date).getDay()];
+          const day: string = getWeekdayFromDate(data.workLogDate);
 
           return {
             workLogId: Number(data.workLogId),
