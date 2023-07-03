@@ -3,9 +3,19 @@ export type TimeRange = {
   end: number;
 };
 
+export type WorkLogData = {
+  workLogId: number;
+  workLogUserId: number;
+  date: number;
+  day: string;
+  workLogTime: TimeRange;
+  workLogSeconds: number;
+}
 
 export type WorkLogsData = {
+  workLogUserId: number;
   date: number;
-  time: TimeRange[];
-  sumSeconds: number;
+  day: string;
+  workLogTime: TimeRange[];
+  workLogSumSeconds: number;
 }
