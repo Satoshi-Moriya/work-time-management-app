@@ -9,6 +9,7 @@ import StackedBarChart from "../components/StackedBarChart";
 import { WorkLogsData, WorkLogData, TimeRange } from "../types";
 import getLastDayOfMonth from "../functions/getLastDayOfMonth";
 import '../components/CustomDatePicker.css';
+import convertTimeToSeconds from "../functions/convertTimeToSeconds";
 
 registerLocale('ja', ja);
 const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
@@ -38,19 +39,8 @@ const WorKLog = () => {
           }
         });
         const typeConversionRes: WorkLogData[] = res.data.map((data: any) => {
-          const [startHours, startMinutes, startSeconds] = data.workLogStartTime
-            .substring(data.workLogStartTime.length - 8)
-            .split(":")
-            .map(Number);
-          const totalStartSeconds = startHours * 3600 +  startMinutes * 60 + startSeconds;
-          const convertedStartTime: number = totalStartSeconds;
-
-          const [endHours, endMinutes, endSeconds] = data.workLogEndTime
-            .substring(data.workLogEndTime.length - 8)
-            .split(":")
-            .map(Number);
-          const totalEndSeconds = endHours * 3600 +  endMinutes * 60 + endSeconds;
-          const convertedEndTime: number = totalEndSeconds;
+          const convertedStartTime: number = convertTimeToSeconds(data.workLogStartTime);
+          const convertedEndTime: number = convertTimeToSeconds(data.workLogEndTime);
 
           const convertedDate: number = Number(data.workLogDate.substring(data.workLogDate.length - 2));
           const year = Number(data.workLogDate.substring(0, 4));
