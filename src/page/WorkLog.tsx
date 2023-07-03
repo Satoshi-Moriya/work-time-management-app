@@ -7,17 +7,68 @@ import "react-datepicker/dist/react-datepicker.min.css"
 import MonthlyTotalTime from "../components/MonthlyTotalTime";
 import StackedBarChart from "../components/StackedBarChart";
 import { WorkLogsData, WorkLogData, TimeRange } from "../types";
-import useGetLastDayOfMonth from "../hooks/useGetLastDayOfMonth";
+import getLastDayOfMonth from "../functions/getLastDayOfMonth";
 import '../components/CustomDatePicker.css';
+import convertTimeToSeconds from "../functions/convertTimeToSeconds";
 
 registerLocale('ja', ja);
 const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
+
+export const getWeekdayFromDate = (dateString: string): string => WEEK[new Date(dateString).getDay()];
+
+export const convertToWorkLogArrayData = (convertData: any): WorkLogData[] => {
+  const convertedData = convertData.map((data: any) => {
+    const convertedStartTime: number = convertTimeToSeconds(data.workLogStartTime);
+    const convertedEndTime: number = convertTimeToSeconds(data.workLogEndTime);
+    const convertedDate: number = Number(data.workLogDate.substring(data.workLogDate.length - 2));
+    const day: string = getWeekdayFromDate(data.workLogDate);
+
+    return {
+      workLogId: Number(data.workLogId),
+      workLogUserId: Number(data.workLogUserId),
+      date: convertedDate,
+      day: day,
+      workLogTime: {
+        start: convertedStartTime,
+        end: convertedEndTime,
+      } as TimeRange,
+      workLogSeconds: Number(data.workLogSeconds)
+    }
+  });
+  return convertedData;
+}
+
+export const convertWorkLogArrayDataToWorkLogsArrayData = (convertData: WorkLogData[]): WorkLogsData[] => {
+  const convertedData = convertData.reduce((result: WorkLogsData[], item: WorkLogData) => {
+    // 既存のデータと一致するかをチェック
+    const existingData = result.find((data) => data.workLogUserId === item.workLogUserId && data.date === item.date);
+
+    if (existingData) {
+      // 一致するデータがある場合は workLogTime を追加し、workLogSumSeconds を更新
+      existingData.workLogTime.push(item.workLogTime);
+      existingData.workLogSumSeconds += item.workLogSeconds;
+    } else {
+      // 一致するデータがない場合は新しいオブジェクトを作成して追加
+      const newData: WorkLogsData = {
+        workLogUserId: item.workLogUserId,
+        date: item.date,
+        day: item.day,
+        workLogTime: [item.workLogTime],
+        workLogSumSeconds: item.workLogSeconds,
+      };
+      result.push(newData);
+    }
+
+    return result;
+  }, []);
+  return convertedData;
+}
 
 const WorKLog = () => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() + 1;
-  const lastDayOfCurrentMonth = useGetLastDayOfMonth(currentYear, currentMonth);
+  const lastDayOfCurrentMonth = getLastDayOfMonth(currentYear, currentMonth);
   const initFromQueryParam = currentYear + currentMonth.toString().padStart(2, "0") + "01";
   const initToQueryParam = currentYear + currentMonth.toString().padStart(2, "0") + lastDayOfCurrentMonth;
 
@@ -37,64 +88,8 @@ const WorKLog = () => {
             to: toQuery
           }
         });
-        const typeConversionRes: WorkLogData[] = res.data.map((data: any) => {
-          const [startHours, startMinutes, startSeconds] = data.workLogStartTime
-            .substring(data.workLogStartTime.length - 8)
-            .split(":")
-            .map(Number);
-          const totalStartSeconds = startHours * 3600 +  startMinutes * 60 + startSeconds;
-          const convertedStartTime: number = totalStartSeconds;
-
-          const [endHours, endMinutes, endSeconds] = data.workLogEndTime
-            .substring(data.workLogEndTime.length - 8)
-            .split(":")
-            .map(Number);
-          const totalEndSeconds = endHours * 3600 +  endMinutes * 60 + endSeconds;
-          const convertedEndTime: number = totalEndSeconds;
-
-          const convertedDate: number = Number(data.workLogDate.substring(data.workLogDate.length - 2));
-          const year = Number(data.workLogDate.substring(0, 4));
-          const month = Number(data.workLogDate.substring(5, 7));
-          const date = Number(data.workLogDate.substring(8, 10));
-          const day: string = WEEK[new Date(year, month - 1, date).getDay()];
-
-          return {
-            workLogId: Number(data.workLogId),
-            workLogUserId: Number(data.workLogUserId),
-            date: convertedDate,
-            day: day,
-            workLogTime: {
-              start: convertedStartTime,
-              end: convertedEndTime,
-            } as TimeRange,
-            workLogSeconds: Number(data.workLogSeconds)
-          }
-        });
-
-        // 整形処理
-        const workLogsData: WorkLogsData[] = typeConversionRes.reduce((result: WorkLogsData[], item: WorkLogData) => {
-          // 既存のデータと一致するかをチェック
-          const existingData = result.find((data) => data.workLogUserId === item.workLogUserId && data.date === item.date);
-
-          if (existingData) {
-            // 一致するデータがある場合は workLogTime を追加し、workLogSumSeconds を更新
-            existingData.workLogTime.push(item.workLogTime);
-            existingData.workLogSumSeconds += item.workLogSeconds;
-          } else {
-            // 一致するデータがない場合は新しいオブジェクトを作成して追加
-            const newData: WorkLogsData = {
-              workLogUserId: item.workLogUserId,
-              date: item.date,
-              day: item.day,
-              workLogTime: [item.workLogTime],
-              workLogSumSeconds: item.workLogSeconds,
-            };
-            result.push(newData);
-          }
-
-          return result;
-        }, []);
-
+        const conversionToWorkLogDataRes = convertToWorkLogArrayData(res.data);
+        const workLogsData: WorkLogsData[] = convertWorkLogArrayDataToWorkLogsArrayData(conversionToWorkLogDataRes);
         setWorkLogsData(workLogsData);
       } catch (e) {
         setError("接続エラーが起きました。時間をおいて再度お試しください。");
