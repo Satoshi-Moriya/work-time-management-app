@@ -3,7 +3,8 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 
-import WorKLog, { getWeekdayFromDate } from "../../page/WorkLog";
+import WorKLog, { getWeekdayFromDate, convertToWorkLogDataArray } from "../../page/WorkLog";
+import { WorkLogData, TimeRange} from "../../types";
 
 const server = setupServer(
   rest.get("http://localhost:8080/work-logs",
@@ -34,11 +35,41 @@ const server = setupServer(
 
 describe("WorkLogのテスト", () => {
 
-  test("getWeekdayFromDateのテスト", () => {
-    const normalDayOfTheWeek = "2020-02-28";
-    const leapYear29thDayOfTheWeek = "2020-02-29";
-    expect(getWeekdayFromDate(normalDayOfTheWeek)).toBe("金");
-    expect(getWeekdayFromDate(leapYear29thDayOfTheWeek)).toBe("土");
+  describe("コンポーネント内の関数のテスト", () => {
+
+    test("getWeekdayFromDateのテスト", () => {
+      const normalDayOfTheWeek = "2020-02-28";
+      const leapYear29thDayOfTheWeek = "2020-02-29";
+      expect(getWeekdayFromDate(normalDayOfTheWeek)).toBe("金");
+      expect(getWeekdayFromDate(leapYear29thDayOfTheWeek)).toBe("土");
+    })
+
+    test("convertToWorkLogDataArrayのテスト", () => {
+      const selectedMonthlyWorkLogRes = [
+        {
+          workLogId: 1,
+          workLogUserId: 1,
+          workLogDate: "2023-06-29",
+          workLogStartTime: "2023-06-29 9:00:59",
+          workLogEndTime: "2023-06-29 12:00:00",
+          workLogSeconds: 10741
+        },
+      ];
+      const comparisonWorkLogData: WorkLogData[] = [
+        {
+          workLogId: 1,
+          workLogUserId: 1,
+          date: 29,
+          day: "木",
+          workLogTime: {
+            start: 32459,
+            end: 43200,
+          } as TimeRange,
+          workLogSeconds: 10741
+        }
+      ]
+      expect(convertToWorkLogDataArray(selectedMonthlyWorkLogRes)).toStrictEqual(comparisonWorkLogData);
+    })
   })
 
   describe("api通信のテスト", () => {

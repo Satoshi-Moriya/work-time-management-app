@@ -16,6 +16,28 @@ const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
 
 export const getWeekdayFromDate = (dateString: string): string => WEEK[new Date(dateString).getDay()];
 
+export const convertToWorkLogDataArray = (convertData: any): WorkLogData[] => {
+  const convertedData = convertData.map((data: any) => {
+    const convertedStartTime: number = convertTimeToSeconds(data.workLogStartTime);
+    const convertedEndTime: number = convertTimeToSeconds(data.workLogEndTime);
+    const convertedDate: number = Number(data.workLogDate.substring(data.workLogDate.length - 2));
+    const day: string = getWeekdayFromDate(data.workLogDate);
+
+    return {
+      workLogId: Number(data.workLogId),
+      workLogUserId: Number(data.workLogUserId),
+      date: convertedDate,
+      day: day,
+      workLogTime: {
+        start: convertedStartTime,
+        end: convertedEndTime,
+      } as TimeRange,
+      workLogSeconds: Number(data.workLogSeconds)
+    }
+  });
+  return convertedData;
+}
+
 const WorKLog = () => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -40,27 +62,11 @@ const WorKLog = () => {
             to: toQuery
           }
         });
-        const typeConversionRes: WorkLogData[] = res.data.map((data: any) => {
-          const convertedStartTime: number = convertTimeToSeconds(data.workLogStartTime);
-          const convertedEndTime: number = convertTimeToSeconds(data.workLogEndTime);
-          const convertedDate: number = Number(data.workLogDate.substring(data.workLogDate.length - 2));
-          const day: string = getWeekdayFromDate(data.workLogDate);
 
-          return {
-            workLogId: Number(data.workLogId),
-            workLogUserId: Number(data.workLogUserId),
-            date: convertedDate,
-            day: day,
-            workLogTime: {
-              start: convertedStartTime,
-              end: convertedEndTime,
-            } as TimeRange,
-            workLogSeconds: Number(data.workLogSeconds)
-          }
-        });
+        const conversionToWorkLogDataRes = convertToWorkLogDataArray(res.data);
 
         // 整形処理
-        const workLogsData: WorkLogsData[] = typeConversionRes.reduce((result: WorkLogsData[], item: WorkLogData) => {
+        const workLogsData: WorkLogsData[] = conversionToWorkLogDataRes.reduce((result: WorkLogsData[], item: WorkLogData) => {
           // 既存のデータと一致するかをチェック
           const existingData = result.find((data) => data.workLogUserId === item.workLogUserId && data.date === item.date);
 
