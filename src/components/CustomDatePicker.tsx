@@ -2,6 +2,7 @@ import { useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.min.css"
 import ja from 'date-fns/locale/ja';
+import axios from "axios";
 
 import './CustomDatePicker.css';
 
@@ -12,6 +13,14 @@ const CustomDatePicker = () => {
   const [startDate, setStartDate] = useState(initialDate);
   const dateChangeHandler = (date: Date) => {
     setStartDate(date);
+    // axios.get("work-logs", {
+    //   params: {
+
+    //   }
+    // })
+    console.log(date)
+    // 'http://localhost:8080/work-logs?from=20230601&to=20230630'
+
   }
 
   return (

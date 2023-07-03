@@ -2,6 +2,9 @@
   "name": "work-time-management-app",
   "version": "0.1.0",
   "private": true,
+  "jest": {
+    "transformIgnorePatterns": ["node_modules/(?!axios)/"]
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.1.1",
     "@testing-library/jest-dom": "^5.16.5",
@@ -13,6 +16,7 @@
     "@types/react-datepicker": "^4.11.2",
     "@types/react-dom": "^18.2.4",
     "@types/react-router-dom": "^5.3.3",
+    "axios": "^1.4.0",
     "react": "^18.2.0",
     "react-datepicker": "^4.13.0",
     "react-dom": "^18.2.0",
@@ -52,6 +56,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
+    "msw": "^1.2.2",
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.2"
   }
