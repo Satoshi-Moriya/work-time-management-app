@@ -10,6 +10,7 @@ import { WorkLogsData, WorkLogData, TimeRange } from "../types";
 import getLastDayOfMonth from "../functions/getLastDayOfMonth";
 import '../components/CustomDatePicker.css';
 import convertTimeToSeconds from "../functions/convertTimeToSeconds";
+import convertSecondsToTime from "../functions/convertSecondsToTime";
 
 registerLocale('ja', ja);
 const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
@@ -172,24 +173,7 @@ const WorKLog = () => {
                       workLogsData.map((data, index) => (
                         <tr key={index} className="group">
                           <td className="border-t border-l group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-0 z-10 bg-white">{data.date}（{data.day}）</td>
-                          <td className="border-t border-x group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-[112px] z-20 bg-white">
-                            {
-                              (function () {
-                                const dateSumSeconds = data.workLogSumSeconds;
-                                if (!dateSumSeconds || dateSumSeconds === 0) {
-                                  return "00:00";
-                                }
-                                const calculateSumHour = Math.floor(dateSumSeconds / 3600);
-                                const calculateSumMin = Math.floor(dateSumSeconds % 3600 / 60);
-                                const remainSumMin = dateSumSeconds % 60;
-                                const displayHour = calculateSumHour.toString();
-                                const displayMin = calculateSumMin.toString().padStart(2, "0");
-                                const displaySeconds = remainSumMin.toString().padStart(2, "0");
-
-                                return `${displayHour}:${displayMin}:${displaySeconds}`;
-                              })()
-                            }
-                          </td>
+                          <td className="border-t border-x group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-[112px] z-20 bg-white">{convertSecondsToTime(data.workLogSumSeconds)}</td>
                           <td className="border-t border-r group-last:border-b border-gray-500 px-0 py-3 w-[801px] bg-white relative" colSpan={24} ><StackedBarChart timeData={data.workLogTime} /></td>
                         </tr>
                       ))

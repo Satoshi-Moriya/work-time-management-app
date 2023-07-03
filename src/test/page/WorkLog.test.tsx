@@ -189,7 +189,7 @@ describe("WorkLogのテスト", () => {
       const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
       const cellAllEl = await within(rowEl[0]).findAllByRole("cell");
       await waitFor(() => expect((cellAllEl[0]).textContent).toEqual("29（木）"));
-      await waitFor(() => expect((cellAllEl[1]).textContent).toEqual("2:59:01"));
+      await waitFor(() => expect((cellAllEl[1]).textContent).toEqual("02:59:01"));
     })
 
     test("データ取得に失敗した時、画面にエラーメッセージが表示される", async () => {
