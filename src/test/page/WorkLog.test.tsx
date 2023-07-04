@@ -3,7 +3,7 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 
-import WorKLog, { getWeekdayFromDate, convertToWorkLogArrayData, convertWorkLogArrayDataToWorkLogsArrayData } from "../../page/WorkLog";
+import WorKLog, { getWeekdayFromDate, convertToWorkLogArrayData, convertWorkLogArrayDataToWorkLogsArrayData, getDateParams } from "../../page/WorkLog";
 import { WorkLogData, TimeRange} from "../../types";
 
 const server = setupServer(
@@ -161,6 +161,12 @@ describe("WorkLogのテスト", () => {
         ];
         expect(convertWorkLogArrayDataToWorkLogsArrayData(convertData)).toStrictEqual(expectedOutput);
       })
+    })
+
+    test("getDateParamsのテスト", () => {
+      const [fromDate, toDate] = getDateParams(new Date(2023, 5));
+      expect(fromDate).toBe("20230601");
+      expect(toDate).toBe("20230630");
     })
   })
 
