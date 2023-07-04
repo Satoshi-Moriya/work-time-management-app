@@ -5,8 +5,8 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { Outlet } from "react-router-dom";
 
-import MenuItem from "../components/MenuItem";
-import Clock from '../components/Clock';
+import MenuItem from "../features/SideBar/components/MenuItem";
+import Clock from '../features/SideBar/components/Clock';
 
 const Layout: React.FC = () => {
     return (
