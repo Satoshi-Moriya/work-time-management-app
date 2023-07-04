@@ -3,7 +3,7 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 
-import WorKLog, { getWeekdayFromDate, convertToWorkLogArrayData, convertWorkLogArrayDataToWorkLogsArrayData } from "../../page/WorkLog";
+import WorKLog, { getWeekdayFromDate, convertToWorkLogArrayData, convertWorkLogArrayDataToWorkLogsArrayData, getDateParams } from "../../page/WorkLog";
 import { WorkLogData, TimeRange} from "../../types";
 
 const server = setupServer(
@@ -162,6 +162,12 @@ describe("WorkLogのテスト", () => {
         expect(convertWorkLogArrayDataToWorkLogsArrayData(convertData)).toStrictEqual(expectedOutput);
       })
     })
+
+    test("getDateParamsのテスト", () => {
+      const [fromDate, toDate] = getDateParams(new Date(2023, 5));
+      expect(fromDate).toBe("20230601");
+      expect(toDate).toBe("20230630");
+    })
   })
 
   describe("api通信のテスト", () => {
@@ -189,7 +195,7 @@ describe("WorkLogのテスト", () => {
       const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
       const cellAllEl = await within(rowEl[0]).findAllByRole("cell");
       await waitFor(() => expect((cellAllEl[0]).textContent).toEqual("29（木）"));
-      await waitFor(() => expect((cellAllEl[1]).textContent).toEqual("2:59:01"));
+      await waitFor(() => expect((cellAllEl[1]).textContent).toEqual("02:59:01"));
     })
 
     test("データ取得に失敗した時、画面にエラーメッセージが表示される", async () => {

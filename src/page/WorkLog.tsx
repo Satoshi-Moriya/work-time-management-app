@@ -10,6 +10,7 @@ import { WorkLogsData, WorkLogData, TimeRange } from "../types";
 import getLastDayOfMonth from "../functions/getLastDayOfMonth";
 import '../components/CustomDatePicker.css';
 import convertTimeToSeconds from "../functions/convertTimeToSeconds";
+import convertSecondsToTime from "../functions/convertSecondsToTime";
 
 registerLocale('ja', ja);
 const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
@@ -64,13 +65,20 @@ export const convertWorkLogArrayDataToWorkLogsArrayData = (convertData: WorkLogD
   return convertedData;
 }
 
+export const getDateParams = <T extends Date | undefined>(date: T): [string, string] => {
+  const year = date ? date.getFullYear() : new Date().getFullYear();
+  const month = date ? date.getMonth() + 1 : new Date().getMonth() + 1;
+  const day = date ? getLastDayOfMonth(year, month) : new Date().getDate();
+
+  const fromDate = `${year}${month.toString().padStart(2, "0")}01`;
+  const toDate = `${year}${month.toString().padStart(2, "0")}${day.toString().padStart(2, "0")}`;
+
+  return [fromDate, toDate];
+};
+
 const WorKLog = () => {
   const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1;
-  const lastDayOfCurrentMonth = getLastDayOfMonth(currentYear, currentMonth);
-  const initFromQueryParam = currentYear + currentMonth.toString().padStart(2, "0") + "01";
-  const initToQueryParam = currentYear + currentMonth.toString().padStart(2, "0") + lastDayOfCurrentMonth;
+  const [initFromQueryParam, initToQueryParam] = getDateParams(currentDate);
 
   const [fromQuery, setFromQuery] = useState(initFromQueryParam);
   const [toQuery, setToQuery] = useState(initToQueryParam);
@@ -95,14 +103,10 @@ const WorKLog = () => {
         setError("接続エラーが起きました。時間をおいて再度お試しください。");
       }
     })();
-  }, [date, fromQuery, toQuery]);
+  }, [date]);
 
   const dateChangeHandler = (date: Date) => {
-    const selectedYear = date.getFullYear();
-    const selectedMonth = date.getMonth() + 1;
-    const lastDayOfSelectedMonth = new Date(selectedYear, selectedMonth, 0).getDate();
-    const fromQueryParam = selectedYear + selectedMonth.toString().padStart(2, "0") + "01";
-    const toQueryParam = selectedYear + selectedMonth.toString().padStart(2, "0") + lastDayOfSelectedMonth;
+    const [fromQueryParam, toQueryParam] = getDateParams(date);
     setDate(date);
     setFromQuery(fromQueryParam);
     setToQuery(toQueryParam);
@@ -172,24 +176,7 @@ const WorKLog = () => {
                       workLogsData.map((data, index) => (
                         <tr key={index} className="group">
                           <td className="border-t border-l group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-0 z-10 bg-white">{data.date}（{data.day}）</td>
-                          <td className="border-t border-x group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-[112px] z-20 bg-white">
-                            {
-                              (function () {
-                                const dateSumSeconds = data.workLogSumSeconds;
-                                if (!dateSumSeconds || dateSumSeconds === 0) {
-                                  return "00:00";
-                                }
-                                const calculateSumHour = Math.floor(dateSumSeconds / 3600);
-                                const calculateSumMin = Math.floor(dateSumSeconds % 3600 / 60);
-                                const remainSumMin = dateSumSeconds % 60;
-                                const displayHour = calculateSumHour.toString();
-                                const displayMin = calculateSumMin.toString().padStart(2, "0");
-                                const displaySeconds = remainSumMin.toString().padStart(2, "0");
-
-                                return `${displayHour}:${displayMin}:${displaySeconds}`;
-                              })()
-                            }
-                          </td>
+                          <td className="border-t border-x group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-[112px] z-20 bg-white">{convertSecondsToTime(data.workLogSumSeconds)}</td>
                           <td className="border-t border-r group-last:border-b border-gray-500 px-0 py-3 w-[801px] bg-white relative" colSpan={24} ><StackedBarChart timeData={data.workLogTime} /></td>
                         </tr>
                       ))
