@@ -12,6 +12,7 @@ import convertTimeToSeconds from "../functions/convertTimeToSeconds";
 import convertSecondsToTime from "../functions/convertSecondsToTime";
 
 registerLocale('ja', ja);
+const userId = 1;
 const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
 
 export const getWeekdayFromDate = (dateString: string): string => WEEK[new Date(dateString).getDay()];
@@ -88,8 +89,8 @@ const WorKLog = () => {
   useEffect(() => {
     (async() => {
       try {
-        // 'http://localhost:8080/work-logs?from=20230601&to=20230630'
-        const res = await axios.get("http://localhost:8080/work-logs", {
+        // 'http://localhost:8080/work-logs/user-id/1?from=20230601&to=20230630'
+        const res = await axios.get(`http://localhost:8080/work-logs/user-id/${userId}`, {
           params: {
             from: fromQuery,
             to: toQuery

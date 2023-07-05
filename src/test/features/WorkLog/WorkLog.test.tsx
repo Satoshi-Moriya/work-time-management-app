@@ -7,7 +7,7 @@ import WorKLog, { getWeekdayFromDate, convertToWorkLogArrayData, convertWorkLogA
 import { WorkLogData, TimeRange} from "../../../features/WorkLog/types";
 
 const server = setupServer(
-  rest.get("http://localhost:8080/work-logs",
+  rest.get("http://localhost:8080/work-logs/user-id/:userId",
   (req, res, ctx) => {
     const fromQuery = req.url.searchParams.get("from");
     const toQuery = req.url.searchParams.get("to");
@@ -201,7 +201,7 @@ describe("WorkLogのテスト", () => {
     test("データ取得に失敗した時、画面にエラーメッセージが表示される", async () => {
       server.use(
         rest.get(
-          "http://localhost:8080/work-logs",
+          "http://localhost:8080/work-logs/user-id/:userId",
           (req, res, ctx) => {
             const fromQuery = req.url.searchParams.get("from");
             const toQuery = req.url.searchParams.get("to");
