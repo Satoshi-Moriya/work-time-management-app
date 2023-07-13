@@ -14,7 +14,7 @@ import SignUp from "../features/SignUp/pages/SignUp";
 import PreRegistrationComplete from "../features/SignUp/pages/PreRegistrationComplete";
 import ResetPasswordSubmitted from "../features/ResetPassword/pages/ResetPasswordSubmitted";
 
-export const router = createBrowserRouter([
+export const routesConfig = [
   { path: "login", element: <Login /> },
   { path: "resetpassword", element: <ResetPassword /> },
   { path: "signup", element: <SignUp /> },
@@ -38,7 +38,9 @@ export const router = createBrowserRouter([
     ],
   },
   { path: "*", element: <Page404 /> },
-]);
+];
+
+const router = createBrowserRouter(routesConfig);
 
 const Router = () => {
   return (

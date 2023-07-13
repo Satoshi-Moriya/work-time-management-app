@@ -2,22 +2,24 @@ import { render, renderHook, screen, act, waitFor } from "@testing-library/react
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
-import { BrowserRouter } from 'react-router-dom';
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
 
 import { loginValidationSchema } from "../../../lib/zod/validationSchema";
-import Login from "../../../features/Login/pages/Login";
+import { routesConfig } from "../../../pages/Router";
+
+const router = createMemoryRouter(routesConfig, {initialEntries: ["/login"]});
 
 describe("Loginページの単体テスト", () => {
 
   test("初期状態でログインボタンは非活性", () => {
-    render(<Login />, {wrapper: BrowserRouter});
+    render(<RouterProvider router={router} />);
     const loginButtonEl = screen.getByRole("button", {name: "ログイン"});
     expect(loginButtonEl).toBeDisabled();
   });
 
   test("メールアドレスとパスワードを入力するとログインボタンが活性化する", async() => {
     const user = userEvent.setup();
-    render(<Login />, {wrapper: BrowserRouter});
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const loginButtonEl = screen.getByRole("button", {name: "ログイン"});
@@ -32,7 +34,7 @@ describe("Loginページの単体テスト", () => {
 
   test("メールアドレスとパスワードを入力後メールアドレスを削除した場合ログインボタンが非活性化する", async() => {
     const user = userEvent.setup();
-    render(<Login />, {wrapper: BrowserRouter});
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const loginButtonEl = screen.getByRole("button", {name: "ログイン"});
@@ -46,7 +48,7 @@ describe("Loginページの単体テスト", () => {
 
   test("メールアドレスとパスワードを入力後パスワードを削除した場合ログインボタンが非活性化する", async() => {
     const user = userEvent.setup();
-    render(<Login />, {wrapper: BrowserRouter});
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const loginButtonEl = screen.getByRole("button", {name: "ログイン"});
@@ -79,7 +81,7 @@ describe("Loginページの単体テスト", () => {
   // ToDo バックエンドと連携させるときな気がする（？）
   test.skip("フォームのバリデーションチェック", async() => {
     const user = userEvent.setup();
-    render(<Login />, {wrapper: BrowserRouter});
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const loginButtonEl = screen.getByRole("button", {name: "ログイン"});
