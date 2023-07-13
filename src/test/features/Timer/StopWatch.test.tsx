@@ -2,21 +2,12 @@ import { render, screen, act, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import Timer  from "../../../features/Timer/pages/Timer";
-import Layout  from "../../../components/Layout";
+import { routesConfig } from "../../../pages/Router";
 
 // ToDo
 // render(<RouterProvider router={router} />);でのレンダリングは単体テスト的にはあまりよろしくない気がする！（やり方がわからん）
 // 時間待つのももっと良い方法がある気がする！
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      { index: true, element: <Timer /> },
-    ],
-  }
-])
+const router = createBrowserRouter(routesConfig);
 
 describe("StopWatchコンポーネントの単体テスト", () => {
 

@@ -2,22 +2,24 @@ import { render, renderHook, screen, act, waitFor } from "@testing-library/react
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
-import { BrowserRouter } from 'react-router-dom';
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
 
 import { signUpValidationSchema } from "../../../lib/zod/validationSchema";
-import SingUp from "../../../features/SignUp/pages/SignUp";
+import { routesConfig } from "../../../pages/Router";
+
+const router = createMemoryRouter(routesConfig, {initialEntries: ["/signup"]});
 
 describe("SingUpページの単体テスト", () => {
 
   test("初期状態で送信ボタンは非活性", () => {
-    render(<SingUp/>, {wrapper: BrowserRouter} );
+    render(<RouterProvider router={router} />);
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
     expect(submitButtonEl).toBeDisabled();
   });
 
   test("メールアドレスとパスワードとパスワード（確認）を入力すると送信ボタンが活性化する", async() => {
     const user = userEvent.setup();
-    render(<SingUp/>, {wrapper: BrowserRouter} );
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
@@ -34,7 +36,7 @@ describe("SingUpページの単体テスト", () => {
 
   test("メールアドレスとパスワードとパスワード（確認）を入力後メールアドレスを削除した場合送信ボタンが非活性化する", async() => {
     const user = userEvent.setup();
-    render(<SingUp/>, {wrapper: BrowserRouter} );
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
@@ -52,7 +54,7 @@ describe("SingUpページの単体テスト", () => {
 
   test("メールアドレスとパスワードとパスワード（確認）を入力後パスワードを削除した場合送信ボタンが非活性化する", async() => {
     const user = userEvent.setup();
-    render(<SingUp/>, {wrapper: BrowserRouter} );
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
@@ -70,7 +72,7 @@ describe("SingUpページの単体テスト", () => {
 
   test("メールアドレスとパスワードとパスワード（確認）を入力後パスワード（確認）を削除した場合送信ボタンが非活性化する", async() => {
     const user = userEvent.setup();
-    render(<SingUp/>, {wrapper: BrowserRouter} );
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
@@ -110,7 +112,7 @@ describe("SingUpページの単体テスト", () => {
 
     test("必須のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<SingUp/>, {wrapper: BrowserRouter} );
+      render(<RouterProvider router={router} />);
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
@@ -125,7 +127,7 @@ describe("SingUpページの単体テスト", () => {
 
     test("形式のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<SingUp/>, {wrapper: BrowserRouter} );
+      render(<RouterProvider router={router} />);
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
 
       user.type(emailInputEl, "email");
@@ -139,7 +141,7 @@ describe("SingUpページの単体テスト", () => {
 
     test("必須のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<SingUp/>, {wrapper: BrowserRouter} );
+      render(<RouterProvider router={router} />);
       const passwordInputEl = screen.getByPlaceholderText("パスワード");
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
@@ -154,7 +156,7 @@ describe("SingUpページの単体テスト", () => {
 
     test("最低文字数のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<SingUp/>, {wrapper: BrowserRouter} );
+      render(<RouterProvider router={router} />);
       const passwordInputEl = screen.getByPlaceholderText("パスワード");
 
       user.type(passwordInputEl, "test123");
@@ -173,7 +175,7 @@ describe("SingUpページの単体テスト", () => {
 
     test("最高文字数のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<SingUp/>, {wrapper: BrowserRouter} );
+      render(<RouterProvider router={router} />);
       const passwordInputEl = screen.getByPlaceholderText('パスワード');
 
       user.type(passwordInputEl, "test1234test1234t");
@@ -192,7 +194,7 @@ describe("SingUpページの単体テスト", () => {
 
     test("半角英数字混合のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<SingUp/>, {wrapper: BrowserRouter} );
+      render(<RouterProvider router={router} />);
       const passwordInputEl = screen.getByPlaceholderText('パスワード');
 
       user.type(passwordInputEl, "testtest");
@@ -212,7 +214,7 @@ describe("SingUpページの単体テスト", () => {
 
   test("パスワード（確認）のバリデーションチェック", async() => {
     const user = userEvent.setup();
-    render(<SingUp/>, {wrapper: BrowserRouter} );
+    render(<RouterProvider router={router} />);
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
 
     // ToDo ここをactで囲まなければいけない理由がいまいちわからない
@@ -227,7 +229,7 @@ describe("SingUpページの単体テスト", () => {
 
   test("パスワードとパスワード（確認）の一致チェック", async() => {
     const user = userEvent.setup();
-    render(<SingUp/>, {wrapper: BrowserRouter} );
+    render(<RouterProvider router={router} />);
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
 
@@ -249,7 +251,7 @@ describe("SingUpページの単体テスト", () => {
   // ToDo バックエンドと連携させるときな気がする（？）
   test.skip("フォームのバリデーションチェック", async() => {
     const user = userEvent.setup();
-    render(<SingUp/>, {wrapper: BrowserRouter} );
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const passwordInputEl = screen.getByPlaceholderText("パスワード");
     const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");

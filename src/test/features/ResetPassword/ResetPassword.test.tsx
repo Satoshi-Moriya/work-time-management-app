@@ -2,22 +2,24 @@ import { render, renderHook, screen, act, waitFor } from "@testing-library/react
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
-import { BrowserRouter } from "react-router-dom";
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
 
 import { resetPasswordValidationSchema } from "../../../lib/zod/validationSchema";
-import ResetPassword from "../../../features/ResetPassword/pages/ResetPassword";
+import { routesConfig } from "../../../pages/Router";
+
+const router = createMemoryRouter(routesConfig, {initialEntries: ["/resetpassword"]});
 
 describe("ResetPasswordページの単体テスト", () => {
 
   test("初期状態で送信ボタンは非活性", () => {
-    render(<ResetPassword />, {wrapper: BrowserRouter});
+    render(<RouterProvider router={router} />);
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
     expect(submitButtonEl).toBeDisabled();
   });
 
   test("メールアドレスを入力すると送信ボタンが活性化する", async() => {
     const user = userEvent.setup();
-    render(<ResetPassword />, {wrapper: BrowserRouter});
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
 
@@ -30,7 +32,7 @@ describe("ResetPasswordページの単体テスト", () => {
 
   test("メールアドレスを入力後メールアドレスを削除した場合送信ボタンが非活性化する", async() => {
     const user = userEvent.setup();
-    render(<ResetPassword />, {wrapper: BrowserRouter});
+    render(<RouterProvider router={router} />);
     const emailInputEl = screen.getByPlaceholderText("メールアドレス");
     const submitButtonEl = screen.getByRole("button", {name: "送信"});
 
@@ -46,7 +48,7 @@ describe("ResetPasswordページの単体テスト", () => {
 
     test("必須のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<ResetPassword />, {wrapper: BrowserRouter});
+      render(<RouterProvider router={router} />);
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
@@ -61,7 +63,7 @@ describe("ResetPasswordページの単体テスト", () => {
 
     test("形式のバリデーションチェック", async() => {
       const user = userEvent.setup();
-      render(<ResetPassword />, {wrapper: BrowserRouter});
+      render(<RouterProvider router={router} />);
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
 
       await act(async() => {
