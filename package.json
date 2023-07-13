@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "jest": {
-    "transformIgnorePatterns": ["node_modules/(?!axios)/"]
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios)/"
+    ]
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.1",
@@ -23,6 +25,7 @@
     "react-hook-form": "^7.44.3",
     "react-icons": "^4.9.0",
     "react-router-dom": "^6.12.1",
+    "react-router-prompt": "^0.5.4",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
