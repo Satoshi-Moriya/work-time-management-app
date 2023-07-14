@@ -1,9 +1,18 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import ReactRouterPrompt from "react-router-prompt";
 
+const userId = 1;
+
 const StopWatch = () => {
   const [time, setTime] = useState({hours: 0, minutes: 0, seconds: 0});
-  const [isRunning, setIsRunning] = useState(false)
+  const [isRunning, setIsRunning] = useState(false);
+  const [failAlert, setFailAlert] = useState(false);
+  const [successAlert, setSuccessAlert] = useState(false);
+  const [workLogDate, setWorkLogsData] = useState("");
+  const [workLogStartTime, setWorkLogStartTime] = useState("");
+  const [workLogEndTime, setWorkLogEndTime] = useState("");
+  const [workLogTime, setWorkLogTime] = useState(0);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
@@ -37,22 +46,82 @@ const StopWatch = () => {
     };
   }, [isRunning]);
 
-  const startHandler = () => {
-    setIsRunning(true);
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = padZero(date.getMonth() + 1);
+    const day = padZero(date.getDate());
+
+    return `${year}-${month}-${day}`;
   }
 
-  const stopHandler = () => {
+  const formatTime = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = padZero(date.getMonth() + 1);
+    const day = padZero(date.getDate());
+    const hours = padZero(date.getHours());
+    const minutes = padZero(date.getMinutes());
+    const seconds = padZero(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  const padZero = (value: number) => {
+    return value.toString().padStart(2, '0');
+  };
+
+  const startHandler = () => {
+    setIsRunning(true);
+    setWorkLogsData(formatDate(new Date()));
+    setWorkLogStartTime(formatTime(new Date()));
+  }
+
+  const stopHandler = async() => {
     setIsRunning(false);
+    setWorkLogEndTime(formatTime(new Date()));
+    setWorkLogTime((time.hours * 3600) + (time.minutes * 60) + time.seconds);
+    try {
+      await axios.post(`http://localhost:8080/work-logs/user-id/${userId}`, {
+        userId: userId,
+        workLogDate: workLogDate,
+        workLogStartTime: workLogStartTime,
+        workLogEndTime: workLogEndTime,
+        workLogTime: workLogTime
+      }).then(() => {
+        setSuccessAlert(true);
+      });
+    } catch(err) {
+      console.log(err);
+      setFailAlert(true);
+    }
   }
 
   return (
     <>
+      {
+        successAlert && (
+          <div className="bg-teal-100 border border-teal-400 text-teal-700 px-4 py-3 rounded flex" role="alert">
+            <span className="block sm:inline">作業記録が保存されました！</span>
+            <span>
+              <svg className="fill-current h-6 w-6 text-teal-500" role="button" onClick={() => setSuccessAlert(false)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+            </span>
+          </div>
+        )
+      }
+      {
+        failAlert && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded flex" role="alert">
+            <span className="block sm:inline">予期せぬエラーが発生し、作業記録が保存できませんでした！</span>
+            <span>
+              <svg className="fill-current h-6 w-6 text-red-500" role="button" onClick={() => setFailAlert(false)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+            </span>
+          </div>
+        )
+      }
       <p className="text-9xl tabular-nums">
         <span>{`${time.hours.toString().padStart(2, "0")}:`}</span>
         <span>{`${time.minutes.toString().padStart(2, "0")}:`}</span>
         <span>{`${time.seconds.toString().padStart(2, "0")}`}</span>
       </p>
-      {/* <ReactRouterPrompt when={time.seconds > 0} > */}
       <ReactRouterPrompt when={isRunning} >
         {({ isActive, onConfirm, onCancel }) =>
           isActive && (
