@@ -1,13 +1,39 @@
 import { render, screen, act, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 
 import { routesConfig } from "../../../pages/Router";
+
+const router = createMemoryRouter(routesConfig, {initialEntries: ["/"]});
+
+const server = setupServer(
+  rest.post("http://localhost:8080/work-logs/user-id/1",
+   (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(
+        [
+          {
+            workLogId: 1,
+            workLogUserId: 1,
+            workLogDate: "2023-07-29",
+            workLogStartTime: "2023-06-29 9:00:59",
+            workLogEndTime: "2023-06-29 12:00:00",
+            workLogSeconds: 10741,
+            message: "success!"
+          },
+        ]
+      )
+    );
+  })
+);
+
 
 // ToDo
 // render(<RouterProvider router={router} />);でのレンダリングは単体テスト的にはあまりよろしくない気がする！（やり方がわからん）
 // 時間待つのももっと良い方法がある気がする！
-const router = createBrowserRouter(routesConfig);
 
 describe("StopWatchコンポーネントの単体テスト", () => {
 
@@ -109,4 +135,72 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       await waitFor(() => expect(confirmText).not.toBeInTheDocument());
     });
   });
+
+  describe("api通信のテスト", () => {
+
+    beforeAll(() => server.listen());
+
+    afterEach(() => {
+      server.resetHandlers();
+    });
+
+    afterAll(() => server.close());
+
+    test("データ保存が成功した時、成功のアラートが表示される", async () => {
+      const user = userEvent.setup();
+      render(<RouterProvider router={router} />);
+      const linkEl = await screen.findAllByRole("link");
+      await user.click(linkEl[0]); // タイマーページに遷移
+      const startButtonEl = screen.getByRole("button", {name: "業務開始" });
+      const endButtonEl = screen.getByRole("button", {name: "業務終了" });
+
+      await user.click(startButtonEl);
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      });
+      await user.click(endButtonEl);
+
+      const successAlertTextEl = await screen.findByText("作業記録が保存されました！");
+      expect(successAlertTextEl).toBeInTheDocument();
+    })
+
+    test("データ保存に失敗した時、失敗アラートが表示される", async () => {
+      server.use(
+        rest.post(
+          "http://localhost:8080/work-logs/user-id/1",
+          (req, res, ctx) => {
+            return res(
+              ctx.status(400),
+              ctx.json(
+                [
+                  {
+                    workLogId: 1,
+                    workLogUserId: 1,
+                    workLogDate: "2023-07-29",
+                    workLogStartTime: "2023-06-29 9:00:59",
+                    workLogEndTime: "2023-06-29 12:00:00",
+                    workLogSeconds: 10741,
+                    message: "fail!"
+                  },
+                ]
+              )
+            );
+          }
+        )
+      );
+      const user = userEvent.setup();
+      render(<RouterProvider router={router} />);
+      const startButtonEl = screen.getByRole("button", {name: "業務開始" });
+      const endButtonEl = screen.getByRole("button", {name: "業務終了" });
+
+      await user.click(startButtonEl);
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      });
+      await user.click(endButtonEl);
+
+      const failAlertTextEl = await screen.findByText("予期せぬエラーが発生し、作業記録が保存できませんでした！");
+      expect(failAlertTextEl).toBeInTheDocument();
+    })
+  })
 });
