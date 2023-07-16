@@ -11,8 +11,6 @@ const StopWatch = () => {
   const [successAlert, setSuccessAlert] = useState(false);
   const [workLogDate, setWorkLogsData] = useState("");
   const [workLogStartTime, setWorkLogStartTime] = useState("");
-  const [workLogEndTime, setWorkLogEndTime] = useState("");
-  const [workLogTime, setWorkLogTime] = useState(0);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
@@ -77,15 +75,13 @@ const StopWatch = () => {
 
   const stopHandler = async() => {
     setIsRunning(false);
-    setWorkLogEndTime(formatTime(new Date()));
-    setWorkLogTime((time.hours * 3600) + (time.minutes * 60) + time.seconds);
     try {
-      await axios.post(`http://localhost:8080/work-logs/user-id/${userId}`, {
-        userId: userId,
+      await axios.post(`http://localhost:8080/work-log`, {
+        workLogUserId: userId,
         workLogDate: workLogDate,
         workLogStartTime: workLogStartTime,
-        workLogEndTime: workLogEndTime,
-        workLogTime: workLogTime
+        workLogEndTime: formatTime(new Date()),
+        workLogSeconds: (time.hours * 3600) + (time.minutes * 60) + time.seconds
       }).then(() => {
         setSuccessAlert(true);
       });

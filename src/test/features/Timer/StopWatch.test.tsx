@@ -9,7 +9,7 @@ import { routesConfig } from "../../../pages/Router";
 const router = createMemoryRouter(routesConfig, {initialEntries: ["/"]});
 
 const server = setupServer(
-  rest.post("http://localhost:8080/work-logs/user-id/1",
+  rest.post("http://localhost:8080/work-log",
    (req, res, ctx) => {
     return res(
       ctx.status(200),
@@ -22,7 +22,6 @@ const server = setupServer(
             workLogStartTime: "2023-06-29 9:00:59",
             workLogEndTime: "2023-06-29 12:00:00",
             workLogSeconds: 10741,
-            message: "success!"
           },
         ]
       )
@@ -167,7 +166,7 @@ describe("StopWatchコンポーネントの単体テスト", () => {
     test("データ保存に失敗した時、失敗アラートが表示される", async () => {
       server.use(
         rest.post(
-          "http://localhost:8080/work-logs/user-id/1",
+          "http://localhost:8080/work-log",
           (req, res, ctx) => {
             return res(
               ctx.status(400),
@@ -180,7 +179,6 @@ describe("StopWatchコンポーネントの単体テスト", () => {
                     workLogStartTime: "2023-06-29 9:00:59",
                     workLogEndTime: "2023-06-29 12:00:00",
                     workLogSeconds: 10741,
-                    message: "fail!"
                   },
                 ]
               )
