@@ -1,95 +1,9 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import ReactRouterPrompt from "react-router-prompt";
 
-const userId = 1;
+import useStopwatch from "../hooks/useStopwatch";
 
 const StopWatch = () => {
-  const [time, setTime] = useState({hours: 0, minutes: 0, seconds: 0});
-  const [isRunning, setIsRunning] = useState(false);
-  const [failAlert, setFailAlert] = useState(false);
-  const [successAlert, setSuccessAlert] = useState(false);
-  const [workLogDate, setWorkLogsData] = useState("");
-  const [workLogStartTime, setWorkLogStartTime] = useState("");
-
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null;
-
-    if (isRunning) {
-      intervalId = setInterval(() => {
-        setTime((prevTime) => {
-          let { hours, minutes, seconds } = prevTime;
-          seconds++;
-
-          if (seconds === 60) {
-            seconds = 0;
-            minutes++;
-          }
-
-          if (minutes === 60) {
-            minutes = 0;
-            hours++;
-          }
-
-          return { hours, minutes, seconds };
-        });
-      }, 1000);
-    }
-
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-        setTime({hours: 0, minutes: 0, seconds: 0});
-      }
-    };
-  }, [isRunning]);
-
-  const formatDate = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = padZero(date.getMonth() + 1);
-    const day = padZero(date.getDate());
-
-    return `${year}-${month}-${day}`;
-  }
-
-  const formatTime = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = padZero(date.getMonth() + 1);
-    const day = padZero(date.getDate());
-    const hours = padZero(date.getHours());
-    const minutes = padZero(date.getMinutes());
-    const seconds = padZero(date.getSeconds());
-
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  }
-
-  const padZero = (value: number) => {
-    return value.toString().padStart(2, '0');
-  };
-
-  const startHandler = () => {
-    setIsRunning(true);
-    setWorkLogsData(formatDate(new Date()));
-    setWorkLogStartTime(formatTime(new Date()));
-  }
-
-  const stopHandler = async() => {
-    setIsRunning(false);
-    try {
-      await axios.post(`http://localhost:8080/work-log`, {
-        workLogUserId: userId,
-        workLogDate: workLogDate,
-        workLogStartTime: workLogStartTime,
-        workLogEndTime: formatTime(new Date()),
-        workLogSeconds: (time.hours * 3600) + (time.minutes * 60) + time.seconds
-      }).then(() => {
-        setSuccessAlert(true);
-      });
-    } catch(err) {
-      console.log(err);
-      setFailAlert(true);
-    }
-  }
+  const [displayTime, isRunning, successAlert, failAlert, { setSuccessAlert, setFailAlert, startHandler, stopHandler } ] = useStopwatch();
 
   return (
     <>
@@ -114,9 +28,7 @@ const StopWatch = () => {
         )
       }
       <p className="text-9xl tabular-nums">
-        <span>{`${time.hours.toString().padStart(2, "0")}:`}</span>
-        <span>{`${time.minutes.toString().padStart(2, "0")}:`}</span>
-        <span>{`${time.seconds.toString().padStart(2, "0")}`}</span>
+        <span>{displayTime}</span>
       </p>
       <ReactRouterPrompt when={isRunning} >
         {({ isActive, onConfirm, onCancel }) =>
