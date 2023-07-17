@@ -12,15 +12,15 @@ const server = setupServer(
   rest.post("http://localhost:8080/work-log",
    (req, res, ctx) => {
     return res(
-      ctx.status(200),
+      ctx.status(201),
       ctx.json(
         [
           {
             workLogId: 1,
             workLogUserId: 1,
-            workLogDate: "2023-07-29",
-            workLogStartTime: "2023-06-29 9:00:59",
-            workLogEndTime: "2023-06-29 12:00:00",
+            workLogDate: "2023-07-15",
+            workLogStartTime: "2023-07-15 9:00:59",
+            workLogEndTime: "2023-07-15 12:00:00",
             workLogSeconds: 10741,
           },
         ]
@@ -53,10 +53,8 @@ describe("StopWatchコンポーネントの単体テスト", () => {
     test("表示されている時間が「00:00:00」である", () => {
       render(<RouterProvider router={router} />);
 
-      const hoursAndMinutesDisplayEl = screen.getAllByText("00:");
-      const secondsDisplayEl = screen.getByText("00");
-      expect(hoursAndMinutesDisplayEl).toHaveLength(2);
-      expect(secondsDisplayEl).toBeInTheDocument();
+      const timeDisplayEl = screen.getByText("00:00:00");
+      expect(timeDisplayEl).toBeInTheDocument();
     });
   });
 
@@ -67,8 +65,7 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       render(<RouterProvider router={router} />);
       const startButtonEl = screen.getByRole("button", {name: "業務開始" });
       const endButtonEl = screen.getByRole("button", {name: "業務終了" });
-      const mainEl = screen.getByRole("main");
-      const timeDisplayEl = within(mainEl).getByText(/(?!\b00:)\d{2}/);
+      const timeDisplayEl = await screen.findByText("00:00:00");
 
       await act(async() => {
         await user.click(startButtonEl);
@@ -77,7 +74,7 @@ describe("StopWatchコンポーネントの単体テスト", () => {
 
       await waitFor(() => expect(endButtonEl).toBeEnabled());
       await waitFor(() => expect(startButtonEl).toBeDisabled());
-      await waitFor(() => expect(timeDisplayEl.textContent).not.toBe("00"));
+      await waitFor(() => expect(timeDisplayEl.textContent).not.toBe("00:00:00"));
     });
   })
 
@@ -95,13 +92,11 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       });
       user.click(endButtonEl);
 
-      const hoursAndMinutesDisplayEl = await screen.findAllByText("00:");
-      const secondsDisplayEl = await screen.findByText("00");
+      const timeDisplayEl = await screen.findByText("00:00:00");
 
       await waitFor(() => expect(startButtonEl).toBeEnabled());
       await waitFor(() => expect(endButtonEl).toBeDisabled());
-      await waitFor(() => expect(hoursAndMinutesDisplayEl).toHaveLength(2));
-      await waitFor(() => expect(secondsDisplayEl).toBeInTheDocument());
+      await waitFor(() => expect(timeDisplayEl).toBeInTheDocument());
     });
   });
 
@@ -132,6 +127,8 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       const confirmText = screen.queryByText('作業中のままページを移動すると作業時間は保存されません！ページを移動しますか？')
 
       await waitFor(() => expect(confirmText).not.toBeInTheDocument());
+
+      await user.click(linkEl[0]); // タイマーページに遷移
     });
   });
 
@@ -148,8 +145,6 @@ describe("StopWatchコンポーネントの単体テスト", () => {
     test("データ保存が成功した時、成功のアラートが表示される", async () => {
       const user = userEvent.setup();
       render(<RouterProvider router={router} />);
-      const linkEl = await screen.findAllByRole("link");
-      await user.click(linkEl[0]); // タイマーページに遷移
       const startButtonEl = screen.getByRole("button", {name: "業務開始" });
       const endButtonEl = screen.getByRole("button", {name: "業務終了" });
 
@@ -175,9 +170,9 @@ describe("StopWatchコンポーネントの単体テスト", () => {
                   {
                     workLogId: 1,
                     workLogUserId: 1,
-                    workLogDate: "2023-07-29",
-                    workLogStartTime: "2023-06-29 9:00:59",
-                    workLogEndTime: "2023-06-29 12:00:00",
+                    workLogDate: "2023-07-15",
+                    workLogStartTime: "2023-07-15 9:00:59",
+                    workLogEndTime: "2023-07-15 12:00:00",
                     workLogSeconds: 10741,
                   },
                 ]
