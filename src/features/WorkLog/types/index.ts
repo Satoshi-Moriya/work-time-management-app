@@ -12,7 +12,7 @@ export type WorkLogData = {
   workLogSeconds: number;
 }
 
-export type WorkLogsData = {
+export type DailyWorkLogData = {
   workLogUserId: number;
   date: number;
   day: string;
