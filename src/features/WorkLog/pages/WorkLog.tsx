@@ -17,7 +17,7 @@ const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
 
 export const getWeekdayFromDate = (dateString: string): string => WEEK[new Date(dateString).getDay()];
 
-export const convertToWorkLogArrayData = (convertData: any): WorkLogData[] => {
+export const convertToWorkLogDataList = (convertData: any): WorkLogData[] => {
   const convertedData = convertData.map((data: any) => {
     const convertedStartTime: number = convertTimeToSeconds(data.workLogStartTime);
     const convertedEndTime: number = convertTimeToSeconds(data.workLogEndTime);
@@ -39,7 +39,7 @@ export const convertToWorkLogArrayData = (convertData: any): WorkLogData[] => {
   return convertedData;
 }
 
-export const convertWorkLogArrayDataToWorkLogArrayData = (convertData: WorkLogData[]): DailyWorkLogData[] => {
+export const convertToDailyWorkLogData = (convertData: WorkLogData[]): DailyWorkLogData[] => {
   const convertedData = convertData.reduce((result: DailyWorkLogData[], item: WorkLogData) => {
     // 既存のデータと一致するかをチェック
     const existingData = result.find((data) => data.workLogUserId === item.workLogUserId && data.date === item.date);
@@ -76,14 +76,14 @@ export const getDateParams = <T extends Date | undefined>(date: T): [string, str
   return [fromDate, toDate];
 };
 
-export const addWithoutWorkDays = (monthlyWorkLogData: DailyWorkLogData[], lastDayOfDisplayMonth: string): DailyWorkLogData[] => {
-  let monthlyWorkLogDataIncludingDaysWithoutWork: DailyWorkLogData[] = [];
+export const addDayNotWork = (monthlyWorkLogData: DailyWorkLogData[], lastDayOfDisplayMonth: string): DailyWorkLogData[] => {
+  let monthlyWorkLogDataIncludingDayNotWork: DailyWorkLogData[] = [];
   for(let i = 1; i <= Number(lastDayOfDisplayMonth.substring(lastDayOfDisplayMonth.length - 2)); i++) {
     const dailyWorkLog = monthlyWorkLogData.find(dailyWorkLogData => dailyWorkLogData.date === i );
     if (dailyWorkLog) {
-      monthlyWorkLogDataIncludingDaysWithoutWork.push(dailyWorkLog);
+      monthlyWorkLogDataIncludingDayNotWork.push(dailyWorkLog);
     } else {
-      monthlyWorkLogDataIncludingDaysWithoutWork.push({
+      monthlyWorkLogDataIncludingDayNotWork.push({
         workLogUserId: userId,
         date: i,
         day: getWeekdayFromDate(`${lastDayOfDisplayMonth.substring(0, 4)}-${lastDayOfDisplayMonth.substring(4, 6)}-${i.toString().padStart(2, "0")}`),
@@ -92,7 +92,7 @@ export const addWithoutWorkDays = (monthlyWorkLogData: DailyWorkLogData[], lastD
       });
     }
   }
-  return monthlyWorkLogDataIncludingDaysWithoutWork;
+  return monthlyWorkLogDataIncludingDayNotWork;
 }
 
 const WorKLog = () => {
@@ -115,10 +115,10 @@ const WorKLog = () => {
             to: toQuery
           }
         });
-        const conversionToWorkLogDataRes = convertToWorkLogArrayData(res.data);
-        const monthlyWorkLogData: DailyWorkLogData[] = convertWorkLogArrayDataToWorkLogArrayData(conversionToWorkLogDataRes);
-        const monthlyWorkLogDataIncludingDaysWithoutWork: DailyWorkLogData[] = addWithoutWorkDays(monthlyWorkLogData, toQuery)
-        setMonthlyWorkLogData(monthlyWorkLogDataIncludingDaysWithoutWork);
+        const workLogData = convertToWorkLogDataList(res.data);
+        const monthlyWorkLogData: DailyWorkLogData[] = convertToDailyWorkLogData(workLogData);
+        const monthlyWorkLogDataIncludingDayNotWork: DailyWorkLogData[] = addDayNotWork(monthlyWorkLogData, toQuery)
+        setMonthlyWorkLogData(monthlyWorkLogDataIncludingDayNotWork);
       } catch (e) {
         setError("接続エラーが起きました。時間をおいて再度お試しください。");
       }
