@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.min.css"
 
 import MonthlyTotalTime from "../components/MonthlyTotalTime";
 import StackedBarChart from "../components/StackedBarChart";
-import { WorkLogsData, WorkLogData, TimeRange } from "../types";
+import { DailyWorkLogData, WorkLogData, TimeRange } from "../types";
 import getLastDayOfMonth from "../functions/getLastDayOfMonth";
 import convertTimeToSeconds from "../functions/convertTimeToSeconds";
 import convertSecondsToTime from "../functions/convertSecondsToTime";
@@ -39,8 +39,8 @@ export const convertToWorkLogArrayData = (convertData: any): WorkLogData[] => {
   return convertedData;
 }
 
-export const convertWorkLogArrayDataToWorkLogsArrayData = (convertData: WorkLogData[]): WorkLogsData[] => {
-  const convertedData = convertData.reduce((result: WorkLogsData[], item: WorkLogData) => {
+export const convertWorkLogArrayDataToWorkLogArrayData = (convertData: WorkLogData[]): DailyWorkLogData[] => {
+  const convertedData = convertData.reduce((result: DailyWorkLogData[], item: WorkLogData) => {
     // 既存のデータと一致するかをチェック
     const existingData = result.find((data) => data.workLogUserId === item.workLogUserId && data.date === item.date);
 
@@ -50,7 +50,7 @@ export const convertWorkLogArrayDataToWorkLogsArrayData = (convertData: WorkLogD
       existingData.workLogSumSeconds += item.workLogSeconds;
     } else {
       // 一致するデータがない場合は新しいオブジェクトを作成して追加
-      const newData: WorkLogsData = {
+      const newData: DailyWorkLogData = {
         workLogUserId: item.workLogUserId,
         date: item.date,
         day: item.day,
@@ -76,6 +76,25 @@ export const getDateParams = <T extends Date | undefined>(date: T): [string, str
   return [fromDate, toDate];
 };
 
+export const addWithoutWorkDays = (monthlyWorkLogData: DailyWorkLogData[], lastDayOfDisplayMonth: string): DailyWorkLogData[] => {
+  let monthlyWorkLogDataIncludingDaysWithoutWork: DailyWorkLogData[] = [];
+  for(let i = 1; i <= Number(lastDayOfDisplayMonth.substring(lastDayOfDisplayMonth.length - 2)); i++) {
+    const dailyWorkLog = monthlyWorkLogData.find(dailyWorkLogData => dailyWorkLogData.date === i );
+    if (dailyWorkLog) {
+      monthlyWorkLogDataIncludingDaysWithoutWork.push(dailyWorkLog);
+    } else {
+      monthlyWorkLogDataIncludingDaysWithoutWork.push({
+        workLogUserId: userId,
+        date: i,
+        day: getWeekdayFromDate(`${lastDayOfDisplayMonth.substring(0, 4)}-${lastDayOfDisplayMonth.substring(4, 6)}-${i.toString().padStart(2, "0")}`),
+        workLogTime: [],
+        workLogSumSeconds: 0
+      });
+    }
+  }
+  return monthlyWorkLogDataIncludingDaysWithoutWork;
+}
+
 const WorKLog = () => {
   const currentDate = new Date();
   const [initFromQueryParam, initToQueryParam] = getDateParams(currentDate);
@@ -83,7 +102,7 @@ const WorKLog = () => {
   const [fromQuery, setFromQuery] = useState(initFromQueryParam);
   const [toQuery, setToQuery] = useState(initToQueryParam);
   const [date, setDate] = useState(currentDate);
-  const [workLogsData, setWorkLogsData] = useState<WorkLogsData[]>([])
+  const [monthlyWorkLogData, setMonthlyWorkLogData] = useState<DailyWorkLogData[]>([])
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
@@ -97,8 +116,9 @@ const WorKLog = () => {
           }
         });
         const conversionToWorkLogDataRes = convertToWorkLogArrayData(res.data);
-        const workLogsData: WorkLogsData[] = convertWorkLogArrayDataToWorkLogsArrayData(conversionToWorkLogDataRes);
-        setWorkLogsData(workLogsData);
+        const monthlyWorkLogData: DailyWorkLogData[] = convertWorkLogArrayDataToWorkLogArrayData(conversionToWorkLogDataRes);
+        const monthlyWorkLogDataIncludingDaysWithoutWork: DailyWorkLogData[] = addWithoutWorkDays(monthlyWorkLogData, toQuery)
+        setMonthlyWorkLogData(monthlyWorkLogDataIncludingDaysWithoutWork);
       } catch (e) {
         setError("接続エラーが起きました。時間をおいて再度お試しください。");
       }
@@ -127,9 +147,9 @@ const WorKLog = () => {
             className="bg-gray-50 border border-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 hover:cursor-pointer"
           />
           <div className="mt-10">
-            <MonthlyTotalTime dateSumSeconds={workLogsData.map(data => data.workLogSumSeconds)} />
+            <MonthlyTotalTime dateSumSeconds={monthlyWorkLogData.map(data => data.workLogSumSeconds)} />
             {
-              !workLogsData.length ? <p>選択された月には記録がありません。</p>
+              !monthlyWorkLogData.length ? <p>選択された月には記録がありません。</p>
             :
             <>
               <div className="mt-20 flex justify-end items-center">
@@ -173,7 +193,7 @@ const WorKLog = () => {
                   </thead>
                   <tbody>
                     {
-                      workLogsData.map((data, index) => (
+                      monthlyWorkLogData.map((data, index) => (
                         <tr key={index} className="group">
                           <td className="border-t border-l group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-0 z-10 bg-white">{data.date}（{data.day}）</td>
                           <td className="border-t border-x group-last:border-b border-gray-500 px-4 py-3 text-center sticky left-[112px] z-20 bg-white">{convertSecondsToTime(data.workLogSumSeconds)}</td>
