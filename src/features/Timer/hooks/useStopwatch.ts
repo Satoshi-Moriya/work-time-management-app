@@ -1,6 +1,6 @@
 import { useEffect, useState, } from "react";
 
-import convertSecondsToTime from "../../WorkLog/functions/convertSecondsToTime";
+import convertSecondsToTime from "../../../functions/convertSecondsToTime";
 import { createWorkLog } from "../api/post"
 import msSecondsToYYYYMMDDHHMMSS from "../functions/msSecondsToYYYYMMDDHHMMSS";
 

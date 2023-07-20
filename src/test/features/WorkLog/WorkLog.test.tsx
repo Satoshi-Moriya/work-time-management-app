@@ -3,8 +3,13 @@ import { rest } from "msw";
 import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
 
-import WorKLog, { addDayNotWork, getWeekdayFromDate, convertToWorkLogDataList, convertToDailyWorkLogData, getDateParams } from "../../../features/WorkLog/pages/WorkLog";
-import { DailyWorkLogData, WorkLogData, TimeRange} from "../../../features/WorkLog/types";
+import WorKLog from "../../../features/WorkLog/pages/WorkLog";
+import { DailyClientWorkLogData, ClientWorkLogData, TimeRange} from "../../../features/WorkLog/types";
+import { getWeekdayFromDate } from "../../../features/WorkLog/functions/getWeekdayFromDate";
+import { convertToWorkLogDataList } from "../../../features/WorkLog/functions/convertToWorkLogDataList";
+import { convertToDailyWorkLogData } from "../../../features/WorkLog/functions/convertToDailyWorkLogData";
+import { getDateParams } from "../../../features/WorkLog/functions/getDateParams";
+import { addDayNotWork } from "../../../features/WorkLog/functions/addDayNotWork";
 
 const server = setupServer(
   rest.get("http://localhost:8080/work-logs/user-id/1",
@@ -55,7 +60,7 @@ describe("WorkLogのテスト", () => {
           workLogSeconds: 10741
         },
       ];
-      const expectedOutput: WorkLogData[] = [
+      const expectedOutput: ClientWorkLogData[] = [
         {
           workLogId: 1,
           workLogUserId: 1,
@@ -74,7 +79,7 @@ describe("WorkLogのテスト", () => {
     describe("convertToDailyWorkLogDataのテスト", () => {
 
       test("workLogUserIdとdateが一緒のデータが存在する場合", ()=> {
-        const convertData: WorkLogData[] = [
+        const convertData: ClientWorkLogData[] = [
           { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 5400, end: 9000}, workLogSeconds: 3600 },
           { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 36000, end: 37800}, workLogSeconds: 1800 },
         ];
@@ -91,7 +96,7 @@ describe("WorkLogのテスト", () => {
       })
 
       test("workLogUserIdが一致しないデータが存在する場合", ()=> {
-        const convertData: WorkLogData[] = [
+        const convertData: ClientWorkLogData[] = [
           { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 5400, end: 9000}, workLogSeconds: 3600 },
           { workLogId: 2, workLogUserId: 2, date: 1, day: "土", workLogTime: {start: 36000, end: 37800}, workLogSeconds: 1800 },
         ];
@@ -115,7 +120,7 @@ describe("WorkLogのテスト", () => {
       })
 
       test("dateが一致しないデータが存在する場合", ()=> {
-        const convertData: WorkLogData[] = [
+        const convertData: ClientWorkLogData[] = [
           { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 5400, end: 9000}, workLogSeconds: 3600 },
           { workLogId: 2, workLogUserId: 1, date: 2, day: "日", workLogTime: {start: 36000, end: 37800}, workLogSeconds: 1800 },
         ];
@@ -139,7 +144,7 @@ describe("WorkLogのテスト", () => {
       })
 
       test("workLogUserIdとdateが一致しないデータが存在する場合", ()=> {
-        const convertData: WorkLogData[] = [
+        const convertData: ClientWorkLogData[] = [
           { workLogId: 1, workLogUserId: 1, date: 1, day: "土", workLogTime: {start: 5400, end: 9000}, workLogSeconds: 3600 },
           { workLogId: 2, workLogUserId: 2, date: 2, day: "日", workLogTime: {start: 36000, end: 37800}, workLogSeconds: 1800 },
         ];
@@ -172,7 +177,7 @@ describe("WorkLogのテスト", () => {
     describe("addDayNotWorkのテスト", () => {
 
       test("作業してない日がある場合（2023年6月）", () => {
-        const monthlyWorkLogData: DailyWorkLogData[] = [
+        const monthlyWorkLogData: DailyClientWorkLogData[] = [
           { workLogUserId: 1, date: 1, day: "木", workLogTime: [{start: 5400, end: 9000}], workLogSumSeconds: 3600 },
           { workLogUserId: 1, date: 2, day: "金", workLogTime: [{start: 36000, end: 37800}], workLogSumSeconds: 1800 },
         ];
@@ -209,11 +214,11 @@ describe("WorkLogのテスト", () => {
           { workLogUserId: 1, date: 30, day: "金", workLogTime: [], workLogSumSeconds: 0 }
         ];
 
-        expect(addDayNotWork(monthlyWorkLogData, "20230630")).toStrictEqual(expectedOutput);
+        expect(addDayNotWork(1, monthlyWorkLogData, "20230630")).toStrictEqual(expectedOutput);
       })
 
       test("作業してない日がない場合（2023年6月）", () => {
-        const monthlyWorkLogData: DailyWorkLogData[] = [
+        const monthlyWorkLogData: DailyClientWorkLogData[] = [
           { workLogUserId: 1, date: 1, day: "木", workLogTime: [{start: 5400, end: 9000}], workLogSumSeconds: 3600 },
           { workLogUserId: 1, date: 2, day: "金", workLogTime: [{start: 5400, end: 9000}], workLogSumSeconds: 3600 },
           { workLogUserId: 1, date: 3, day: "土", workLogTime: [{start: 5400, end: 9000}], workLogSumSeconds: 3600 },
@@ -246,7 +251,7 @@ describe("WorkLogのテスト", () => {
           { workLogUserId: 1, date: 30, day: "金", workLogTime: [{start: 5400, end: 9000}], workLogSumSeconds: 3600 }
         ];
 
-        const expectedOutput: DailyWorkLogData[] = [
+        const expectedOutput: DailyClientWorkLogData[] = [
           { workLogUserId: 1, date: 1, day: "木", workLogTime: [{start: 5400, end: 9000}], workLogSumSeconds: 3600 },
           { workLogUserId: 1, date: 2, day: "金", workLogTime: [{start: 5400, end: 9000}], workLogSumSeconds: 3600 },
           { workLogUserId: 1, date: 3, day: "土", workLogTime: [{start: 5400, end: 9000}], workLogSumSeconds: 3600 },
@@ -279,12 +284,12 @@ describe("WorkLogのテスト", () => {
           { workLogUserId: 1, date: 30, day: "金", workLogTime: [{start: 5400, end: 9000}], workLogSumSeconds: 3600 }
         ];
 
-        expect(addDayNotWork(monthlyWorkLogData, "20230630")).toStrictEqual(expectedOutput);
+        expect(addDayNotWork(1, monthlyWorkLogData, "20230630")).toStrictEqual(expectedOutput);
       });
 
       test("二桁の月でもしっかりと曜日が表示される（2023年10月", () => {
-        const monthlyWorkLogData: DailyWorkLogData[] = [];
-        const expectedOutput: DailyWorkLogData[] = [
+        const monthlyWorkLogData: DailyClientWorkLogData[] = [];
+        const expectedOutput: DailyClientWorkLogData[] = [
           { workLogUserId: 1, date: 1, day: "日", workLogTime: [], workLogSumSeconds: 0 },
           { workLogUserId: 1, date: 2, day: "月", workLogTime: [], workLogSumSeconds: 0 },
           { workLogUserId: 1, date: 3, day: "火", workLogTime: [], workLogSumSeconds: 0 },
@@ -318,7 +323,7 @@ describe("WorkLogのテスト", () => {
           { workLogUserId: 1, date: 31, day: "火", workLogTime: [], workLogSumSeconds: 0 }
         ];
 
-        expect(addDayNotWork(monthlyWorkLogData, "20231031")).toStrictEqual(expectedOutput);
+        expect(addDayNotWork(1, monthlyWorkLogData, "20231031")).toStrictEqual(expectedOutput);
       });
 
     })

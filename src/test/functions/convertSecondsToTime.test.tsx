@@ -1,4 +1,4 @@
-import convertSecondsToTime from "../../../../features/WorkLog/functions/convertSecondsToTime"
+import convertSecondsToTime from "../../functions/convertSecondsToTime"
 
 describe("convertSecondsToTimeの単体テスト", () => {
 
