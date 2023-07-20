@@ -2,7 +2,7 @@ import ReactRouterPrompt from "react-router-prompt";
 
 import useStopwatch from "../hooks/useStopwatch";
 
-const StopWatch = () => {
+const Stopwatch = () => {
   const [displayTime, isRunning, successAlert, failAlert, { setSuccessAlert, setFailAlert, startHandler, stopHandler } ] = useStopwatch();
 
   return (
@@ -59,4 +59,4 @@ const StopWatch = () => {
   );
 }
 
-export default StopWatch;
+export default Stopwatch;

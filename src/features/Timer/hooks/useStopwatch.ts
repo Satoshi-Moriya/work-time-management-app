@@ -1,7 +1,7 @@
 import { useEffect, useState, } from "react";
 
 import convertSecondsToTime from "../../../functions/convertSecondsToTime";
-import { createWorkLog } from "../api/post"
+import { createWorkLog } from "../repository/repository"
 import msSecondsToYYYYMMDDHHMMSS from "../functions/msSecondsToYYYYMMDDHHMMSS";
 
 const userId = 1;
