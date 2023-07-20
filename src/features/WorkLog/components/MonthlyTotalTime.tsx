@@ -1,4 +1,4 @@
-import convertSecondsToTime from "../functions/convertSecondsToTime";
+import convertSecondsToTime from "../../../functions/convertSecondsToTime";
 
 type MonthlyTotalTimeProps = {
   dateSumSeconds: number[];

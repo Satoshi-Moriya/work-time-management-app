@@ -7,12 +7,20 @@ export type WorkLogData = {
   workLogId: number;
   workLogUserId: number;
   date: number;
+  workLogTime: TimeRange;
+  workLogSeconds: number;
+}
+
+export type ClientWorkLogData = {
+  workLogId: number;
+  workLogUserId: number;
+  date: number;
   day: string;
   workLogTime: TimeRange;
   workLogSeconds: number;
 }
 
-export type DailyWorkLogData = {
+export type DailyClientWorkLogData = {
   workLogUserId: number;
   date: number;
   day: string;

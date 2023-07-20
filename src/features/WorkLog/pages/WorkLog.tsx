@@ -1,151 +1,20 @@
-import { useEffect, useState } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
-import ja from 'date-fns/locale/ja';
-import axios from "axios";
-import "react-datepicker/dist/react-datepicker.min.css"
-
+import CustomDatePicker from "../components/CustomDatePicker";
 import MonthlyTotalTime from "../components/MonthlyTotalTime";
 import StackedBarChart from "../components/StackedBarChart";
-import { DailyWorkLogData, WorkLogData, TimeRange } from "../types";
-import getLastDayOfMonth from "../functions/getLastDayOfMonth";
-import convertTimeToSeconds from "../functions/convertTimeToSeconds";
-import convertSecondsToTime from "../functions/convertSecondsToTime";
+import convertSecondsToTime from "../../../functions/convertSecondsToTime";
+import { useWorkLog } from "../hooks/useWorkLog";;
 
-registerLocale('ja', ja);
 const userId = 1;
-const WEEK = ["日", "月", "火", "水", "木", "金", "土"];
-
-export const getWeekdayFromDate = (dateString: string): string => WEEK[new Date(dateString).getDay()];
-
-export const convertToWorkLogDataList = (convertData: any): WorkLogData[] => {
-  const convertedData = convertData.map((data: any) => {
-    const convertedStartTime: number = convertTimeToSeconds(data.workLogStartTime);
-    const convertedEndTime: number = convertTimeToSeconds(data.workLogEndTime);
-    const convertedDate: number = Number(data.workLogDate.substring(data.workLogDate.length - 2));
-    const day: string = getWeekdayFromDate(data.workLogDate);
-
-    return {
-      workLogId: Number(data.workLogId),
-      workLogUserId: Number(data.workLogUserId),
-      date: convertedDate,
-      day: day,
-      workLogTime: {
-        start: convertedStartTime,
-        end: convertedEndTime,
-      } as TimeRange,
-      workLogSeconds: Number(data.workLogSeconds)
-    }
-  });
-  return convertedData;
-}
-
-export const convertToDailyWorkLogData = (convertData: WorkLogData[]): DailyWorkLogData[] => {
-  const convertedData = convertData.reduce((result: DailyWorkLogData[], item: WorkLogData) => {
-    // 既存のデータと一致するかをチェック
-    const existingData = result.find((data) => data.workLogUserId === item.workLogUserId && data.date === item.date);
-
-    if (existingData) {
-      // 一致するデータがある場合は workLogTime を追加し、workLogSumSeconds を更新
-      existingData.workLogTime.push(item.workLogTime);
-      existingData.workLogSumSeconds += item.workLogSeconds;
-    } else {
-      // 一致するデータがない場合は新しいオブジェクトを作成して追加
-      const newData: DailyWorkLogData = {
-        workLogUserId: item.workLogUserId,
-        date: item.date,
-        day: item.day,
-        workLogTime: [item.workLogTime],
-        workLogSumSeconds: item.workLogSeconds,
-      };
-      result.push(newData);
-    }
-
-    return result;
-  }, []);
-  return convertedData;
-}
-
-export const getDateParams = <T extends Date | undefined>(date: T): [string, string] => {
-  const year = date ? date.getFullYear() : new Date().getFullYear();
-  const month = date ? date.getMonth() + 1 : new Date().getMonth() + 1;
-  const day = date ? getLastDayOfMonth(year, month) : new Date().getDate();
-
-  const fromDate = `${year}${month.toString().padStart(2, "0")}01`;
-  const toDate = `${year}${month.toString().padStart(2, "0")}${day.toString().padStart(2, "0")}`;
-
-  return [fromDate, toDate];
-};
-
-export const addDayNotWork = (monthlyWorkLogData: DailyWorkLogData[], lastDayOfDisplayMonth: string): DailyWorkLogData[] => {
-  let monthlyWorkLogDataIncludingDayNotWork: DailyWorkLogData[] = [];
-  for(let i = 1; i <= Number(lastDayOfDisplayMonth.substring(lastDayOfDisplayMonth.length - 2)); i++) {
-    const dailyWorkLog = monthlyWorkLogData.find(dailyWorkLogData => dailyWorkLogData.date === i );
-    if (dailyWorkLog) {
-      monthlyWorkLogDataIncludingDayNotWork.push(dailyWorkLog);
-    } else {
-      monthlyWorkLogDataIncludingDayNotWork.push({
-        workLogUserId: userId,
-        date: i,
-        day: getWeekdayFromDate(`${lastDayOfDisplayMonth.substring(0, 4)}-${lastDayOfDisplayMonth.substring(4, 6)}-${i.toString().padStart(2, "0")}`),
-        workLogTime: [],
-        workLogSumSeconds: 0
-      });
-    }
-  }
-  return monthlyWorkLogDataIncludingDayNotWork;
-}
 
 const WorKLog = () => {
-  const currentDate = new Date();
-  const [initFromQueryParam, initToQueryParam] = getDateParams(currentDate);
-
-  const [fromQuery, setFromQuery] = useState(initFromQueryParam);
-  const [toQuery, setToQuery] = useState(initToQueryParam);
-  const [date, setDate] = useState(currentDate);
-  const [monthlyWorkLogData, setMonthlyWorkLogData] = useState<DailyWorkLogData[]>([])
-  const [error, setError] = useState<string>("");
-
-  useEffect(() => {
-    (async() => {
-      try {
-        // 'http://localhost:8080/work-logs/user-id/1?from=20230601&to=20230630'
-        const res = await axios.get(`http://localhost:8080/work-logs/user-id/${userId}`, {
-          params: {
-            from: fromQuery,
-            to: toQuery
-          }
-        });
-        const workLogData = convertToWorkLogDataList(res.data);
-        const monthlyWorkLogData: DailyWorkLogData[] = convertToDailyWorkLogData(workLogData);
-        const monthlyWorkLogDataIncludingDayNotWork: DailyWorkLogData[] = addDayNotWork(monthlyWorkLogData, toQuery)
-        setMonthlyWorkLogData(monthlyWorkLogDataIncludingDayNotWork);
-      } catch (e) {
-        setError("接続エラーが起きました。時間をおいて再度お試しください。");
-      }
-    })();
-  }, [date]);
-
-  const dateChangeHandler = (date: Date) => {
-    const [fromQueryParam, toQueryParam] = getDateParams(date);
-    setDate(date);
-    setFromQuery(fromQueryParam);
-    setToQuery(toQueryParam);
-  }
+  const [date, monthlyWorkLogData, error, {dateChangeHandler}] = useWorkLog(userId);
 
   return (
     <main className="pl-48 w-full">
       {
         !error && (
         <div className="my-24 mx-auto px-7 w-[1080px] max-w-full">
-          <DatePicker
-            locale="ja"
-            showIcon
-            selected={date}
-            onChange={dateChangeHandler}
-            dateFormat="yyyy/MM"
-            showMonthYearPicker
-            className="bg-gray-50 border border-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 hover:cursor-pointer"
-          />
+          <CustomDatePicker selectedDate={date} onChange ={dateChangeHandler}/>
           <div className="mt-10">
             <MonthlyTotalTime dateSumSeconds={monthlyWorkLogData.map(data => data.workLogSumSeconds)} />
             {
