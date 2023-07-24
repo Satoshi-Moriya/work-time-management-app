@@ -1,13 +1,38 @@
-import { render, renderHook, screen, act, waitFor } from "@testing-library/react";
+import { render, renderHook, screen, act, waitFor, cleanup } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
+import { rest } from "msw";
+import { setupServer } from "msw/lib/node";
 
 import { signUpValidationSchema } from "../../../lib/zod/validationSchema";
 import { routesConfig } from "../../../pages/Router";
 
 const router = createMemoryRouter(routesConfig, {initialEntries: ["/signup"]});
+
+
+const server = setupServer(
+  rest.post("http://localhost:8080/auth/signup",
+  (req, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json(
+        [
+          {
+            status: 201,
+            message: "OK",
+            data: {
+              userEmail: "test@test.com",
+              userPassword: "test1234",
+              createdAt: ""
+            }
+          },
+        ]
+      )
+    )
+  })
+)
 
 describe("SingUpページの単体テスト", () => {
 
@@ -265,5 +290,78 @@ describe("SingUpページの単体テスト", () => {
     const emailOrPasswordErrorMessageEl = await screen.findByText("メールアドレスまたはパスワードが正しくありません。");
     expect(emailOrPasswordErrorMessageEl).toBeInTheDocument();
   });
+
+  describe("api通信のテスト", () => {
+
+    beforeAll(() => {
+      server.listen();
+    });
+
+    afterEach(() => {
+      server.resetHandlers();
+      cleanup();
+    });
+
+    afterAll(() => server.close());
+
+    test("ユーザーの登録ができた場合", async() => {
+      const user = userEvent.setup();
+      render(<RouterProvider router={router} />);
+      const emailInputEl = screen.getByPlaceholderText("メールアドレス");
+      const passwordInputEl = screen.getByPlaceholderText("パスワード");
+      const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
+      const submitButtonEl = screen.getByRole("button", {name: "送信"});
+
+      await user.type(emailInputEl, "test@test.com");
+      await user.type(passwordInputEl, "test12345");
+      await user.type(confirmPasswordInputEl, "test12345");
+      await user.click(submitButtonEl)
+
+      const textEl = await screen.findByText("仮登録完了");
+      expect(textEl).toBeInTheDocument()
+
+      // ユーザー登録画面に戻る
+      const loginPageBackEl = screen.getByText("ログインページへ戻る");
+      await user.click(loginPageBackEl);
+      const signupPageForwardEl = await screen.findByText("アカウントをお持ちでない場合");
+      await user.click(signupPageForwardEl);
+
+    });
+
+    test("ユーザー登録に失敗した場合", async() => {
+      server.use(
+        rest.post(
+          "http://localhost:8080/auth/signup",
+          (req, res, ctx) => {
+            return res(
+              ctx.status(500),
+              ctx.json(
+                [
+                  {
+                    status: 500,
+                    message: "登録に失敗しました。少し時間を置いてから、もう一度お試しください。",
+                  },
+                ]
+              )
+            )
+          }
+        )
+      );
+      const user = userEvent.setup();
+      render(<RouterProvider router={router} />);
+      const emailInputEl = screen.getByPlaceholderText("メールアドレス");
+      const passwordInputEl = screen.getByPlaceholderText("パスワード");
+      const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
+      const submitButtonEl = screen.getByRole("button", {name: "送信"});
+
+      await user.type(emailInputEl, "test@test.com");
+      await user.type(passwordInputEl, "test12345");
+      await user.type(confirmPasswordInputEl, "test12345");
+      await user.click(submitButtonEl)
+
+      const textEl = await screen.findByText("Request failed with status code 500");
+      expect(textEl).toBeInTheDocument()
+    });
+  })
 
 });
