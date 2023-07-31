@@ -2,7 +2,7 @@ import axios from "axios"
 import { WorkLogData } from "../types";
 
 export const getMonthlyWorkLog = async (
-  userId: number,
+  userId: number | null | undefined,
   fromQuery: string,
   toQuery: string
 ): Promise<WorkLogData[] | Error> => {

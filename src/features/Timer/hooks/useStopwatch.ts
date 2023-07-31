@@ -1,10 +1,9 @@
-import { useEffect, useState, } from "react";
+import { useContext, useEffect, useState, } from "react";
 
 import convertSecondsToTime from "../../../functions/convertSecondsToTime";
 import { createWorkLog } from "../repository/repository"
 import msSecondsToYYYYMMDDHHMMSS from "../functions/msSecondsToYYYYMMDDHHMMSS";
-
-const userId = 1;
+import { AuthContext } from "../../Auth/components/AuthProvider";
 
 type WorkLogStart = {
   workLogStartSeconds: number;
@@ -52,6 +51,7 @@ const useStopwatch = (): [
   const [failAlert, setFailAlert] = useState<boolean>(false);
   const [workLogDate, setWorkLogsData] = useState<string>("");
   const [workLogStart, setWorkLogStart] = useState<WorkLogStart>({workLogStartSeconds: 0, workLogStartTime: ""});
+  const [userId] = useContext(AuthContext);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
@@ -90,7 +90,7 @@ const useStopwatch = (): [
     const workLogEndTime = msSecondsToYYYYMMDDHHMMSS(workLogEndMsSeconds);
 
     const response = await createWorkLog(
-      userId,
+      userId!,
       workLogDate,
       workLogStart.workLogStartTime,
       workLogEndTime,
