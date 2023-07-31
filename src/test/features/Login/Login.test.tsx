@@ -13,7 +13,7 @@ import { rest } from "msw";
 import { setupServer } from "msw/lib/node";
 
 import { loginValidationSchema } from "../../../lib/zod/validationSchema";
-import { routesConfig } from "../../../pages/Router";
+import { routesConfig } from "../../mock/index";
 
 const router = createMemoryRouter(routesConfig, { initialEntries: ["/login"] });
 

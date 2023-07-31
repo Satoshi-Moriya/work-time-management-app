@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { loginValidationSchema } from "../../../lib/zod/validationSchema";
 import { login } from "../repository/repository";
+import { AuthContext } from "../../Auth/components/AuthProvider";
 
 type FormValues = {
   email: string;
@@ -16,6 +17,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [failAlert, setFailAlert] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [ ,setUserId] = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -23,16 +25,12 @@ const Login = () => {
   } = useForm<FormValues>({
     resolver: zodResolver(loginValidationSchema),
   });
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const response = await login(data.email, data.password);
     // ToDo ?やifの条件をもう少し考える
-    const authHeader = response.headers?.get("Authorization")?.toString();
-    if (
-      "data" in response &&
-      authHeader !== null &&
-      authHeader !== undefined &&
-      authHeader !== ""
-    ) {
+    if ( response.status === 200 ) {
+      setUserId(response.data?.userId as number | null);
       navigate("/");
     } else {
       setErrorMessage(response.message);

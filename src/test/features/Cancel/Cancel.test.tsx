@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 
-import { routesConfig } from "../../../pages/Router";
+import { routesConfig } from "../../mock/index";
 
 const router = createMemoryRouter(routesConfig, {initialEntries: ["/setting/cancel"]});
 

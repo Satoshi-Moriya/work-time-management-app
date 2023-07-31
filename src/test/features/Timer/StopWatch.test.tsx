@@ -4,7 +4,7 @@ import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 
-import { routesConfig } from "../../../pages/Router";
+import { routesConfig } from "../../mock/index";
 
 const router = createMemoryRouter(routesConfig, {initialEntries: ["/"]});
 
@@ -33,13 +33,14 @@ const server = setupServer(
 // ToDo
 // render(<RouterProvider router={router} />);でのレンダリングは単体テスト的にはあまりよろしくない気がする！（やり方がわからん）
 // 時間待つのももっと良い方法がある気がする！
-
+// ログイン機能をつけて単体テストがむずくなったのでmockのrouterを使用（単体テストなら問題ない気がしてきた）
 describe("StopWatchコンポーネントの単体テスト", () => {
 
   describe("初期状態の確認", () => {
 
     test("「業務開始」ボタンが活性", () => {
       render(<RouterProvider router={router} />);
+
       const startButtonEl = screen.getByRole("button", {name: "業務開始" });
       expect(startButtonEl).toBeEnabled();
     });
@@ -52,7 +53,6 @@ describe("StopWatchコンポーネントの単体テスト", () => {
 
     test("表示されている時間が「00:00:00」である", () => {
       render(<RouterProvider router={router} />);
-
       const timeDisplayEl = screen.getByText("00:00:00");
       expect(timeDisplayEl).toBeInTheDocument();
     });
