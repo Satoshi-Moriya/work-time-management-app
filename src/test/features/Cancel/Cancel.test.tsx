@@ -11,7 +11,7 @@ describe("Cancelコンポーネントの単体テスト", () => {
   test("退会するボタンのアラートが表示される", async() => {
     const user = userEvent.setup();
     render(<RouterProvider router={router} />);
-    const buttonEl = screen.getByRole("button");
+    const buttonEl = screen.getByRole("button", {name: "退会する"});
     const confirmMock = jest.spyOn(window, "confirm");
     confirmMock.mockImplementation(() => true);
 

@@ -2,11 +2,11 @@ import React from 'react'
 import { RxTimer } from "react-icons/rx";
 import { ImTable2 } from "react-icons/im";
 import { IoSettingsSharp } from "react-icons/io5";
-import { AiOutlineArrowRight } from "react-icons/ai";
 import { Outlet } from "react-router-dom";
 
 import MenuItem from "../features/SideBar/components/MenuItem";
 import Clock from '../features/SideBar/components/Clock';
+import Logout from '../features/Logout/page/Logout';
 
 const Layout: React.FC = () => {
     return (
@@ -21,7 +21,7 @@ const Layout: React.FC = () => {
               </ul>
             </nav>
             <div className="mt-auto mx-auto">
-              <a href="/logout" className="flex items-center hover:opacity-50 focus:opacity-50"><span>ログアウト</span><AiOutlineArrowRight className="ml-1" /></a>
+              <Logout />
             </div>
           </div>
           <Outlet />
