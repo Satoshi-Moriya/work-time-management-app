@@ -17,7 +17,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [failAlert, setFailAlert] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [ ,setUserId] = useContext(AuthContext);
+  const [ , ,setUserId] = useContext(AuthContext);
   const {
     register,
     handleSubmit,
