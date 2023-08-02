@@ -12,7 +12,7 @@ const Cancel = () => {
     const confirm = window.confirm("本当にアカウントを削除してもよろしいですか？")
     if (confirm) {
       const response = await deleteUser(userId);
-      if ( response.status === 200 ) {
+      if ( response.status === 204 ) {
         navigate("/login");
       } else {
         setFailToast(true);
