@@ -9,9 +9,14 @@ import { changeEmailValidationSchema } from "../../../lib/zod/validationSchema";
 import ChangeEmail from "../../../features/ChangeEmail/pages/ChangeEmail";
 
 const server = setupServer(
-  rest.patch("http://localhost:8080/users/:userId/email", (req, res, ctx) => {
+  rest.put("http://localhost:8080/users/:userId/email", (req, res, ctx) => {
     return res(
-      ctx.status(204)
+      ctx.status(200),
+      ctx.json(
+        {
+          message: "メールアドレスが更新されました。"
+        }
+      )
     );
   })
 );
@@ -110,9 +115,14 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
 
     test("メールアドレスの変更が失敗した場合", async () => {
       server.use(
-        rest.patch("http://localhost:8080/users/:userId/email", (req, res, ctx) => {
+        rest.put("http://localhost:8080/users/:userId/email", (req, res, ctx) => {
           return res(
-            ctx.status(500)
+            ctx.status(500),
+            ctx.json(
+              {
+                message: null
+              }
+            )
           );
         })
       );

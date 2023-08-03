@@ -1,26 +1,28 @@
 import axios from "axios";
 
-import { ChangeEmailResponse } from "../types";
+import { ChangeEmailResponse, ResponseBody } from "../types";
 
 export const changeEmail = async (
   userId: number | null | undefined,
   password: string,
   email: string | null | undefined
-): Promise<ChangeEmailResponse> => {
+): Promise<ChangeEmailResponse<ResponseBody>> => {
   const response = await axios
-    .patch(`http://localhost:8080/users/${userId}/email`, {
+    .put(`http://localhost:8080/users/${userId}/email`, {
       userId: userId,
-      userEmail: email,
-      userPassword: password,
+      email: email,
+      password: password,
     })
     .then((response) => {
       return {
-        status: response.status
+        status: response.status,
+        data: response.data
       };
     })
     .catch((error) => {
       return {
         status: error.response.status || 500,
+        data: null
       };
     });
 

@@ -6,6 +6,7 @@ export const useAuth = (): [
   string | null | undefined,
   {
     setUserId: React.Dispatch<React.SetStateAction<number | null | undefined>>,
+    setUserEmail: React.Dispatch<React.SetStateAction<string | null | undefined>>,
     isAuthUser: () => void
   }
 ] => {
@@ -22,5 +23,5 @@ export const useAuth = (): [
     }
   }, []);
 
-  return [userId, userEmail, {setUserId, isAuthUser}]
+  return [userId, userEmail, {setUserId, setUserEmail, isAuthUser}]
 }
