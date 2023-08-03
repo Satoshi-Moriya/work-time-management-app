@@ -17,7 +17,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [failAlert, setFailAlert] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [ ,setUserId] = useContext(AuthContext);
+  const [ , ,setUserId, setUserEmail] = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -31,6 +31,7 @@ const Login = () => {
     // ToDo ?やifの条件をもう少し考える
     if ( response.status === 200 ) {
       setUserId(response.data?.userId as number | null);
+      setUserEmail(response.data?.userEmail as string | null);
       navigate("/");
     } else {
       setErrorMessage(response.message);
