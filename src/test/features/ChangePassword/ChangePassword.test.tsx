@@ -2,9 +2,24 @@ import { render, renderHook, screen, act } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
+import { rest } from "msw";
+import { setupServer } from "msw/lib/node";
 
 import { changePasswordValidationSchema } from "../../../lib/zod/validationSchema";
 import ChangePassword from "../../../features/ChangePassword/pages/ChangePassword";
+
+const server = setupServer(
+  rest.put("http://localhost:8080/users/:userId/password", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(
+        {
+          message: "パスワードが更新されました。"
+        }
+      )
+    );
+  })
+);
 
 describe("ChangePasswordコンポーネントの単体テスト", () => {
 
@@ -175,4 +190,71 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
 
     expect(passwordMatchErrorMessageEl).not.toBe("現在のパスワードと同じです");
   });
+
+  describe("「変更する」ボタンのクリック後のテスト", () => {
+
+    beforeAll(() => {
+      server.listen();
+    });
+
+    afterEach(() => {
+      server.resetHandlers();
+    });
+
+    afterAll(() => {
+      server.close()
+    });
+
+    test("パスワードの変更が成功した場合", async () => {
+      const user = userEvent.setup();
+      render(<ChangePassword />);
+      const currentPasswordInputEl = screen.getByPlaceholderText('現在のパスワード');
+      const newPasswordInputEl = screen.getByPlaceholderText('新しいパスワード');
+      const confirmNewPasswordInputEl = screen.getByPlaceholderText('新しいパスワード（確認）');
+      const buttonEl = screen.getByRole("button", {name: "変更する"});
+
+      await act(async () => {
+        await user.type(currentPasswordInputEl, "testpassdata001");
+        await user.type(newPasswordInputEl, "testpassdata002");
+        await user.type(confirmNewPasswordInputEl, "testpassdata002");
+      });
+      user.click(buttonEl);
+
+      // ToDo トースターを実装したらfindByRoleにすべき場所
+      const toastEl = await screen.findByText("パスワードが更新されました。")
+      expect(toastEl).toBeInTheDocument();
+    })
+
+    test("パスワードの変更が失敗した場合", async () => {
+      server.use(
+        rest.put("http://localhost:8080/users/:userId/password", (req, res, ctx) => {
+          return res(
+            ctx.status(500),
+            ctx.json(
+              {
+                message: null
+              }
+            )
+          );
+        })
+      );
+      const user = userEvent.setup();
+      render(<ChangePassword />);
+      const currentPasswordInputEl = screen.getByPlaceholderText('現在のパスワード');
+      const newPasswordInputEl = screen.getByPlaceholderText('新しいパスワード');
+      const confirmNewPasswordInputEl = screen.getByPlaceholderText('新しいパスワード（確認）');
+      const buttonEl = screen.getByRole("button", {name: "変更する"});
+
+      await act(async () => {
+        await user.type(currentPasswordInputEl, "testpassdata001");
+        await user.type(newPasswordInputEl, "testpassdata002");
+        await user.type(confirmNewPasswordInputEl, "testpassdata002");
+      });
+      user.click(buttonEl);
+
+      // ToDo トースターを実装したらfindByRoleにすべき場所
+      const toastEl = await screen.findByText("予期せぬエラーが起こり、パスワードの更新ができませんでした。")
+      expect(toastEl).toBeInTheDocument();
+    })
+  })
 });
