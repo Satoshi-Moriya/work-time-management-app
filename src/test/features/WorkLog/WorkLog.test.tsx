@@ -18,7 +18,7 @@ const server = setupServer(
     const toQuery = req.url.searchParams.get("to");
 
     // ToDo 年月が変わると落ちるからどうにかしたい
-    if (fromQuery === "20230701" && toQuery === "20230731") {
+    if (fromQuery === "20230801" && toQuery === "20230831") {
       return res(
         ctx.status(200),
         ctx.json(
@@ -26,9 +26,9 @@ const server = setupServer(
             {
               workLogId: 3,
               workLogUserId: 1,
-              workLogDate: "2023-07-29",
-              workLogStartTime: "2023-07-29 9:00:59",
-              workLogEndTime: "2023-07-29 12:00:00",
+              workLogDate: "2023-08-29",
+              workLogStartTime: "2023-08-29 9:00:59",
+              workLogEndTime: "2023-08-29 12:00:00",
               workLogSeconds: 10741
             },
           ]
@@ -381,7 +381,7 @@ describe("WorkLogのテスト", () => {
       const selectYearAndMonthEl = screen.getByRole("textbox");
       await user.click(selectYearAndMonthEl);
       // ToDo 年月が変わると落ちるからどうにかしたい
-      const yearOptionEl = await screen.findByLabelText("month 2023-07");
+      const yearOptionEl = await screen.findByLabelText("month 2023-08");
       const monthOptionEl = await within(yearOptionEl).findByText("6月")
       await user.click(monthOptionEl);
 
@@ -419,7 +419,7 @@ describe("WorkLogのテスト", () => {
       const selectYearAndMonthEl = screen.getByRole("textbox");
       await user.click(selectYearAndMonthEl);
       // ToDo 年月が変わると落ちるからどうにかしたい
-      const yearOptionEl = await screen.findByLabelText("month 2023-07");
+      const yearOptionEl = await screen.findByLabelText("month 2023-08");
       const monthOptionEl = await within(yearOptionEl).findByText("6月")
       await user.click(monthOptionEl);
 
