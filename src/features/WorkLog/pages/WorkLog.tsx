@@ -2,12 +2,13 @@ import CustomDatePicker from "../components/CustomDatePicker";
 import MonthlyTotalTime from "../components/MonthlyTotalTime";
 import StackedBarChart from "../components/StackedBarChart";
 import convertSecondsToTime from "../../../functions/convertSecondsToTime";
-import { useWorkLog } from "../hooks/useWorkLog";;
+import { useWorkLog } from "../hooks/useWorkLog";import Loading from "../../../components/Loading";
+;
 
 const userId = 1;
 
 const WorKLog = () => {
-  const [date, monthlyWorkLogData, error, {dateChangeHandler}] = useWorkLog(userId);
+  const [date, monthlyWorkLogData, error, isLoading, {dateChangeHandler}] = useWorkLog(userId);
 
   return (
     <main className="pl-48 w-full">
@@ -18,7 +19,7 @@ const WorKLog = () => {
           <div className="mt-10">
             <MonthlyTotalTime dateSumSeconds={monthlyWorkLogData.map(data => data.workLogSumSeconds)} />
             {
-              !monthlyWorkLogData.length ? <p>選択された月には記録がありません。</p>
+              isLoading ? <Loading/>
             :
             <>
               <div className="mt-20 flex justify-end items-center">
