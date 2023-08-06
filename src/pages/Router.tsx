@@ -15,11 +15,19 @@ import PreRegistrationComplete from "../features/SignUp/pages/PreRegistrationCom
 import ResetPasswordSubmitted from "../features/ResetPassword/pages/ResetPasswordSubmitted";
 import AuthProvider from "../features/Auth/components/AuthProvider"
 import ProtectedRoute from "../features/Auth/components/ProtectedRoute";
+import LoginProtectedRoute from "../features/Auth/components/LoginProtectedRoute";
 
 // Timerページで時間を計測中にページ遷移を防ぐために使用している
 // ReactRouterPromptを動かすために下記のようなルーディングの書き方をしている。
 export const routesConfig = [
-  { path: "login", element: <AuthProvider><Login /></AuthProvider> },
+  { path: "login",
+    element:
+      <AuthProvider>
+        <LoginProtectedRoute>
+          <Login />
+        </LoginProtectedRoute>
+      </AuthProvider>
+  },
   { path: "resetpassword", element: <ResetPassword /> },
   { path: "signup", element: <SignUp /> },
   { path: "preregistrationcomplete", element: <PreRegistrationComplete /> },

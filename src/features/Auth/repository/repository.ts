@@ -1,21 +1,23 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
 
-import { AuthResponse, AuthUserData } from "../types";
+import { AuthResponse } from "../types";
 
-export const auth = async (): Promise<AuthResponse<AuthUserData>> => {
+export const auth = async (): Promise<AuthResponse> => {
   const response = await axios
   .get("http://localhost:8080/auth/user")
-  .then((res: AxiosResponse<AuthResponse<AuthUserData>>) => {
+  .then((res: AxiosResponse<AuthResponse>) => {
     return {
       success: res.data.success,
       message: res.data.message,
-      authUserData: res.data.authUserData
+      authUserId: res.data.authUserId,
+      authUserEmail: res.data.authUserEmail
     };
   }).catch((err: AxiosError) => {
     return {
       success: false,
       message: err.message,
-      authUserData: null
+      authUserId: null,
+      authUserEmail: null
     }
   });
 
