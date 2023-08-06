@@ -1,10 +1,6 @@
-export type AuthResponse<T> = {
+export type AuthResponse = {
   success: boolean;
   message: string;
-  authUserData: T | null;
-};
-
-export type AuthUserData = {
-  userId: number;
-  userEmail: string;
+  authUserId: number | null;
+  authUserEmail: string | null;
 };

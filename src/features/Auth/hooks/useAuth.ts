@@ -15,12 +15,17 @@ export const useAuth = (): [
 
   const isAuthUser = useCallback( async () => {
     const response = await auth();
+    console.log(response);
+    // ToDo successというプロパティは無くしてstatus codeで分岐できるようにする（apiの作り方を変える必要がある）
     if (response.success) {
-      setUserId(response.authUserData?.userId);
-      setUserEmail(response.authUserData?.userEmail);
+      setUserId(response.authUserId);
+      setUserEmail(response.authUserEmail);
+      console.log("execution isAuthUser success");
     } else {
       setUserId(null);
+      console.log("execution isAuthUser false");
     }
+    console.log("execution isAuthUser");
   }, []);
 
   return [userId, userEmail, {setUserId, setUserEmail, isAuthUser}]
