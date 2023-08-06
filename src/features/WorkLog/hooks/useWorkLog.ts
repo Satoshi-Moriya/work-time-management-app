@@ -11,6 +11,7 @@ export const useWorkLog = (userId: number): [
   Date,
   DailyClientWorkLogData[],
   string,
+  boolean,
   {
     dateChangeHandler: (date: Date) => void
   }
@@ -22,6 +23,7 @@ export const useWorkLog = (userId: number): [
   const [date, setDate] = useState(currentDate);
   const [monthlyWorkLogData, setMonthlyWorkLogData] = useState<DailyClientWorkLogData[]>([])
   const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async() => {
@@ -32,6 +34,7 @@ export const useWorkLog = (userId: number): [
           const monthlyWorkLogData: DailyClientWorkLogData[] = convertToDailyWorkLogData(workLogData);
           const monthlyWorkLogDataIncludingDayNotWork: DailyClientWorkLogData[] = addDayNotWork(userId, monthlyWorkLogData, toQuery)
           setMonthlyWorkLogData(monthlyWorkLogDataIncludingDayNotWork);
+          setIsLoading(false);
         } catch(e) {
           setError("接続エラーが起きました。時間をおいて再度お試しください。");
         }
@@ -46,5 +49,5 @@ export const useWorkLog = (userId: number): [
     setToQuery(toQueryParam);
   }, [])
 
-  return [date, monthlyWorkLogData, error, { dateChangeHandler } ]
+  return [date, monthlyWorkLogData, error, isLoading, { dateChangeHandler } ]
 }
