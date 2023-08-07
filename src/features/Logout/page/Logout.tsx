@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 import { logout } from "../repository/repository";
 import { AuthContext } from "../../Auth/components/AuthProvider";
+import Toast from "../../Toast/components/Toast";
 
 const Logout = () => {
   const navigate = useNavigate();
-  const [failToast, setFailToast] = useState(false);
+  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
   const [ , , setUserId ] = useContext(AuthContext);
 
   const logoutHandler = async () => {
@@ -16,7 +17,7 @@ const Logout = () => {
       setUserId(null);
       navigate("/login");
     } else {
-      setFailToast(true);
+      setToast({message: "予期せぬエラーが起こり、ログアウトができませんでした。", isSuccess: false});
     }
   }
 
@@ -26,10 +27,8 @@ const Logout = () => {
         <span>ログアウト</span><AiOutlineArrowRight className="ml-1" />
       </button>
       {
-        failToast && (
-          <div>
-            <p>ログアウト失敗</p>
-          </div>
+        toast.isSuccess != null && (
+          <Toast toast={toast} setToast={setToast} />
         )
       }
     </>

@@ -10,7 +10,7 @@ import Logout from '../features/Logout/page/Logout';
 
 const Layout: React.FC = () => {
     return (
-        <div className="App flex items-stretch">
+        <div className="App flex items-stretch relative">
           <div className="bg-thin-gray h-screen py-5 flex flex-col fixed top-0 left-0 bottom-0 w-48">
             <Clock />
             <nav className="mt-2">

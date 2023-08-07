@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { rest } from "msw";
@@ -38,9 +38,9 @@ describe("Logoutの単体テスト", () => {
 
     user.click(logoutButtonEl);
 
-    // ToDo ログアウト失敗のトースターを実装したらfindByRoleにすべき場所
-    const alertEl = await screen.findByText("ログアウト失敗");
-    expect(alertEl).toBeInTheDocument();
+    const alertEl = await screen.findByRole("alert");
+    const toastTextEl = await within(alertEl).findByText("予期せぬエラーが起こり、ログアウトができませんでした。")
+    expect(toastTextEl).toBeInTheDocument();
   });
 
   test("ログアウトに成功した場合", async () => {
