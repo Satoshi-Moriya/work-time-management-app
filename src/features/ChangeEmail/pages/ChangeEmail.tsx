@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import { changeEmailValidationSchema } from "../../../lib/zod/validationSchema";
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import { changeEmail } from "../repository/repository";
+import Toast from "../../Toast/components/Toast";
 
 type FormValues = {
   password: string;
@@ -13,7 +14,7 @@ type FormValues = {
 
 const ChangeEmail = () => {
   const [ userId, userEmail ] = useContext(AuthContext);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
   const {
     register,
     handleSubmit,
@@ -27,9 +28,9 @@ const ChangeEmail = () => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const response = await changeEmail(userId, data.password, data.email);
     if (response.data) {
-      setToast(response.data.message);
+      setToast({message: response.data.message, isSuccess: response.data.isSuccess});
     } else {
-      setToast("予期せぬエラーが起こり、メールアドレスの更新ができませんでした。");
+      setToast({message: "予期せぬエラーが起こり、メールアドレスの更新ができませんでした。", isSuccess: false});
     }
     reset();
   };
@@ -53,10 +54,8 @@ const ChangeEmail = () => {
         </div>
       </form>
       {
-        toast && (
-          <div>
-            <p>{toast}</p>
-          </div>
+        toast.isSuccess != null && (
+          <Toast toast={toast} setToast={setToast} />
         )
       }
     </div>

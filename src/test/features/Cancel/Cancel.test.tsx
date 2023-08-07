@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { rest } from "msw";
@@ -29,9 +29,12 @@ describe("Cancelコンポーネントの単体テスト", () => {
       rest.delete("http://localhost:8080/user/:userId", (req, res, ctx) => {
         return res(
           ctx.status(500),
-          ctx.json({
-            status: 500,
-          })
+          ctx.json(
+            {
+              message: "予期せぬ問題が発生し、アカウントを削除できませんでした。時間をおいて再度お試しください。",
+              isSuccess: false
+            }
+          )
         );
       })
     );
@@ -57,9 +60,9 @@ describe("Cancelコンポーネントの単体テスト", () => {
 
       user.click(buttonEl);
 
-      // ToDo ログアウト失敗のトースターを実装したらfindByRoleにすべき場所
-      const failToastEl = await screen.findByText("予期せぬ問題が発生し、アカウントを削除できませんでした。時間をおいて再度お試しください。")
-      expect(failToastEl).toBeInTheDocument();
+      const alertEl = await screen.findByRole("alert");
+      const toastTextEl = await within(alertEl).findByText("予期せぬ問題が発生し、アカウントを削除できませんでした。時間をおいて再度お試しください。")
+      expect(toastTextEl).toBeInTheDocument();
 
       confirmMock.mockRestore();
     })

@@ -1,4 +1,4 @@
-import { render, renderHook, screen, act } from "@testing-library/react";
+import { render, renderHook, screen, act, within } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
@@ -14,7 +14,8 @@ const server = setupServer(
       ctx.status(200),
       ctx.json(
         {
-          message: "パスワードが更新されました。"
+          message: "パスワードが更新されました。",
+          isSuccess: true
         }
       )
     );
@@ -220,9 +221,9 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       });
       user.click(buttonEl);
 
-      // ToDo トースターを実装したらfindByRoleにすべき場所
-      const toastEl = await screen.findByText("パスワードが更新されました。")
-      expect(toastEl).toBeInTheDocument();
+      const alertEl = await screen.findByRole("alert");
+      const toastTextEl = await within(alertEl).findByText("パスワードが更新されました。");
+      expect(toastTextEl).toBeInTheDocument();
     })
 
     test("パスワードの変更が失敗した場合", async () => {
@@ -232,7 +233,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
             ctx.status(500),
             ctx.json(
               {
-                message: null
+                message: "予期せぬエラーが起こり、パスワードの更新ができませんでした。",
+                isSuccess: false
               }
             )
           );
@@ -252,9 +254,9 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       });
       user.click(buttonEl);
 
-      // ToDo トースターを実装したらfindByRoleにすべき場所
-      const toastEl = await screen.findByText("予期せぬエラーが起こり、パスワードの更新ができませんでした。")
-      expect(toastEl).toBeInTheDocument();
+      const alertEl = await screen.findByRole("alert");
+      const toastTextEl = await within(alertEl).findByText("予期せぬエラーが起こり、パスワードの更新ができませんでした。");
+      expect(toastTextEl).toBeInTheDocument();
     })
   })
 });

@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import { changePasswordValidationSchema } from "../../../lib/zod/validationSchema";
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import { changePassword } from "../repository/repository";
+import Toast from "../../Toast/components/Toast";
 
 type FormValues = {
   currentPassword: string;
@@ -14,7 +15,7 @@ type FormValues = {
 
 const ChangePassword = () => {
   const [ userId ] = useContext(AuthContext);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
   const {
     register,
     handleSubmit,
@@ -27,9 +28,9 @@ const ChangePassword = () => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const response = await changePassword(userId, data.currentPassword, data.newPassword);
     if (response.data) {
-      setToast(response.data.message);
+      setToast({message: response.data.message, isSuccess: response.data.isSuccess});
     } else {
-      setToast("予期せぬエラーが起こり、パスワードの更新ができませんでした。");
+      setToast({message: "予期せぬエラーが起こり、パスワードの更新ができませんでした。", isSuccess: false});
     }
     reset();
   }
@@ -59,10 +60,8 @@ const ChangePassword = () => {
         </div>
       </form>
       {
-        toast && (
-          <div>
-            <p>{toast}</p>
-          </div>
+        toast.isSuccess != null && (
+          <Toast toast={toast} setToast={setToast} />
         )
       }
     </div>

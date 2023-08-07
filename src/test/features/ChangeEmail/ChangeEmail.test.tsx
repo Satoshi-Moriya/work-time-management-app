@@ -1,4 +1,4 @@
-import { render, renderHook, screen, act } from "@testing-library/react";
+import { render, renderHook, screen, act, within } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
@@ -14,7 +14,8 @@ const server = setupServer(
       ctx.status(200),
       ctx.json(
         {
-          message: "メールアドレスが更新されました。"
+          message: "メールアドレスが更新されました。",
+          isSuccess: true
         }
       )
     );
@@ -108,9 +109,9 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
       });
       user.click(buttonEl);
 
-      // ToDo トースターを実装したらfindByRoleにすべき場所
-      const toastEl = await screen.findByText("メールアドレスが更新されました。")
-      expect(toastEl).toBeInTheDocument();
+      const alertEl = await screen.findByRole("alert");
+      const toastTextEl = await within(alertEl).findByText("メールアドレスが更新されました。")
+      expect(toastTextEl).toBeInTheDocument();
     })
 
     test("メールアドレスの変更が失敗した場合", async () => {
@@ -120,7 +121,8 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
             ctx.status(500),
             ctx.json(
               {
-                message: null
+                message: "予期せぬエラーが起こり、メールアドレスの更新ができませんでした。",
+                isSuccess: false
               }
             )
           );
@@ -138,9 +140,9 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
       });
       user.click(buttonEl);
 
-      // ToDo トースターを実装したらfindByRoleにすべき場所
-      const toastEl = await screen.findByText("予期せぬエラーが起こり、メールアドレスの更新ができませんでした。")
-      expect(toastEl).toBeInTheDocument();
+      const alertEl = await screen.findByRole("alert");
+      const toastTextEl = await within(alertEl).findByText("予期せぬエラーが起こり、メールアドレスの更新ができませんでした。")
+      expect(toastTextEl).toBeInTheDocument();
     })
   })
 });

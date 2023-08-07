@@ -4,5 +4,6 @@ export type ChangePasswordResponse<T> = {
 }
 
 export type ResponseBody = {
-  message: string;
+  message: string | null;
+  isSuccess: boolean | null;
 }

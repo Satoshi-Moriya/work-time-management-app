@@ -20,8 +20,9 @@ export const changeEmail = async (
       };
     })
     .catch((error) => {
+      const errorStatus = error.response ? error.response.status : 500;
       return {
-        status: error.response.status || 500,
+        status: errorStatus,
         data: null
       };
     });
