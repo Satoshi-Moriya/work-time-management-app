@@ -4,9 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
 import { rest } from "msw";
 import { setupServer } from "msw/lib/node";
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
 
 import { changePasswordValidationSchema } from "../../../lib/zod/validationSchema";
 import ChangePassword from "../../../features/ChangePassword/pages/ChangePassword";
+import { routesConfig } from "../../mock/index";
+
+const router = createMemoryRouter(routesConfig, {initialEntries: ["/setting/changepassword"]});
 
 const server = setupServer(
   rest.put("http://localhost:8080/users/:userId/password", (req, res, ctx) => {
@@ -208,7 +212,7 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
 
     test("パスワードの変更が成功した場合", async () => {
       const user = userEvent.setup();
-      render(<ChangePassword />);
+      render(<RouterProvider router={router} />);
       const currentPasswordInputEl = screen.getByPlaceholderText('現在のパスワード');
       const newPasswordInputEl = screen.getByPlaceholderText('新しいパスワード');
       const confirmNewPasswordInputEl = screen.getByPlaceholderText('新しいパスワード（確認）');
@@ -241,7 +245,7 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
         })
       );
       const user = userEvent.setup();
-      render(<ChangePassword />);
+      render(<RouterProvider router={router} />);
       const currentPasswordInputEl = screen.getByPlaceholderText('現在のパスワード');
       const newPasswordInputEl = screen.getByPlaceholderText('新しいパスワード');
       const confirmNewPasswordInputEl = screen.getByPlaceholderText('新しいパスワード（確認）');
@@ -274,7 +278,7 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
         })
       );
       const user = userEvent.setup();
-      render(<ChangePassword />);
+      render(<RouterProvider router={router} />);
       const currentPasswordInputEl = screen.getByPlaceholderText('現在のパスワード');
       const newPasswordInputEl = screen.getByPlaceholderText('新しいパスワード');
       const confirmNewPasswordInputEl = screen.getByPlaceholderText('新しいパスワード（確認）');
