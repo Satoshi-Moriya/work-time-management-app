@@ -4,9 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
 import { rest } from "msw";
 import { setupServer } from "msw/lib/node";
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
 
 import { changeEmailValidationSchema } from "../../../lib/zod/validationSchema";
 import ChangeEmail from "../../../features/ChangeEmail/pages/ChangeEmail";
+import { routesConfig } from "../../mock/index";
+
+const router = createMemoryRouter(routesConfig, {initialEntries: ["/setting/changeemail"]});
 
 const server = setupServer(
   rest.put("http://localhost:8080/users/:userId/email", (req, res, ctx) => {
@@ -98,7 +102,7 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
 
     test("メールアドレスの変更が成功した場合", async () => {
       const user = userEvent.setup();
-      render(<ChangeEmail />);
+      render(<RouterProvider router={router} />);
       const passwordInputEl = screen.getByPlaceholderText('パスワード');
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
       const buttonEl = screen.getByRole("button", {name: "保存する"});
@@ -129,7 +133,7 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
         })
       );
       const user = userEvent.setup();
-      render(<ChangeEmail />);
+      render(<RouterProvider router={router} />);
       const passwordInputEl = screen.getByPlaceholderText('パスワード');
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
       const buttonEl = screen.getByRole("button", {name: "保存する"});
@@ -160,7 +164,7 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
         })
       );
       const user = userEvent.setup();
-      render(<ChangeEmail />);
+      render(<RouterProvider router={router} />);
       const passwordInputEl = screen.getByPlaceholderText('パスワード');
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
       const buttonEl = screen.getByRole("button", {name: "保存する"});
