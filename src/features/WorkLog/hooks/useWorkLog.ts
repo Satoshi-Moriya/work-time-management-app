@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { DailyClientWorkLogData } from "../types";
-import { getMonthlyWorkLog } from "../repository/repository";
+import { fetchMonthlyWorkLog } from "../repository/repository";
 import { convertToWorkLogDataList } from "../functions/convertToWorkLogDataList";
 import { convertToDailyWorkLogData } from "../functions/convertToDailyWorkLogData";
 import { getDateParams } from "../functions/getDateParams";
@@ -27,15 +27,16 @@ export const useWorkLog = (userId: number): [
 
   useEffect(() => {
     (async() => {
-        try {
-          const response = await getMonthlyWorkLog(userId, fromQuery, toQuery);
 
-          const workLogData = convertToWorkLogDataList(response);
+        const response = await fetchMonthlyWorkLog(userId, fromQuery, toQuery);
+        console.log(response)
+        if (response.status === 200) {
+          const workLogData = convertToWorkLogDataList(response.data!);
           const monthlyWorkLogData: DailyClientWorkLogData[] = convertToDailyWorkLogData(workLogData);
           const monthlyWorkLogDataIncludingDayNotWork: DailyClientWorkLogData[] = addDayNotWork(userId, monthlyWorkLogData, toQuery)
           setMonthlyWorkLogData(monthlyWorkLogDataIncludingDayNotWork);
           setIsLoading(false);
-        } catch(e) {
+        } else {
           setError("接続エラーが起きました。時間をおいて再度お試しください。");
         }
       }

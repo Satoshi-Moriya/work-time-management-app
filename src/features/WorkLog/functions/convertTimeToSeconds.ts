@@ -1,4 +1,5 @@
 export const convertTimeToSeconds = (dateTimeString: string) => {
+  console.log(dateTimeString);
   const [hours, minutes, seconds] = dateTimeString
     .substring(dateTimeString.length - 8)
     .split(":")
