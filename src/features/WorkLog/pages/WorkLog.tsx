@@ -11,7 +11,7 @@ const WorKLog = () => {
   const [date, monthlyWorkLogData, error, isLoading, {dateChangeHandler}] = useWorkLog(userId);
 
   return (
-    <main className="pl-48 w-full">
+    <main className="pl-48 w-full h-screen">
       {
         !error && (
         <div className="my-24 mx-auto px-7 w-[1080px] max-w-full">
@@ -79,7 +79,7 @@ const WorKLog = () => {
           </div>
         </div>
       )}
-      {error && <p>{error}</p>}
+      {error && <p className="flex justify-center items-center h-full">{error}</p>}
     </main>
   );
 }

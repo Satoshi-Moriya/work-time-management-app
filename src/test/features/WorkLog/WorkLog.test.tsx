@@ -12,7 +12,7 @@ import { getDateParams } from "../../../features/WorkLog/functions/getDateParams
 import { addDayNotWork } from "../../../features/WorkLog/functions/addDayNotWork";
 
 const server = setupServer(
-  rest.get("http://localhost:8080/work-logs/user-id/1",
+  rest.get("http://localhost:8080/work-log/users/1",
   (req, res, ctx) => {
     const fromQuery = req.url.searchParams.get("from");
     const toQuery = req.url.searchParams.get("to");
@@ -345,7 +345,7 @@ describe("WorkLogのテスト", () => {
       const user = userEvent.setup();
       render(<WorKLog />);
       server.use(
-        rest.get("http://localhost:8080/work-logs/user-id/1",
+        rest.get("http://localhost:8080/work-log/users/1",
           (req, res, ctx) => {
             const fromQuery = req.url.searchParams.get("from");
             const toQuery = req.url.searchParams.get("to");
@@ -403,7 +403,7 @@ describe("WorkLogのテスト", () => {
     test("データ取得に失敗した時、画面にエラーメッセージが表示される", async () => {
       server.use(
         rest.get(
-          "http://localhost:8080/work-logs/user-id/1",
+          "http://localhost:8080/work-log/users/1",
           (req, res, ctx) => {
             const fromQuery = req.url.searchParams.get("from");
             const toQuery = req.url.searchParams.get("to");

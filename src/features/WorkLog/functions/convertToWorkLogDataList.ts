@@ -1,9 +1,9 @@
-import { ClientWorkLogData, TimeRange } from "../types";
+import { ClientWorkLogData, TimeRange, WorkLogData } from "../types";
 import { convertTimeToSeconds } from "./convertTimeToSeconds";
 import { getWeekdayFromDate } from "./getWeekdayFromDate";
 
-export const convertToWorkLogDataList = (convertData: any): ClientWorkLogData[] => {
-  const convertedData = convertData.map((data: any) => {
+export const convertToWorkLogDataList = (convertData: WorkLogData[]): ClientWorkLogData[] => {
+  const convertedData = convertData.map((data: WorkLogData) => {
     const convertedStartTime: number = convertTimeToSeconds(data.workLogStartTime);
     const convertedEndTime: number = convertTimeToSeconds(data.workLogEndTime);
     const convertedDate: number = Number(data.workLogDate.substring(data.workLogDate.length - 2));
