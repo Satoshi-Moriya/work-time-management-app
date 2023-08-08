@@ -36,22 +36,19 @@ const padZero = (value: number) => {
 const useStopwatch = (): [
   string,
   boolean,
-  boolean,
-  boolean,
+  {message: string | null, isSuccess: boolean | null },
   {
-    setSuccessAlert: React.Dispatch<React.SetStateAction<boolean>>,
-    setFailAlert: React.Dispatch<React.SetStateAction<boolean>>,
+    setToast: React.Dispatch<React.SetStateAction<{message: string | null, isSuccess: boolean | null }>>,
     startHandler: () => void,
     stopHandler: () => void
   }
 ] => {
   const [displayTime, setDisplayTime] = useState<string>("00:00:00");
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [successAlert, setSuccessAlert] = useState<boolean>(false);
-  const [failAlert, setFailAlert] = useState<boolean>(false);
   const [workLogDate, setWorkLogsData] = useState<string>("");
   const [workLogStart, setWorkLogStart] = useState<WorkLogStart>({workLogStartSeconds: 0, workLogStartTime: ""});
   const [userId] = useContext(AuthContext);
+  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
@@ -97,13 +94,13 @@ const useStopwatch = (): [
       elapsedTime
     )
     if (response.status === 201) {
-      setSuccessAlert(true);
+      setToast({message: "作業記録が保存されました。", isSuccess: true});
     } else {
-      setFailAlert(true);
+      setToast({message: "予期せぬエラーが発生し、作業記録が保存できませんでした。", isSuccess: false});
     }
   }
 
-  return [displayTime, isRunning, successAlert, failAlert, { setSuccessAlert, setFailAlert, startHandler, stopHandler } ];
+  return [displayTime, isRunning, toast, { setToast, startHandler, stopHandler } ];
 }
 
 export default useStopwatch;

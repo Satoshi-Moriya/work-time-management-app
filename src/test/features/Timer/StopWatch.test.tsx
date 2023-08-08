@@ -1,4 +1,4 @@
-import { render, screen, act, waitFor } from "@testing-library/react";
+import { render, screen, act, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { rest } from "msw";
@@ -154,8 +154,9 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       });
       await user.click(endButtonEl);
 
-      const successAlertTextEl = await screen.findByText("作業記録が保存されました！");
-      expect(successAlertTextEl).toBeInTheDocument();
+      const alertEl = await screen.findByRole("alert");
+      const toastTextEl = await within(alertEl).findByText("作業記録が保存されました。");
+      expect(toastTextEl).toBeInTheDocument();
     })
 
     test("データ保存に失敗した時、失敗アラートが表示される", async () => {
@@ -192,8 +193,9 @@ describe("StopWatchコンポーネントの単体テスト", () => {
       });
       await user.click(endButtonEl);
 
-      const failAlertTextEl = await screen.findByText("予期せぬエラーが発生し、作業記録が保存できませんでした！");
-      expect(failAlertTextEl).toBeInTheDocument();
+      const alertEl = await screen.findByRole("alert");
+      const toastTextEl = await within(alertEl).findByText("予期せぬエラーが発生し、作業記録が保存できませんでした。");
+      expect(toastTextEl).toBeInTheDocument();
     })
   })
 });
