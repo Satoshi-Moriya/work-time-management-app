@@ -27,8 +27,10 @@ const ChangeEmail = () => {
   });
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const response = await changeEmail(userId, data.password, data.email);
-    if (response.data) {
-      setToast({message: response.data.message, isSuccess: response.data.isSuccess});
+    if (response.status === 200) {
+      setToast({message: response.data!.message, isSuccess: true});
+    } else if (response.status === 400) {
+      setToast({message: response.data!.message, isSuccess: false});
     } else {
       setToast({message: "予期せぬエラーが起こり、メールアドレスの更新ができませんでした。", isSuccess: false});
     }

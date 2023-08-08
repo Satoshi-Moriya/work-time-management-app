@@ -114,7 +114,38 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
       expect(toastTextEl).toBeInTheDocument();
     })
 
-    test("メールアドレスの変更が失敗した場合", async () => {
+    test("メールアドレスの変更がパスワードを間違えて失敗した場合", async () => {
+      server.use(
+        rest.put("http://localhost:8080/users/:userId/email", (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json(
+              {
+                message: "無効なパスワードです。",
+                isSuccess: false
+              }
+            )
+          );
+        })
+      );
+      const user = userEvent.setup();
+      render(<ChangeEmail />);
+      const passwordInputEl = screen.getByPlaceholderText('パスワード');
+      const emailInputEl = screen.getByPlaceholderText('メールアドレス');
+      const buttonEl = screen.getByRole("button", {name: "保存する"});
+
+      await act(async () => {
+        await user.type(passwordInputEl, "testpassdata001");
+        await user.type(emailInputEl, "newEmail@test.com");
+      });
+      user.click(buttonEl);
+
+      const alertEl = await screen.findByRole("alert");
+      const toastTextEl = await within(alertEl).findByText("無効なパスワードです。")
+      expect(toastTextEl).toBeInTheDocument();
+    })
+
+    test("メールアドレスの変更が予期せぬエラーで失敗した場合", async () => {
       server.use(
         rest.put("http://localhost:8080/users/:userId/email", (req, res, ctx) => {
           return res(

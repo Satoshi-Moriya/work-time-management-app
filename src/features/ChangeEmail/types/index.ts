@@ -5,5 +5,4 @@ export type ChangeEmailResponse<T> = {
 
 export type ResponseBody = {
   message: string | null;
-  isSuccess: boolean | null;
 }
