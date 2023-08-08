@@ -226,7 +226,40 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       expect(toastTextEl).toBeInTheDocument();
     })
 
-    test("パスワードの変更が失敗した場合", async () => {
+    test("パスワードの変更がパスワードを間違えて失敗した場合", async () => {
+      server.use(
+        rest.put("http://localhost:8080/users/:userId/password", (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json(
+              {
+                message: "無効なパスワードです。",
+                isSuccess: false
+              }
+            )
+          );
+        })
+      );
+      const user = userEvent.setup();
+      render(<ChangePassword />);
+      const currentPasswordInputEl = screen.getByPlaceholderText('現在のパスワード');
+      const newPasswordInputEl = screen.getByPlaceholderText('新しいパスワード');
+      const confirmNewPasswordInputEl = screen.getByPlaceholderText('新しいパスワード（確認）');
+      const buttonEl = screen.getByRole("button", {name: "変更する"});
+
+      await act(async () => {
+        await user.type(currentPasswordInputEl, "testpassdata001");
+        await user.type(newPasswordInputEl, "testpassdata002");
+        await user.type(confirmNewPasswordInputEl, "testpassdata002");
+      });
+      user.click(buttonEl);
+
+      const alertEl = await screen.findByRole("alert");
+      const toastTextEl = await within(alertEl).findByText("無効なパスワードです。");
+      expect(toastTextEl).toBeInTheDocument();
+    })
+
+    test("パスワードの変更が予期せぬエラーで失敗した場合", async () => {
       server.use(
         rest.put("http://localhost:8080/users/:userId/password", (req, res, ctx) => {
           return res(

@@ -21,9 +21,10 @@ export const changeEmail = async (
     })
     .catch((error) => {
       const errorStatus = error.response ? error.response.status : 500;
+      const data = error.response ?  error.response.data : null;
       return {
         status: errorStatus,
-        data: null
+        data: data
       };
     });
 

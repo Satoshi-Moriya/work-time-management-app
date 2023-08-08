@@ -14,8 +14,8 @@ const Cancel = () => {
     const confirm = window.confirm("本当にアカウントを削除してもよろしいですか？")
     if (confirm) {
       const response = await deleteUser(userId);
-      if ( response.status === 204 ) {
-        setToast({message: response.data.message, isSuccess: response.data.isSuccess});
+      if ( response.status === 200 ) {
+        setToast({message: response.data.message, isSuccess: true});
         setUserId(null);
         navigate("/login");
       } else {
