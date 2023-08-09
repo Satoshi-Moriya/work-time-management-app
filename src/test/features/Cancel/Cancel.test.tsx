@@ -26,7 +26,7 @@ describe("Cancelコンポーネントの単体テスト", () => {
 
   describe("confirmダイアログのボタンクリック後のテスト", () => {
     const server = setupServer(
-      rest.delete("http://localhost:8080/user/:userId", (req, res, ctx) => {
+      rest.delete("http://localhost:8080/users/:userId", (req, res, ctx) => {
         return res(
           ctx.status(500),
           ctx.json(
@@ -69,7 +69,7 @@ describe("Cancelコンポーネントの単体テスト", () => {
 
     test("アカウント削除が成功した場合", async () => {
       server.use(
-        rest.delete("http://localhost:8080/user/:userId", (req, res, ctx) => {
+        rest.delete("http://localhost:8080/users/:userId", (req, res, ctx) => {
           return res(
             ctx.status(200)
           );
