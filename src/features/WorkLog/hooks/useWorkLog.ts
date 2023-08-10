@@ -7,7 +7,7 @@ import { convertToDailyWorkLogData } from "../functions/convertToDailyWorkLogDat
 import { getDateParams } from "../functions/getDateParams";
 import { addDayNotWork } from "../functions/addDayNotWork";
 
-export const useWorkLog = (userId: number): [
+export const useWorkLog = (userId: number | null | undefined): [
   Date,
   DailyClientWorkLogData[],
   string,
