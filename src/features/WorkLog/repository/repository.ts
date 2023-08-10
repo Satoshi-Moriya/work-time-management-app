@@ -24,6 +24,6 @@ export const fetchMonthlyWorkLog = async (
       data: null
     }
   })
-  console.log(response);
+
   return response;
 }

@@ -29,7 +29,6 @@ export const useWorkLog = (userId: number | null | undefined): [
     (async() => {
 
         const response = await fetchMonthlyWorkLog(userId, fromQuery, toQuery);
-        console.log(response)
         if (response.status === 200) {
           const workLogData = convertToWorkLogDataList(response.data!);
           const monthlyWorkLogData: DailyClientWorkLogData[] = convertToDailyWorkLogData(workLogData);
