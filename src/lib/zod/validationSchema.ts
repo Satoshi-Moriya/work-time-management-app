@@ -80,10 +80,3 @@ export const signUpValidationSchema = z.object({
     });
   }
 });
-
-export const resetPasswordValidationSchema = z.object({
-  email: z
-  .string()
-  .nonempty("メールアドレスは必須です。")
-  .email("メールアドレスが正しい形式ではありません。")
-})
