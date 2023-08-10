@@ -10,9 +10,10 @@ import { convertToWorkLogDataList } from "../../../features/WorkLog/functions/co
 import { convertToDailyWorkLogData } from "../../../features/WorkLog/functions/convertToDailyWorkLogData";
 import { getDateParams } from "../../../features/WorkLog/functions/getDateParams";
 import { addDayNotWork } from "../../../features/WorkLog/functions/addDayNotWork";
+import { AuthContext } from "../../../features/Auth/components/AuthProvider";
 
 const server = setupServer(
-  rest.get("http://localhost:8080/work-log/users/1",
+  rest.get("http://localhost:8080/work-log/users/:userId",
   (req, res, ctx) => {
     const fromQuery = req.url.searchParams.get("from");
     const toQuery = req.url.searchParams.get("to");
@@ -343,9 +344,13 @@ describe("WorkLogのテスト", () => {
 
     test("フェッチしてきたデータが勤怠表画面に正しく表示される", async () => {
       const user = userEvent.setup();
-      render(<WorKLog />);
+      render(
+        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+          <WorKLog />
+        </AuthContext.Provider>
+      );
       server.use(
-        rest.get("http://localhost:8080/work-log/users/1",
+        rest.get("http://localhost:8080/work-log/users/:userId",
           (req, res, ctx) => {
             const fromQuery = req.url.searchParams.get("from");
             const toQuery = req.url.searchParams.get("to");
@@ -403,7 +408,7 @@ describe("WorkLogのテスト", () => {
     test("データ取得に失敗した時、画面にエラーメッセージが表示される", async () => {
       server.use(
         rest.get(
-          "http://localhost:8080/work-log/users/1",
+          "http://localhost:8080/work-log/users/:userId",
           (req, res, ctx) => {
             const fromQuery = req.url.searchParams.get("from");
             const toQuery = req.url.searchParams.get("to");
@@ -415,7 +420,11 @@ describe("WorkLogのテスト", () => {
         )
       );
       const user = userEvent.setup();
-      render(<WorKLog />);
+      render(
+        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+          <WorKLog />
+        </AuthContext.Provider>
+      );
       const selectYearAndMonthEl = screen.getByRole("textbox");
       await user.click(selectYearAndMonthEl);
       // ToDo 年月が変わると落ちるからどうにかしたい

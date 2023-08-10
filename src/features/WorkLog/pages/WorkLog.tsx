@@ -1,14 +1,17 @@
+import { useContext } from "react";
+
 import CustomDatePicker from "../components/CustomDatePicker";
 import MonthlyTotalTime from "../components/MonthlyTotalTime";
 import StackedBarChart from "../components/StackedBarChart";
 import convertSecondsToTime from "../../../functions/convertSecondsToTime";
-import { useWorkLog } from "../hooks/useWorkLog";import Loading from "../../../components/Loading";
-;
-
-const userId = 1;
+import { useWorkLog } from "../hooks/useWorkLog";
+import Loading from "../../../components/Loading";
+import { AuthContext } from "../../Auth/components/AuthProvider";
 
 const WorKLog = () => {
+  const [ userId ] = useContext(AuthContext);
   const [date, monthlyWorkLogData, error, isLoading, {dateChangeHandler}] = useWorkLog(userId);
+
 
   return (
     <main className="pl-48 w-full h-screen">
