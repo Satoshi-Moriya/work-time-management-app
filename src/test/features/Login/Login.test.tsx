@@ -100,24 +100,6 @@ describe("Loginページの単体テスト", () => {
     })();
   });
 
-  // ToDo バックエンドと連携させるときな気がする（？）
-  test.skip("フォームのバリデーションチェック", async () => {
-    const user = userEvent.setup();
-    render(<RouterProvider router={router} />);
-    const emailInputEl = screen.getByPlaceholderText("メールアドレス");
-    const passwordInputEl = screen.getByPlaceholderText("パスワード");
-    const loginButtonEl = screen.getByRole("button", { name: "ログイン" });
-
-    user.type(emailInputEl, "test@test.com");
-    user.type(passwordInputEl, "test1234");
-    user.click(loginButtonEl);
-
-    const emailOrPasswordErrorMessageEl = await screen.findByText(
-      "メールアドレスまたはパスワードが正しくありません。"
-    );
-    expect(emailOrPasswordErrorMessageEl).toBeInTheDocument();
-  });
-
   // ToDO ページ遷移のため順番を変えると落ちる可能性があるのを単体テストなのでどうにかしたい
   describe("api通信のテスト", () => {
     beforeAll(() => {

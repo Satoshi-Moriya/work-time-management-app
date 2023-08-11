@@ -301,27 +301,6 @@ describe("SingUpページの単体テスト", () => {
     expect(passwordNotMatchErrorMessageEl).not.toBe("パスワードが一致しません");
   });
 
-  // ToDo バックエンドと連携させるときな気がする（？）
-  test.skip("フォームのバリデーションチェック", async () => {
-    const user = userEvent.setup();
-    render(<RouterProvider router={router} />);
-    const emailInputEl = screen.getByPlaceholderText("メールアドレス");
-    const passwordInputEl = screen.getByPlaceholderText("パスワード");
-    const confirmPasswordInputEl =
-      screen.getByPlaceholderText("パスワード（確認）");
-    const submitButtonEl = screen.getByRole("button", { name: "送信" });
-
-    user.type(emailInputEl, "test@test.com");
-    user.type(passwordInputEl, "test1234");
-    user.type(confirmPasswordInputEl, "test1234");
-    user.click(submitButtonEl);
-
-    const emailOrPasswordErrorMessageEl = await screen.findByText(
-      "メールアドレスまたはパスワードが正しくありません。"
-    );
-    expect(emailOrPasswordErrorMessageEl).toBeInTheDocument();
-  });
-
   describe("api通信のテスト", () => {
     beforeAll(() => {
       server.listen();
