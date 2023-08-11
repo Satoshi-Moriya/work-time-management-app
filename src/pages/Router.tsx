@@ -48,9 +48,9 @@ export const routesConfig = [
           { path: "cancel", element: <Cancel /> },
         ],
       },
+      { path: "*", element: <Page404 /> },
     ],
   },
-  { path: "*", element: <Page404 /> },
 ];
 
 const router = createBrowserRouter(routesConfig);
