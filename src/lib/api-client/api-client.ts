@@ -13,8 +13,16 @@ api.interceptors.response.use(
 
     if (error.response?.status === 403) {
       try {
+        const csrfToken = await axios.post("http://localhost:8080/csrf");
+        const headers = {
+          "Content-Type": "application/json;charset=utf-8",
+          "X-CSRF-TOKEN": csrfToken.data.token
+        };
         // 新しいアクセストークンとリフレッシュトークンをcookieにセット
-        await api.post('/refresh-token');
+        await axios.post('http://localhost:8080/refresh-token', null, {
+          withCredentials: true,
+          headers: headers
+        });
         // 新しいアクセストークンで認証リクエストを再実行
         if (error.config) {
           return axios.request(error.config);

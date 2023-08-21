@@ -1,11 +1,13 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext, useState } from "react";
+import axios from "axios";
 
 import { changePasswordValidationSchema } from "../../../lib/zod/validationSchema";
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import { changePassword } from "../repository/repository";
 import Toast from "../../Toast/components/Toast";
+import { api } from "../../../lib/api-client/api-client";
 
 type FormValues = {
   currentPassword: string;
@@ -26,12 +28,21 @@ const ChangePassword = () => {
     resolver: zodResolver(changePasswordValidationSchema)
   });
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const response = await changePassword(userId, data.currentPassword, data.newPassword);
-    if (response.status === 200) {
+    try {
+      const csrfToken = await axios.post("http://localhost:8080/csrf");
+      const headers = {
+        "Content-Type": "application/json;charset=utf-8",
+        "X-CSRF-TOKEN": csrfToken.data.token
+      };
+      const response = await api.put(`/users/${userId}/password`, {
+        userId: userId,
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword
+      }, {
+        headers: headers
+      });
       setToast({message: response.data!.message, isSuccess: true});
-    } else if (response.status === 400) {
-      setToast({message: response.data!.message, isSuccess: false});
-    } else {
+    } catch(error) {
       setToast({message: "予期せぬエラーが起こり、パスワードの更新ができませんでした。", isSuccess: false});
     }
     reset();

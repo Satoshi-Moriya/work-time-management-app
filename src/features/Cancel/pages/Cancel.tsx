@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom"
 import { deleteUser } from "../repository/repository";
 import { useContext, useState } from "react";
+import axios from "axios";
 
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import Toast from "../../Toast/components/Toast";
+import { api } from "../../../lib/api-client/api-client";
 
 const Cancel = () => {
   const navigate = useNavigate();
@@ -13,12 +15,19 @@ const Cancel = () => {
   const accountDeleteHandler = async () => {
     const confirm = window.confirm("本当にアカウントを削除してもよろしいですか？")
     if (confirm) {
-      const response = await deleteUser(userId);
-      if ( response.status === 200 ) {
+      try {
+        const csrfToken = await axios.post("http://localhost:8080/csrf");
+        const headers = {
+          "Content-Type": "application/json;charset=utf-8",
+          "X-CSRF-TOKEN": csrfToken.data.token
+        };
+        const response = await api.delete(`/users/${userId}`, {
+          headers: headers
+        });
         setToast({message: response.data.message, isSuccess: true});
         setUserId(null);
         navigate("/login");
-      } else {
+      } catch(error) {
         setToast({message: "予期せぬ問題が発生し、アカウントを削除できませんでした。時間をおいて再度お試しください。", isSuccess: false});
       }
     }
