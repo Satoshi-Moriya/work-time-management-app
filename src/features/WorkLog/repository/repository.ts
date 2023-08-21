@@ -1,5 +1,5 @@
-import axios from "axios"
 import { WorkLogData, FetchMonthlyWorkLogResponse } from "../types";
+import { api } from "../../../lib/api-client/api-client";
 
 export const fetchMonthlyWorkLog = async (
   userId: number | null | undefined,
@@ -7,23 +7,10 @@ export const fetchMonthlyWorkLog = async (
   toQuery: string
 ): Promise<FetchMonthlyWorkLogResponse<WorkLogData[]>> => {
 
-  const response = await axios.get<WorkLogData[]>(`http://localhost:8080/work-log/users/${userId}`, {
+  return await api.get<WorkLogData[]>(`/work-log/users/${userId}`, {
     params: {
       from: fromQuery,
       to: toQuery
     }
-  }).then((response) => {
-    return {
-      status: response.status,
-      data: response.data
-    }
-  }).catch((error) => {
-    const errorStatus: number = error.response ? error.response.status : 500;
-    return {
-      status: errorStatus,
-      data: null
-    }
-  })
-
-  return response;
+  });
 }

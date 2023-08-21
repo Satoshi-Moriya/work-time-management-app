@@ -3,10 +3,13 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
+import axios from "axios";
 
 import { loginValidationSchema } from "../../../lib/zod/validationSchema";
-import { login } from "../repository/repository";
 import { AuthContext } from "../../Auth/components/AuthProvider";
+import { UserData } from "../types";
+
+axios.defaults.withCredentials = true;
 
 type FormValues = {
   email: string;
@@ -27,14 +30,22 @@ const Login = () => {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const response = await login(data.email, data.password);
-    // ToDo ?やifの条件をもう少し考える
-    if ( response.status === 200 ) {
-      setUserId(response.data?.userId as number | null);
-      setUserEmail(response.data?.userEmail as string | null);
+    try {
+      const response = await axios.post<UserData>("http://localhost:8080/login", {
+        userEmail: data.email,
+        userPassword: data.password
+      })
+      setUserId(response.data.userId as number | null);
+      setUserEmail(response.data.userEmail as string | null);
       navigate("/");
-    } else {
-      setErrorMessage(response.message);
+    } catch(error) {
+      let message = "";
+      if (axios.isAxiosError(error)) {
+        message = error.message || "メールアドレスかパスワードが間違っており、ログインに失敗しました。";
+      } else {
+        message = "予期せぬエラーが起こり、ログインに失敗しました。時間をおいて再度お試しください。"
+      }
+      setErrorMessage(message);
       setFailAlert(true);
     }
   };

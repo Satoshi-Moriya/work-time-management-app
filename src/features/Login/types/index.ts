@@ -10,8 +10,4 @@ export type LoginResponse<T> = {
 export type UserData = {
   userId: number;
   userEmail: string;
-  userPassword: string;
-  createdAt: string;
-  deletedAt: string;
-  updatedAt: string;
 };
