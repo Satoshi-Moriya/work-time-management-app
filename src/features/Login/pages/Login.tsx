@@ -36,7 +36,6 @@ const Login = () => {
         "Content-Type": "application/json;charset=utf-8",
         "X-CSRF-TOKEN": csrfToken.data.token
       };
-      console.log(csrfToken);
       const response = await axios.post<UserData>("http://localhost:8080/login", {
         userEmail: data.email,
         userPassword: data.password

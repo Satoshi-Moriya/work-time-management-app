@@ -1,5 +1,5 @@
 import { WorkLogData, FetchMonthlyWorkLogResponse } from "../types";
-import { api } from "../../../lib/api-client/api-client";
+import { api } from "../../../lib/api-client/ApiClientProvider";
 
 export const fetchMonthlyWorkLog = async (
   userId: number | null | undefined,

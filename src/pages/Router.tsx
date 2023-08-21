@@ -14,6 +14,7 @@ import PreRegistrationComplete from "../features/SignUp/pages/PreRegistrationCom
 import AuthProvider from "../features/Auth/components/AuthProvider"
 import ProtectedRoute from "../features/Auth/components/ProtectedRoute";
 import LoginProtectedRoute from "../features/Auth/components/LoginProtectedRoute";
+import ApiClientProvider from "../lib/api-client/ApiClientProvider";
 
 // Timerページで時間を計測中にページ遷移を防ぐために使用している
 // ReactRouterPromptを動かすために下記のようなルーディングの書き方をしている。
@@ -22,7 +23,9 @@ export const routesConfig = [
     element:
       <AuthProvider>
         <LoginProtectedRoute>
-          <Login />
+          <ApiClientProvider>
+            <Login />
+          </ApiClientProvider>
         </LoginProtectedRoute>
       </AuthProvider>
   },
@@ -33,7 +36,9 @@ export const routesConfig = [
     element:
       <AuthProvider>
         <ProtectedRoute>
-          <Layout />
+          <ApiClientProvider>
+            <Layout />
+          </ApiClientProvider>
         </ProtectedRoute>
       </AuthProvider>,
     children: [

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { DailyClientWorkLogData } from "../types";
+import { DailyClientWorkLogData, WorkLogData } from "../types";
 import { fetchMonthlyWorkLog } from "../repository/repository";
 import { convertToWorkLogDataList } from "../functions/convertToWorkLogDataList";
 import { convertToDailyWorkLogData } from "../functions/convertToDailyWorkLogData";
 import { getDateParams } from "../functions/getDateParams";
 import { addDayNotWork } from "../functions/addDayNotWork";
+import { api } from "../../../lib/api-client/ApiClientProvider";
 
 export const useWorkLog = (userId: number | null | undefined): [
   Date,
@@ -27,15 +28,19 @@ export const useWorkLog = (userId: number | null | undefined): [
 
   useEffect(() => {
     (async() => {
-
-        const response = await fetchMonthlyWorkLog(userId, fromQuery, toQuery);
-        if (response.status === 200) {
+        try {
+          const response =  await api.get<WorkLogData[]>(`/work-log/users/${userId}`, {
+            params: {
+              from: fromQuery,
+              to: toQuery
+            }
+          });
           const workLogData = convertToWorkLogDataList(response.data!);
           const monthlyWorkLogData: DailyClientWorkLogData[] = convertToDailyWorkLogData(workLogData);
           const monthlyWorkLogDataIncludingDayNotWork: DailyClientWorkLogData[] = addDayNotWork(userId, monthlyWorkLogData, toQuery)
           setMonthlyWorkLogData(monthlyWorkLogDataIncludingDayNotWork);
           setIsLoading(false);
-        } else {
+        } catch(error) {
           setError("接続エラーが起きました。時間をおいて再度お試しください。");
         }
       }
