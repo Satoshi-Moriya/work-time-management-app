@@ -1,4 +1,4 @@
-import { api } from "../../../lib/api-client/api-client";
+import { api } from "../../../lib/api-client/ApiClientProvider";
 
 import { ChangeEmailResponse, ResponseBody } from "../types";
 

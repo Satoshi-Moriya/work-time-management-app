@@ -5,7 +5,7 @@ import convertSecondsToTime from "../../../functions/convertSecondsToTime";
 import { createWorkLog } from "../repository/repository"
 import msSecondsToYYYYMMDDHHMMSS from "../functions/msSecondsToYYYYMMDDHHMMSS";
 import { AuthContext } from "../../Auth/components/AuthProvider";
-import { api } from "../../../lib/api-client/api-client";
+import { api } from "../../../lib/api-client/ApiClientProvider";
 
 type WorkLogStart = {
   workLogStartSeconds: number;

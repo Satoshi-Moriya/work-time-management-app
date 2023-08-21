@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from "axios";
 
-import { api } from "../../../lib/api-client/api-client";
+import { api } from "../../../lib/api-client/ApiClientProvider";
 
 export const createWorkLog = async (
     userId: number,

@@ -1,5 +1,5 @@
 import { ChangePasswordResponse, ResponseBody } from "../types";
-import { api } from "../../../lib/api-client/api-client";
+import { api } from "../../../lib/api-client/ApiClientProvider";
 
 export const changePassword = async (
   userId: number | null | undefined,

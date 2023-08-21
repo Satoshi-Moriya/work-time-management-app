@@ -7,7 +7,7 @@ import { changeEmailValidationSchema } from "../../../lib/zod/validationSchema";
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import { changeEmail } from "../repository/repository";
 import Toast from "../../Toast/components/Toast";
-import { api } from "../../../lib/api-client/api-client";
+import { api } from "../../../lib/api-client/ApiClientProvider";
 
 type FormValues = {
   password: string;

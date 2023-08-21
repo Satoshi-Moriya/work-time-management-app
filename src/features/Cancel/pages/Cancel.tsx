@@ -5,7 +5,7 @@ import axios from "axios";
 
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import Toast from "../../Toast/components/Toast";
-import { api } from "../../../lib/api-client/api-client";
+import { api } from "../../../lib/api-client/ApiClientProvider";
 
 const Cancel = () => {
   const navigate = useNavigate();
