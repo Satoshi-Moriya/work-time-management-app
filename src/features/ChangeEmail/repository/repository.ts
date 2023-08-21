@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../../../lib/api-client/api-client";
 
 import { ChangeEmailResponse, ResponseBody } from "../types";
 
@@ -7,25 +7,11 @@ export const changeEmail = async (
   password: string,
   email: string | null | undefined
 ): Promise<ChangeEmailResponse<ResponseBody>> => {
-  const response = await axios
-    .put(`http://localhost:8080/users/${userId}/email`, {
+  const response = await api
+    .put(`/users/${userId}/email`, {
       userId: userId,
       email: email,
       password: password,
-    })
-    .then((response) => {
-      return {
-        status: response.status,
-        data: response.data
-      };
-    })
-    .catch((error) => {
-      const errorStatus = error.response ? error.response.status : 500;
-      const data = error.response ?  error.response.data : null;
-      return {
-        status: errorStatus,
-        data: data
-      };
     });
 
   return response;

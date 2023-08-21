@@ -1,4 +1,6 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
+
+import { api } from "../../../lib/api-client/api-client";
 
 export const createWorkLog = async (
     userId: number,
@@ -8,15 +10,11 @@ export const createWorkLog = async (
     workLogTime: number
   ): Promise<AxiosResponse | AxiosError> => {
 
-  const response = await axios.post("http://localhost:8080/work-log", {
+  return await api.post("/work-log", {
       workLogUserId: userId,
       workLogDate: workLogDate,
       workLogStartTime: workLogStartTime,
       workLogEndTime: workLogEndTime,
       workLogSeconds: workLogTime
-    }).catch((error) => {
-      return error;
     });
-
-  return response;
 }

@@ -86,18 +86,18 @@ const useStopwatch = (): [
     const workLogEndMsSeconds = workLogStart.workLogStartSeconds + (elapsedTime * 1000);
     const workLogEndTime = msSecondsToYYYYMMDDHHMMSS(workLogEndMsSeconds);
 
-    const response = await createWorkLog(
-      userId!,
-      workLogDate,
-      workLogStart.workLogStartTime,
-      workLogEndTime,
-      elapsedTime
-    )
-    if (response.status === 201) {
-      setToast({message: "作業記録が保存されました。", isSuccess: true});
-    } else {
-      setToast({message: "予期せぬエラーが発生し、作業記録が保存できませんでした。", isSuccess: false});
-    }
+    try {
+        await createWorkLog(
+          userId!,
+          workLogDate,
+          workLogStart.workLogStartTime,
+          workLogEndTime,
+          elapsedTime
+        );
+        setToast({message: "作業記録が保存されました。", isSuccess: true});
+      } catch(error) {
+        setToast({message: "予期せぬエラーが発生し、作業記録が保存できませんでした。", isSuccess: false});
+      }
   }
 
   return [displayTime, isRunning, toast, { setToast, startHandler, stopHandler } ];
