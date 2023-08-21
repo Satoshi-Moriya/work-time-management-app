@@ -31,9 +31,17 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
+      const csrfToken = await axios.post("http://localhost:8080/csrf");
+      const headers = {
+        "Content-Type": "application/json;charset=utf-8",
+        "X-CSRF-TOKEN": csrfToken.data.token
+      };
+      console.log(csrfToken);
       const response = await axios.post<UserData>("http://localhost:8080/login", {
         userEmail: data.email,
         userPassword: data.password
+      }, {
+        headers: headers
       })
       setUserId(response.data.userId as number | null);
       setUserEmail(response.data.userEmail as string | null);

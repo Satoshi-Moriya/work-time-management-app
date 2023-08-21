@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState, } from "react";
+import axios from "axios";
 
 import convertSecondsToTime from "../../../functions/convertSecondsToTime";
 import { createWorkLog } from "../repository/repository"
 import msSecondsToYYYYMMDDHHMMSS from "../functions/msSecondsToYYYYMMDDHHMMSS";
 import { AuthContext } from "../../Auth/components/AuthProvider";
+import { api } from "../../../lib/api-client/api-client";
 
 type WorkLogStart = {
   workLogStartSeconds: number;
@@ -87,17 +89,24 @@ const useStopwatch = (): [
     const workLogEndTime = msSecondsToYYYYMMDDHHMMSS(workLogEndMsSeconds);
 
     try {
-        await createWorkLog(
-          userId!,
-          workLogDate,
-          workLogStart.workLogStartTime,
-          workLogEndTime,
-          elapsedTime
-        );
-        setToast({message: "作業記録が保存されました。", isSuccess: true});
-      } catch(error) {
-        setToast({message: "予期せぬエラーが発生し、作業記録が保存できませんでした。", isSuccess: false});
-      }
+      const csrfToken = await axios.post("http://localhost:8080/csrf");
+      const headers = {
+        "Content-Type": "application/json;charset=utf-8",
+        "X-CSRF-TOKEN": csrfToken.data.token
+      };
+      await api.post("/work-log", {
+        workLogUserId: userId,
+        workLogDate: workLogDate,
+        workLogStartTime: workLogStart.workLogStartTime,
+        workLogEndTime: workLogEndTime,
+        workLogSeconds: elapsedTime
+      }, {
+        headers: headers
+      });
+      setToast({message: "作業記録が保存されました。", isSuccess: true});
+    } catch(error) {
+      setToast({message: "予期せぬエラーが発生し、作業記録が保存できませんでした。", isSuccess: false});
+    }
   }
 
   return [displayTime, isRunning, toast, { setToast, startHandler, stopHandler } ];

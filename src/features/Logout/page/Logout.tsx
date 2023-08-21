@@ -1,10 +1,12 @@
 import { useContext, useState } from "react";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import { logout } from "../repository/repository";
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import Toast from "../../Toast/components/Toast";
+import { api } from "../../../lib/api-client/api-client";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -12,11 +14,18 @@ const Logout = () => {
   const [ , , setUserId ] = useContext(AuthContext);
 
   const logoutHandler = async () => {
-    const response = await logout();
-    if ( response.status === 200 ) {
+    try {
+      const csrfToken = await axios.post("http://localhost:8080/csrf");
+      const headers = {
+        "Content-Type": "application/json;charset=utf-8",
+        "X-CSRF-TOKEN": csrfToken.data.token
+      };
+      await api.post("/logout", null, {
+        headers: headers
+      });
       setUserId(null);
       navigate("/login");
-    } else {
+    } catch(error) {
       setToast({message: "予期せぬエラーが起こり、ログアウトができませんでした。", isSuccess: false});
     }
   }
