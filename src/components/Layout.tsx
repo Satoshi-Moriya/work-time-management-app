@@ -1,5 +1,5 @@
 import React from 'react'
-import { RxTimer } from "react-icons/rx";
+import { TfiWrite } from "react-icons/tfi";
 import { ImTable2 } from "react-icons/im";
 import { IoSettingsSharp } from "react-icons/io5";
 import { Outlet } from "react-router-dom";
@@ -15,8 +15,8 @@ const Layout: React.FC = () => {
             <Clock />
             <nav className="mt-2">
               <ul>
-                <MenuItem icon={<RxTimer />} text="タイマー" url="/" />
-                <MenuItem icon={<ImTable2 />} text="勤怠表" url="worklog" />
+                <MenuItem icon={<ImTable2 />} text="記録項目" url="/" />
+                <MenuItem icon={<TfiWrite />} text="記録表" url="worklog" />
                 <MenuItem icon={<IoSettingsSharp />} text="設定" url="setting" />
               </ul>
             </nav>

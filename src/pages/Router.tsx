@@ -2,7 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import Layout from "../components/Layout";
 import Login from '../features/Login/pages/Login';
-import Timer from "../features/Timer/pages/Timer";
+import RecordItem from "../features/RecordItem/pages/RecordItem";
 import WorkLog from "../features/WorkLog/pages/WorkLog";
 import Setting from "../features/Setting/pages/Setting";
 import ChangeEmail from "../features/ChangeEmail/pages/ChangeEmail";
@@ -42,7 +42,7 @@ export const routesConfig = [
         </ProtectedRoute>
       </AuthProvider>,
     children: [
-      { index: true, element: <Timer /> },
+      { index: true, element: <RecordItem /> },
       { path: "worklog", element: <WorkLog /> },
       {
         path: "setting",
