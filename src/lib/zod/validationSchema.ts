@@ -80,3 +80,7 @@ export const signUpValidationSchema = z.object({
     });
   }
 });
+
+export const editWorkLogTimeValidationSchema = z.object({
+
+})
