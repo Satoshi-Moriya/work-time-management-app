@@ -3,18 +3,21 @@ import { useContext, useEffect, useState } from "react";
 import { api } from "../../../lib/api-client/ApiClientProvider";
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import Toast from "../../Toast/components/Toast";
+import { RecordItemType } from "../../../types/index";
 
 const RecordItem = () => {
   const [recordItemText, setRecordItemText] = useState("");
-  const [recordItems, setRecordItems] = useState<string[]>([]);
+  const [recordItems, setRecordItems] = useState<{recordItemId: number, recordItemName: string}[]>([]);
   const [userId] = useContext(AuthContext);
   const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
 
   useEffect(() => {
     (async() => {
       try {
-        const recordItems: string[] = await api.get("/record-items/:userId");
-        setRecordItems(recordItems);
+        const recordItemsResponse = await api.get(`/record-items/${userId}`);
+        const recordItems: RecordItemType[] = recordItemsResponse.data;
+        const recordItemsWithoutUserId = recordItems.map(({recordItemId, recordItemName}) => ({recordItemId, recordItemName}));
+        setRecordItems(recordItemsWithoutUserId);
       } catch(error) {
         setToast({message: "予期せぬエラーが発生し、記録項目を取得できませんでした。", isSuccess: false});
       }
@@ -31,23 +34,26 @@ const RecordItem = () => {
         "Content-Type": "application/json;charset=utf-8",
         "X-CSRF-TOKEN": csrfToken.data.token
       };
-      const newRecordItems: string[] = await api.post("/record-items/",
+      await api.post("/record-items",
       {
         userId: userId,
         recordItemName: recordItemText
       } ,{
         headers: headers
       });
-      setRecordItems(newRecordItems);
       setToast({message: "記録項目が登録されました。", isSuccess: true});
     } catch(error) {
       setToast({message: "予期せぬエラーが発生し、記録項目が登録できませんでした。", isSuccess: false});
     } finally {
       setRecordItemText("");
+      const recordItemsResponse = await api.get(`/record-items/${userId}`);
+      const recordItems: RecordItemType[] = recordItemsResponse.data;
+      const recordItemsWithoutUserId = recordItems.map(({recordItemId, recordItemName}) => ({recordItemId, recordItemName}));
+      setRecordItems(recordItemsWithoutUserId);
     }
   }
 
-  const recordItemDeleteHandler = async(index: number, recordItemText: string) => {
+  const recordItemDeleteHandler = async(recordItemId: number, recordItemText: string) => {
     const confirm = window.confirm(`本当に「${recordItemText}」を削除してもよろしいですか？削除すると「${recordItemText}」の記録が全て消えます。`)
     if (confirm) {
       try {
@@ -56,13 +62,17 @@ const RecordItem = () => {
           "Content-Type": "application/json;charset=utf-8",
           "X-CSRF-TOKEN": csrfToken.data.token
         };
-        const newRecordItems: string[] = await api.delete("/record-items/:userId", {
+        await api.delete(`/record-items/${recordItemId}`, {
           headers: headers
         });
-        setRecordItems(newRecordItems);
         setToast({message: "記録項目が削除されました。", isSuccess: true});
       } catch(error) {
         setToast({message: "予期せぬエラーが発生し、記録項目が削除できませんでした。", isSuccess: false});
+      } finally {
+        const recordItemsResponse = await api.get(`/record-items/${userId}`);
+        const recordItems: RecordItemType[] = recordItemsResponse.data;
+        const recordItemsWithoutUserId = recordItems.map(({recordItemId, recordItemName}) => ({recordItemId, recordItemName}));
+        setRecordItems(recordItemsWithoutUserId);
       }
     }
   }
@@ -79,10 +89,10 @@ const RecordItem = () => {
                   {
                     recordItems.map((recordItem, index) => {
                       return (
-                        <li key={recordItem} className="flex items-center border-t [&:last-child]:border-b border-gray-400">
-                          <div className="font-semibold w-1/2 pl-8 pr-2 py-2">{recordItem}</div>
+                        <li key={index} className="flex items-center border-t [&:last-child]:border-b border-gray-400">
+                          <div className="font-semibold w-1/2 pl-8 pr-2 py-2">{recordItem.recordItemName}</div>
                           <div className="w-1/2 border-l border-gray-400 text-center px-2 py-2">
-                            <button onClick={() => recordItemDeleteHandler(index, recordItem)} className="text-sm bg-orange-400 hover:bg-orange-700 focus:bg-orange-700 border-orange-400 rounded-lg text-white font-bold px-2 py-1">削除</button>
+                            <button onClick={() => recordItemDeleteHandler(recordItem.recordItemId, recordItem.recordItemName)} className="text-sm bg-orange-400 hover:bg-orange-700 focus:bg-orange-700 border-orange-400 rounded-lg text-white font-bold px-2 py-1">削除</button>
                           </div>
                         </li>
                       )

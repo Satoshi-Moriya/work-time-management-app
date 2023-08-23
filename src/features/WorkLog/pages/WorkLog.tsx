@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import CustomDatePicker from "../components/CustomDatePicker";
 import MonthlyTotalTime from "../components/MonthlyTotalTime";
@@ -8,11 +8,13 @@ import { useWorkLog } from "../hooks/useWorkLog";
 import Loading from "../../../components/Loading";
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import EditModal from "../components/EditModal";
+import { api } from "../../../lib/api-client/ApiClientProvider";
+import { RecordItemType } from "../../../types/index";
 
 const WorKLog = () => {
   const [ userId ] = useContext(AuthContext);
   const [date, monthlyWorkLogData, error, isLoading, {dateChangeHandler}] = useWorkLog(userId);
-  const [recordItems, setRecordItems] = useState(["ドラム練習", "稼働時間"]);
+  const [recordItems, setRecordItems] = useState<{recordItemId: number, recordItemName: string}[]>([]);
   const [selectedRecordItem, seSelectedRecordItem] = useState({text: "ドラム練習", value: "option1"});
   const [openModal, setOpenModal] = useState<string | undefined>();
   const [editModalData, setEditModalData] = useState<{yyyymm: Date, userId: number, date: number}>({
@@ -20,6 +22,20 @@ const WorKLog = () => {
     userId: 0,
     date: 0
   });
+  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
+
+  useEffect(() => {
+    (async() => {
+      try {
+        const recordItemsResponse = await api.get(`/record-items/${userId}`);
+        const recordItems: RecordItemType[] = recordItemsResponse.data;
+        const recordItemsWithoutUserId = recordItems.map(({recordItemId, recordItemName}) => ({recordItemId, recordItemName}));
+        setRecordItems(recordItemsWithoutUserId);
+      } catch(error) {
+        setToast({message: "予期せぬエラーが発生し、記録項目を取得できませんでした。", isSuccess: false});
+      }
+    })();
+  }, []);
 
   const selectedRecordItemChangeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedText = event.target.options[event.target.selectedIndex].text;
@@ -40,7 +56,7 @@ const WorKLog = () => {
             {
               recordItems.map((recordItem, index) => {
                 return (
-                  <option key={recordItem} value={`option${index + 1}`}>{recordItem}</option>
+                  <option key={index} value={`option${index + 1}`}>{recordItem.recordItemName}</option>
                 );
               })
             }
