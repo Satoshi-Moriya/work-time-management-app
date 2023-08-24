@@ -4,42 +4,103 @@ import CustomDatePicker from "../components/CustomDatePicker";
 import MonthlyTotalTime from "../components/MonthlyTotalTime";
 import StackedBarChart from "../components/StackedBarChart";
 import convertSecondsToTime from "../../../functions/convertSecondsToTime";
-import { useWorkLog } from "../hooks/useWorkLog";
 import Loading from "../../../components/Loading";
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import EditModal from "../components/EditModal";
 import { api } from "../../../lib/api-client/ApiClientProvider";
 import { RecordItemType } from "../../../types/index";
+import { getDateParams } from "../functions/getDateParams";
+import { convertToClientRecordItemLogList } from "../functions/convertToClientRecordItemLogList";
+import { convertToDailyRecordItemLogData } from "../functions/convertToDailyRecordItemLogData";
+import { addDayNotRecordItem } from "../functions/addDayNotRecordItem"
+import { RecordItemLog, DailyClientRecordItemLog } from "../types";
+
+const fetchRecordItemLogsAndConverted = async(
+  selectedRecordItemId: number,
+  selectedMonthFrom: string,
+  selectedMonthTo: string
+): Promise<DailyClientRecordItemLog[]> => {
+  const recordItemLogResponse =
+    await api.get<RecordItemLog[]>(`/record-item-logs/${selectedRecordItemId}`, {
+      params: {
+        from: selectedMonthFrom,
+        to: selectedMonthTo
+      }
+    });
+    const recordItemLogsData = convertToClientRecordItemLogList(recordItemLogResponse.data!);
+    const monthlyRecordItemLogsData: DailyClientRecordItemLog[] = convertToDailyRecordItemLogData(recordItemLogsData);
+    return addDayNotRecordItem(selectedRecordItemId, monthlyRecordItemLogsData, selectedMonthTo);
+}
 
 const WorKLog = () => {
   const [ userId ] = useContext(AuthContext);
-  const [date, monthlyWorkLogData, error, isLoading, {dateChangeHandler}] = useWorkLog(userId);
   const [recordItems, setRecordItems] = useState<{recordItemId: number, recordItemName: string}[]>([]);
-  const [selectedRecordItem, seSelectedRecordItem] = useState({text: "ドラム練習", value: "option1"});
+  const [selectedRecordItem, setSelectedRecordItem] = useState<{text: string, value: string}>();
   const [openModal, setOpenModal] = useState<string | undefined>();
   const [editModalData, setEditModalData] = useState<{yyyymm: Date, userId: number, date: number}>({
     yyyymm: new Date(),
     userId: 0,
     date: 0
   });
-  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
+  const currentDate = new Date();
+  const [initFromQueryParam, initToQueryParam] = getDateParams(currentDate);
+  const [fromQuery, setFromQuery] = useState<string>(initFromQueryParam);
+  const [toQuery, setToQuery] = useState(initToQueryParam);
+  const [date, setDate] = useState(currentDate);
+  const [monthlyRecordItemData, setMonthlyRecordItemData] = useState<DailyClientRecordItemLog[]>([])
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     (async() => {
       try {
+        // 記録項目取得&表示
         const recordItemsResponse = await api.get(`/record-items/${userId}`);
         const recordItems: RecordItemType[] = recordItemsResponse.data;
         const recordItemsWithoutUserId = recordItems.map(({recordItemId, recordItemName}) => ({recordItemId, recordItemName}));
         setRecordItems(recordItemsWithoutUserId);
+        // /record-items/:userIdで取得してきたデータの1つ目のrecordItemが初期値になるから[0]
+        const initRecordItem = recordItemsWithoutUserId[0];
+        setSelectedRecordItem({text: initRecordItem.recordItemName, value: initRecordItem.recordItemId.toString()})
+
+        // 記録表のデータ取得&表示
+        const monthlyRecordItemLogDataIncludingDayNotRecordItem =
+          await fetchRecordItemLogsAndConverted(initRecordItem.recordItemId, fromQuery, toQuery);
+        setMonthlyRecordItemData(monthlyRecordItemLogDataIncludingDayNotRecordItem)
+        setIsLoading(false);
       } catch(error) {
-        setToast({message: "予期せぬエラーが発生し、記録項目を取得できませんでした。", isSuccess: false});
+        setError("接続エラーが起きました。時間をおいて再度お試しください。");
       }
     })();
   }, []);
 
-  const selectedRecordItemChangeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedText = event.target.options[event.target.selectedIndex].text;
-    seSelectedRecordItem({text: selectedText, value: event.target.value});
+  const selectedRecordItemChangeHandler = async(event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedRecordItemValue = event.target.value;
+    const selectedRecordItemText = event.target.options[event.target.selectedIndex].text;
+    try {
+        const monthlyRecordItemLogDataIncludingDayNotRecordItem =
+          await fetchRecordItemLogsAndConverted(Number(selectedRecordItemValue), fromQuery, toQuery);
+        setMonthlyRecordItemData(monthlyRecordItemLogDataIncludingDayNotRecordItem)
+        setIsLoading(false);
+    } catch(error) {
+      setError("接続エラーが起きました。時間をおいて再度お試しください。");
+    }
+    setSelectedRecordItem({text: selectedRecordItemText, value: selectedRecordItemValue});
+  }
+
+  const dateChangeHandler = async(date: Date) => {
+    const [fromQueryParam, toQueryParam] = getDateParams(date);
+    try {
+        const monthlyRecordItemLogDataIncludingDayNotRecordItem =
+          await fetchRecordItemLogsAndConverted(Number(selectedRecordItem?.value), fromQueryParam, toQueryParam);
+        setMonthlyRecordItemData(monthlyRecordItemLogDataIncludingDayNotRecordItem)
+        setIsLoading(false);
+    } catch(error) {
+      setError("接続エラーが起きました。時間をおいて再度お試しください。");
+    }
+    setDate(date);
+    setFromQuery(fromQueryParam);
+    setToQuery(toQueryParam);
   }
 
   const workLogEditHandler = (yyyymm: Date, userId: number, date: number) => {
@@ -52,11 +113,12 @@ const WorKLog = () => {
       {
         !error && recordItems.length !== 0 && (
         <div className="my-24 mx-auto px-7 w-[1137px] max-w-full">
-          <select value={selectedRecordItem.value} onChange={selectedRecordItemChangeHandler} className="w-[200px] bg-gray-50 border border-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500 block p-1 hover:cursor-pointer">
+          {/* recordItemsのlengthが0でない場合selectedRecordItemはdefinedではない */}
+          <select value={selectedRecordItem!.value} onChange={selectedRecordItemChangeHandler} className="w-[200px] bg-gray-50 border border-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500 block p-1 hover:cursor-pointer">
             {
               recordItems.map((recordItem, index) => {
                 return (
-                  <option key={index} value={`option${index + 1}`}>{recordItem.recordItemName}</option>
+                  <option key={index} value={recordItem.recordItemId}>{recordItem.recordItemName}</option>
                 );
               })
             }
@@ -65,14 +127,14 @@ const WorKLog = () => {
             <CustomDatePicker selectedDate={date} onChange ={dateChangeHandler} />
           </div>
           <div className="mt-10">
-            <MonthlyTotalTime dateSumSeconds={monthlyWorkLogData.map(data => data.workLogSumSeconds)} />
+            <MonthlyTotalTime dateSumSeconds={monthlyRecordItemData.map(data => data.recordItemLogSumSeconds)} />
             {
               isLoading ? <Loading/>
             :
             <>
               <div className="mt-20 flex justify-end items-center">
                 <span className="bg-[#BAD3FF] block w-5 h-5 mr-2"></span>
-                <p className="">{selectedRecordItem.text}</p>
+                <p className="">{selectedRecordItem!.text}</p>
               </div>
               <div className="overflow-x-scroll">
                 <table className="w-[1081px] mt-2 table-fixed border-separate border-spacing-0">
@@ -112,21 +174,21 @@ const WorKLog = () => {
                   </thead>
                   <tbody>
                     {
-                      monthlyWorkLogData.map((data, index) => (
+                      monthlyRecordItemData.map((data, index) => (
                         <tr key={index} className="group">
-                          <td className="border-t border-l group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-0 z-10 bg-white">{data.date}（{data.day}）</td>
-                          <td className="border-t border-l group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-[100px] z-20 bg-white">{convertSecondsToTime(data.workLogSumSeconds)}</td>
+                          <td className="border-t border-l group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-0 z-10 bg-white">{data.recordItemLogDate}（{data.recordItemLogDay}）</td>
+                          <td className="border-t border-l group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-[100px] z-20 bg-white">{convertSecondsToTime(data.recordItemLogSumSeconds)}</td>
                           <td className="border-t border-x group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-[200px] z-20 bg-white">
-                            <button onClick={() => workLogEditHandler(date, data.workLogUserId, data.date)} className="text-sm bg-orange-400 hover:bg-orange-700 focus:bg-orange-700 border-orange-400 rounded-lg text-white font-bold px-2 py-1">編集</button>
+                            <button onClick={() => workLogEditHandler(date, data.recordItemId, data.recordItemLogDate)} className="text-sm bg-orange-400 hover:bg-orange-700 focus:bg-orange-700 border-orange-400 rounded-lg text-white font-bold px-2 py-1">編集</button>
                           </td>
-                          <td className="border-t border-r group-last:border-b border-gray-500 px-0 py-3 w-[801px] bg-white relative" colSpan={24} ><StackedBarChart timeData={data.workLogTime} /></td>
+                          <td className="border-t border-r group-last:border-b border-gray-500 px-0 py-3 w-[801px] bg-white relative" colSpan={24} ><StackedBarChart timeData={data.recordItemLogTime} /></td>
                         </tr>
                       ))
                     }
                   </tbody>
                 </table>
               </div>
-              <EditModal openModal={openModal} setOpenModal={setOpenModal} editModalData={editModalData} recordItemText={selectedRecordItem.text}/>
+              <EditModal openModal={openModal} setOpenModal={setOpenModal} editModalData={editModalData} recordItemText={selectedRecordItem!.text}/>
             </>
           }
           </div>
