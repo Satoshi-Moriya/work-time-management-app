@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { convertTimeToSeconds } from "../../features/WorkLog/functions/convertTimeToSeconds";
+import { TimeRange } from "../../features/WorkLog/types";
 
 export const changeEmailValidationSchema = z.object({
   password: z
@@ -81,6 +83,43 @@ export const signUpValidationSchema = z.object({
   }
 });
 
-export const editWorkLogTimeValidationSchema = z.object({
-
+export const createRegisterRecordItemLogValidationSchema =
+  (recordItemLogTime: TimeRange[]) => z.object({
+    editStartTime: z.string(),
+    editEndTime: z.string()
 })
+.superRefine(({editStartTime, editEndTime}, ctx) => {
+  const convertToSecondsEditStartTime = convertTimeToSeconds(editStartTime);
+  const convertToSecondsEditEndTime = convertTimeToSeconds(editEndTime);
+
+  recordItemLogTime.forEach((logTime) => {
+    if (convertToSecondsEditStartTime >= logTime.start &&
+       convertToSecondsEditStartTime < logTime.end)
+    {
+      ctx.addIssue({
+        path: ["editStartTime"],
+        code: "custom",
+        message: "その時間は既に登録されています。",
+      });
+    }
+
+    if (
+      convertToSecondsEditEndTime > logTime.start &&
+      convertToSecondsEditEndTime <= logTime.end)
+    {
+      ctx.addIssue({
+        path: ["editEndTime"],
+        code: "custom",
+        message: "その時間は既に登録されています。",
+      });
+    }
+  });
+
+  if (convertToSecondsEditEndTime <= convertToSecondsEditStartTime) {
+    ctx.addIssue({
+      path: ["editEndTime"],
+      code: "custom",
+      message: "終了時間は開始時間より遅い時間を入力してください。",
+    });
+  }
+});

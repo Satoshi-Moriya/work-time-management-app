@@ -37,17 +37,17 @@ const WorKLog = () => {
   const [recordItems, setRecordItems] = useState<{recordItemId: number, recordItemName: string}[]>([]);
   const [selectedRecordItem, setSelectedRecordItem] = useState<{text: string, value: string}>();
   const [openModal, setOpenModal] = useState<string | undefined>();
-  const [editModalData, setEditModalData] = useState<{yyyymm: Date, userId: number, date: number}>({
+  const [editModalData, setEditModalData] = useState<{yyyymm: Date, date: number, recordItemLog: DailyClientRecordItemLog}>({
     yyyymm: new Date(),
-    userId: 0,
-    date: 0
+    date: 0,
+    recordItemLog: {recordItemId: 0, recordItemLogDate: 0, recordItemLogDay: "", recordItemLogTime: [{start: 0, end: 0}], recordItemLogSumSeconds: 0}
   });
   const currentDate = new Date();
   const [initFromQueryParam, initToQueryParam] = getDateParams(currentDate);
   const [fromQuery, setFromQuery] = useState<string>(initFromQueryParam);
   const [toQuery, setToQuery] = useState(initToQueryParam);
   const [date, setDate] = useState(currentDate);
-  const [monthlyRecordItemData, setMonthlyRecordItemData] = useState<DailyClientRecordItemLog[]>([])
+  const [selectedMonthlyRecordItemLogs, setSelectedMonthlyRecordItemLogs] = useState<DailyClientRecordItemLog[]>([])
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
 
@@ -66,7 +66,7 @@ const WorKLog = () => {
         // 記録表のデータ取得&表示
         const monthlyRecordItemLogDataIncludingDayNotRecordItem =
           await fetchRecordItemLogsAndConverted(initRecordItem.recordItemId, fromQuery, toQuery);
-        setMonthlyRecordItemData(monthlyRecordItemLogDataIncludingDayNotRecordItem)
+        setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
         setIsLoading(false);
       } catch(error) {
         setError("接続エラーが起きました。時間をおいて再度お試しください。");
@@ -80,7 +80,7 @@ const WorKLog = () => {
     try {
         const monthlyRecordItemLogDataIncludingDayNotRecordItem =
           await fetchRecordItemLogsAndConverted(Number(selectedRecordItemValue), fromQuery, toQuery);
-        setMonthlyRecordItemData(monthlyRecordItemLogDataIncludingDayNotRecordItem)
+        setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
         setIsLoading(false);
     } catch(error) {
       setError("接続エラーが起きました。時間をおいて再度お試しください。");
@@ -93,7 +93,7 @@ const WorKLog = () => {
     try {
         const monthlyRecordItemLogDataIncludingDayNotRecordItem =
           await fetchRecordItemLogsAndConverted(Number(selectedRecordItem?.value), fromQueryParam, toQueryParam);
-        setMonthlyRecordItemData(monthlyRecordItemLogDataIncludingDayNotRecordItem)
+        setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
         setIsLoading(false);
     } catch(error) {
       setError("接続エラーが起きました。時間をおいて再度お試しください。");
@@ -103,9 +103,9 @@ const WorKLog = () => {
     setToQuery(toQueryParam);
   }
 
-  const workLogEditHandler = (yyyymm: Date, userId: number, date: number) => {
+  const recordItemLogEditHandler = (yyyymm: Date, date: number, selectedRecordItemLog: DailyClientRecordItemLog) => {
     setOpenModal('default');
-    setEditModalData({yyyymm: yyyymm, userId: userId, date: date});
+    setEditModalData({yyyymm: yyyymm, date: date, recordItemLog: selectedRecordItemLog});
   }
 
   return (
@@ -127,7 +127,7 @@ const WorKLog = () => {
             <CustomDatePicker selectedDate={date} onChange ={dateChangeHandler} />
           </div>
           <div className="mt-10">
-            <MonthlyTotalTime dateSumSeconds={monthlyRecordItemData.map(data => data.recordItemLogSumSeconds)} />
+            <MonthlyTotalTime dateSumSeconds={selectedMonthlyRecordItemLogs.map(data => data.recordItemLogSumSeconds)} />
             {
               isLoading ? <Loading/>
             :
@@ -174,12 +174,12 @@ const WorKLog = () => {
                   </thead>
                   <tbody>
                     {
-                      monthlyRecordItemData.map((data, index) => (
+                      selectedMonthlyRecordItemLogs.map((data, index) => (
                         <tr key={index} className="group">
                           <td className="border-t border-l group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-0 z-10 bg-white">{data.recordItemLogDate}（{data.recordItemLogDay}）</td>
                           <td className="border-t border-l group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-[100px] z-20 bg-white">{convertSecondsToTime(data.recordItemLogSumSeconds)}</td>
                           <td className="border-t border-x group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-[200px] z-20 bg-white">
-                            <button onClick={() => workLogEditHandler(date, data.recordItemId, data.recordItemLogDate)} className="text-sm bg-orange-400 hover:bg-orange-700 focus:bg-orange-700 border-orange-400 rounded-lg text-white font-bold px-2 py-1">編集</button>
+                            <button onClick={() => recordItemLogEditHandler(date, data.recordItemLogDate, data)} className="text-sm bg-orange-400 hover:bg-orange-700 focus:bg-orange-700 border-orange-400 rounded-lg text-white font-bold px-2 py-1">編集</button>
                           </td>
                           <td className="border-t border-r group-last:border-b border-gray-500 px-0 py-3 w-[801px] bg-white relative" colSpan={24} ><StackedBarChart timeData={data.recordItemLogTime} /></td>
                         </tr>
@@ -188,7 +188,12 @@ const WorKLog = () => {
                   </tbody>
                 </table>
               </div>
-              <EditModal openModal={openModal} setOpenModal={setOpenModal} editModalData={editModalData} recordItemText={selectedRecordItem!.text}/>
+              <EditModal
+                openModal={openModal}
+                setOpenModal={setOpenModal}
+                recordItem={selectedRecordItem}
+                editModalData={editModalData}
+              />
             </>
           }
           </div>
