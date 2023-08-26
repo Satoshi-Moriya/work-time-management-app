@@ -85,8 +85,12 @@ export const signUpValidationSchema = z.object({
 
 export const createRegisterRecordItemLogValidationSchema =
   (recordItemLogTime: TimeRange[]) => z.object({
-    editStartTime: z.string(),
-    editEndTime: z.string()
+    editStartTime: z
+      .string()
+      .nonempty("開始時間は必須です。"),
+    editEndTime: z
+      .string()
+      .nonempty("終了時間は必須です。")
 })
 .superRefine(({editStartTime, editEndTime}, ctx) => {
   const convertToSecondsEditStartTime = convertTimeToSeconds(editStartTime);
