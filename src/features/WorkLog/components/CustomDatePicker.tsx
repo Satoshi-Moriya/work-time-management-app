@@ -21,7 +21,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({selectedDate, onChan
       onChange={onChange}
       dateFormat="yyyy/MM"
       showMonthYearPicker
-      className="bg-gray-50 border border-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 hover:cursor-pointer"
+      className="w-[200px] h-[30px] bg-gray-50 border border-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 hover:cursor-pointer"
     />
   );
 }

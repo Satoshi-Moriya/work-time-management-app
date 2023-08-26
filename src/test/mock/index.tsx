@@ -1,6 +1,6 @@
 import Layout from "../../components/Layout";
 import Login from "../../features/Login/pages/Login";
-import Timer from "../../features/Timer/pages/Timer";
+import Timer from "../../features/RecordItem/pages/RecordItem";
 import WorkLog from "../../features/WorkLog/pages/WorkLog";
 import Setting from "../../features/Setting/pages/Setting";
 import ChangeEmail from "../../features/ChangeEmail/pages/ChangeEmail";
