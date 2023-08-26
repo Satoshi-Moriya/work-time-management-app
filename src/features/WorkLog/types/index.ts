@@ -3,6 +3,12 @@ export type TimeRange = {
   end: number;
 };
 
+export type RecordItemLogTimeRange = {
+  recordItemLogId: number;
+  start: number;
+  end: number;
+};
+
 export type WorkLogData = {
   workLogId: number;
   workLogUserId: number;
@@ -34,7 +40,7 @@ export type ClientRecordItemLog = {
   recordItemId: number;
   recordItemLogDate: number;
   recordItemLogDay: string;
-  recordItemLogTime: TimeRange;
+  recordItemLogTime: RecordItemLogTimeRange;
   recordItemLogSeconds: number;
 }
 
@@ -50,7 +56,7 @@ export type DailyClientRecordItemLog = {
   recordItemId: number;
   recordItemLogDate: number;
   recordItemLogDay: string;
-  recordItemLogTime: TimeRange[];
+  recordItemLogTime: RecordItemLogTimeRange[];
   recordItemLogSumSeconds: number;
 }
 

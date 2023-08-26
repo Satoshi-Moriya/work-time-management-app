@@ -1,7 +1,7 @@
 import { DailyClientRecordItemLog } from "../types";
 import { getWeekdayFromDate } from "./getWeekdayFromDate";
 
-export const addDayNotRecordItem = (
+export const addDayNotRecordItemLog = (
   recordItemId: number,
   monthlyRecordItemLogData: DailyClientRecordItemLog[],
   lastDayOfDisplayMonth: string
@@ -13,6 +13,7 @@ export const addDayNotRecordItem = (
     if (dailyRecordItemLog) {
       monthlyRecordItemLogIncludingDayNotRecordIte.push(dailyRecordItemLog);
     } else {
+      // recordItemLogがない場合
       monthlyRecordItemLogIncludingDayNotRecordIte.push({
         recordItemId: recordItemId,
         recordItemLogDate: i,

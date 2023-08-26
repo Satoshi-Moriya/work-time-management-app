@@ -1,4 +1,4 @@
-import { ClientRecordItemLog, TimeRange, RecordItemLog } from "../types";
+import { ClientRecordItemLog, RecordItemLog, RecordItemLogTimeRange } from "../types";
 import { convertTimeToSeconds } from "./convertTimeToSeconds";
 import { getWeekdayFromDate } from "./getWeekdayFromDate";
 
@@ -14,9 +14,10 @@ export const convertToClientRecordItemLogList = (convertData: RecordItemLog[]): 
       recordItemLogDate: convertedDate,
       recordItemLogDay: day,
       recordItemLogTime: {
+        recordItemLogId: data.recordItemLogId,
         start: convertedStartTime,
         end: convertedEndTime,
-      } as TimeRange,
+      } as RecordItemLogTimeRange,
       recordItemLogSeconds: data.recordItemLogSeconds
     }
   });

@@ -3,7 +3,7 @@ import { Modal } from 'flowbite-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { createRegisterRecordItemLogValidationSchema } from '../../../lib/zod/validationSchema';
-import { DailyClientRecordItemLog, TimeRange } from '../types';
+import { DailyClientRecordItemLog, RecordItemLogTimeRange } from '../types';
 import convertSecondsToTime from '../../../functions/convertSecondsToTime';
 import axios from 'axios';
 import { api } from '../../../lib/api-client/ApiClientProvider';
@@ -41,8 +41,6 @@ const EditModal: React.FC<EditModalProps> = ({
   setEditModalData,
   selectedMonthlyRecordItemLogs,
   setSelectedMonthlyRecordItemLogs,
-
-
 }) => {
   const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
   const modalRecordItemLogs = editModalData.recordItemLog.recordItemLogTime;
@@ -65,7 +63,7 @@ const EditModal: React.FC<EditModalProps> = ({
         "Content-Type": "application/json;charset=utf8",
         "X-CSRF-TOKEN": csrfToken.data.token
       };
-      const recordItemLogResponse = await api.post(`/record-item-logs`, {
+      const recordItemLogResponse = await api.post("/record-item-logs", {
         recordItemId: editModalData.recordItemLog.recordItemId,
         recordItemLogDate: hyphenFormatDate,
         recordItemLogStartTime: `${hyphenFormatDate} ${data.editStartTime}`,
@@ -90,7 +88,7 @@ const EditModal: React.FC<EditModalProps> = ({
         ...editModalData,
         recordItemLog: {
           ...editModalData.recordItemLog,
-          recordIteLogTime: [...editModalData.recordItemLog.recordItemLogTime, recordItemLogsData[0].recordItemLogTime],
+          recordItemLogTime: [...editModalData.recordItemLog.recordItemLogTime, recordItemLogsData[0].recordItemLogTime],
           recordItemLogSumSeconds: editModalData.recordItemLog.recordItemLogSumSeconds + recordItemLogsData[0].recordItemLogSeconds
         }
       }
@@ -102,6 +100,36 @@ const EditModal: React.FC<EditModalProps> = ({
       setToast({message: "予期せぬエラーが起こり、データの登録ができませんでした。", isSuccess: false});
     }
     reset();
+  }
+
+  const recordItemDeleteHandler = async(recordItemLogTime: RecordItemLogTimeRange) => {
+    try {
+      const deleteItemId = recordItemLogTime.recordItemLogId;
+      const deleteItemSeconds = (recordItemLogTime.end - recordItemLogTime.start);
+
+      const csrfToken = await axios.post("http://localhost:8080/csrf");
+      const headers = {
+        "Content-Type": "application/json;charset=utf-8",
+        "X-CSRF-TOKEN": csrfToken.data.token
+      };
+
+      await api.delete(`/record-item-logs/${deleteItemId}`, {
+        headers: headers
+      });
+      // modalの表示
+      // 削除した時間をモーダルから消す
+      editModalData.recordItemLog.recordItemLogTime = editModalData.recordItemLog.recordItemLogTime
+        .filter(item => item.recordItemLogId !== deleteItemId);
+      // 削除した時間分をその日の合計時間からひく
+      editModalData.recordItemLog.recordItemLogSumSeconds =
+        editModalData.recordItemLog.recordItemLogSumSeconds - deleteItemSeconds;
+      const updateEditModalData = editModalData;
+      setEditModalData(updateEditModalData)
+
+      setToast({message: "登録済みデータが削除されました。", isSuccess: true});
+    } catch(error) {
+      setToast({message: "予期せぬエラーが発生し、登録済みデータを削除できませんでした。", isSuccess: false});
+    }
   }
 
   return (
@@ -126,6 +154,9 @@ const EditModal: React.FC<EditModalProps> = ({
                         <p className="text-l w-24 text-center">{convertSecondsToTime(time.start)}</p>
                         <span className="mx-3">〜</span>
                         <p className="text-l w-24 text-center">{convertSecondsToTime(time.end)}</p>
+                      </div>
+                      <div className="ml-3">
+                        <button onClick={() => recordItemDeleteHandler(time)} className="text-sm bg-orange-400 hover:bg-orange-700 focus:bg-orange-700 border-orange-400 rounded-lg text-white font-bold px-2 py-1">削除</button>
                       </div>
                     </div>
                   ))}

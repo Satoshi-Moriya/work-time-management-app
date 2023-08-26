@@ -12,7 +12,7 @@ import { RecordItemType } from "../../../types/index";
 import { getDateParams } from "../functions/getDateParams";
 import { convertToClientRecordItemLogList } from "../functions/convertToClientRecordItemLogList";
 import { convertToDailyRecordItemLogData } from "../functions/convertToDailyRecordItemLogData";
-import { addDayNotRecordItem } from "../functions/addDayNotRecordItem"
+import { addDayNotRecordItemLog } from "../functions/addDayNotRecordItemLog";
 import { RecordItemLog, DailyClientRecordItemLog } from "../types";
 
 const fetchRecordItemLogsAndConverted = async(
@@ -29,7 +29,7 @@ const fetchRecordItemLogsAndConverted = async(
     });
     const recordItemLogsData = convertToClientRecordItemLogList(recordItemLogResponse.data!);
     const monthlyRecordItemLogsData: DailyClientRecordItemLog[] = convertToDailyRecordItemLogData(recordItemLogsData);
-    return addDayNotRecordItem(selectedRecordItemId, monthlyRecordItemLogsData, selectedMonthTo);
+    return addDayNotRecordItemLog(selectedRecordItemId, monthlyRecordItemLogsData, selectedMonthTo);
 }
 
 const WorKLog = () => {
@@ -40,7 +40,7 @@ const WorKLog = () => {
   const [editModalData, setEditModalData] = useState<{yyyymm: Date, date: number, recordItemLog: DailyClientRecordItemLog}>({
     yyyymm: new Date(),
     date: 0,
-    recordItemLog: {recordItemId: 0, recordItemLogDate: 0, recordItemLogDay: "", recordItemLogTime: [{start: 0, end: 0}], recordItemLogSumSeconds: 0}
+    recordItemLog: {recordItemId: 0, recordItemLogDate: 0, recordItemLogDay: "", recordItemLogTime: [{recordItemLogId: 0, start: 0, end: 0}], recordItemLogSumSeconds: 0}
   });
   const currentDate = new Date();
   const [initFromQueryParam, initToQueryParam] = getDateParams(currentDate);
