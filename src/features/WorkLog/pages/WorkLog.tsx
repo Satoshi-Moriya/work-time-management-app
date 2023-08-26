@@ -193,6 +193,9 @@ const WorKLog = () => {
                 setOpenModal={setOpenModal}
                 recordItem={selectedRecordItem}
                 editModalData={editModalData}
+                setEditModalData={setEditModalData}
+                selectedMonthlyRecordItemLogs={selectedMonthlyRecordItemLogs}
+                setSelectedMonthlyRecordItemLogs={setSelectedMonthlyRecordItemLogs}
               />
             </>
           }

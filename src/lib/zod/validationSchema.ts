@@ -99,7 +99,7 @@ export const createRegisterRecordItemLogValidationSchema =
       ctx.addIssue({
         path: ["editStartTime"],
         code: "custom",
-        message: "その時間は既に登録されています。",
+        message: "その開始時間は既に登録されています。",
       });
     }
 
@@ -110,7 +110,7 @@ export const createRegisterRecordItemLogValidationSchema =
       ctx.addIssue({
         path: ["editEndTime"],
         code: "custom",
-        message: "その時間は既に登録されています。",
+        message: "その終了時間は既に登録されています。",
       });
     }
   });

@@ -31,7 +31,6 @@ export type ClientWorkLogData = {
 }
 
 export type ClientRecordItemLog = {
-  recordItemLogId: number;
   recordItemId: number;
   recordItemLogDate: number;
   recordItemLogDay: string;

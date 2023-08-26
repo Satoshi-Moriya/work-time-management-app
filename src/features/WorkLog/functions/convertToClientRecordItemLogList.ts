@@ -10,7 +10,6 @@ export const convertToClientRecordItemLogList = (convertData: RecordItemLog[]): 
     const day: string = getWeekdayFromDate(data.recordItemLogDate);
 
     return {
-      recordItemLogId: data.recordItemLogId,
       recordItemId: data.recordItemId,
       recordItemLogDate: convertedDate,
       recordItemLogDay: day,
