@@ -50,6 +50,7 @@ const WorKLog = () => {
   const [selectedMonthlyRecordItemLogs, setSelectedMonthlyRecordItemLogs] = useState<DailyClientRecordItemLog[]>([])
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
 
   useEffect(() => {
     (async() => {
@@ -104,6 +105,7 @@ const WorKLog = () => {
   }
 
   const recordItemLogEditHandler = (yyyymm: Date, date: number, selectedRecordItemLog: DailyClientRecordItemLog) => {
+    setToast({ message: null, isSuccess: null });
     setOpenModal('default');
     setEditModalData({yyyymm: yyyymm, date: date, recordItemLog: selectedRecordItemLog});
   }
@@ -196,6 +198,8 @@ const WorKLog = () => {
                 setEditModalData={setEditModalData}
                 selectedMonthlyRecordItemLogs={selectedMonthlyRecordItemLogs}
                 setSelectedMonthlyRecordItemLogs={setSelectedMonthlyRecordItemLogs}
+                toast={toast}
+                setToast={setToast}
               />
             </>
           }
