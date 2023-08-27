@@ -6,7 +6,7 @@ export const convertToDailyRecordItemLogData = (convertData: ClientRecordItemLog
     const existingData = result.find((data) => data.recordItemId === item.recordItemId && data.recordItemLogDate === item.recordItemLogDate);
 
     if (existingData) {
-      // 同じ日のデータがある場合は recordItemLogTime を追加し、recordItemLogSumSeconds を更新
+      // 同じ日のデータがある場合は recordItemLogTimeを追加し、recordItemLogSumSecondsを更新
       existingData.recordItemLogTime.push(item.recordItemLogTime);
       existingData.recordItemLogSumSeconds += item.recordItemLogSeconds;
     } else {

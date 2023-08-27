@@ -13,7 +13,7 @@ import { getDateParams } from "../functions/getDateParams";
 import { convertToClientRecordItemLogList } from "../functions/convertToClientRecordItemLogList";
 import { convertToDailyRecordItemLogData } from "../functions/convertToDailyRecordItemLogData";
 import { addDayNotRecordItemLog } from "../functions/addDayNotRecordItemLog";
-import { RecordItemLog, DailyClientRecordItemLog } from "../types";
+import { RecordItemLogType, DailyClientRecordItemLog } from "../types";
 
 const fetchRecordItemLogsAndConverted = async(
   selectedRecordItemId: number,
@@ -21,7 +21,7 @@ const fetchRecordItemLogsAndConverted = async(
   selectedMonthTo: string
 ): Promise<DailyClientRecordItemLog[]> => {
   const recordItemLogResponse =
-    await api.get<RecordItemLog[]>(`/record-item-logs/${selectedRecordItemId}`, {
+    await api.get<RecordItemLogType[]>(`/record-item-logs/${selectedRecordItemId}`, {
       params: {
         from: selectedMonthFrom,
         to: selectedMonthTo
@@ -32,7 +32,7 @@ const fetchRecordItemLogsAndConverted = async(
     return addDayNotRecordItemLog(selectedRecordItemId, monthlyRecordItemLogsData, selectedMonthTo);
 }
 
-const WorKLog = () => {
+const RecordItemLog = () => {
   const [ userId ] = useContext(AuthContext);
   const [recordItems, setRecordItems] = useState<{recordItemId: number, recordItemName: string}[]>([]);
   const [selectedRecordItem, setSelectedRecordItem] = useState<{text: string, value: string}>();
@@ -212,4 +212,4 @@ const WorKLog = () => {
   );
 }
 
-export default WorKLog;
+export default RecordItemLog;

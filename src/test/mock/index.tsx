@@ -1,7 +1,7 @@
 import Layout from "../../components/Layout";
 import Login from "../../features/Login/pages/Login";
-import Timer from "../../features/RecordItem/pages/RecordItem";
-import WorkLog from "../../features/WorkLog/pages/WorkLog";
+import RecordItem from "../../features/RecordItem/pages/RecordItem";
+import RecordItemLog from "../../features/RecordItemLog/pages/RecordItemLog";
 import Setting from "../../features/Setting/pages/Setting";
 import ChangeEmail from "../../features/ChangeEmail/pages/ChangeEmail";
 import ChangePassword from "../../features/ChangePassword/pages/ChangePassword";
@@ -19,8 +19,8 @@ export const routesConfig = [
     path: "/",
     element: <Layout />,
     children: [
-      { index: true, element: <Timer /> },
-      { path: "worklog", element: <WorkLog /> },
+      { index: true, element: <RecordItem /> },
+      { path: "recorditemlog", element: <RecordItemLog /> },
       {
         path: "setting",
         element: <Setting />,

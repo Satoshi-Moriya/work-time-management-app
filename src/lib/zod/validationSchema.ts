@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { convertTimeToSeconds } from "../../features/WorkLog/functions/convertTimeToSeconds";
-import { TimeRange } from "../../features/WorkLog/types";
+import { convertTimeToSeconds } from "../../features/RecordItemLog/functions/convertTimeToSeconds";
+import { TimeRange } from "../../features/RecordItemLog/types";
 
 export const changeEmailValidationSchema = z.object({
   password: z

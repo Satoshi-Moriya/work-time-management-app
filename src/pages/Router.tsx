@@ -3,7 +3,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "../components/Layout";
 import Login from '../features/Login/pages/Login';
 import RecordItem from "../features/RecordItem/pages/RecordItem";
-import WorkLog from "../features/WorkLog/pages/WorkLog";
+import RecordItemLog from "../features/RecordItemLog/pages/RecordItemLog";
 import Setting from "../features/Setting/pages/Setting";
 import ChangeEmail from "../features/ChangeEmail/pages/ChangeEmail";
 import ChangePassword from "../features/ChangePassword/pages/ChangePassword";
@@ -18,6 +18,7 @@ import ApiClientProvider from "../lib/api-client/ApiClientProvider";
 
 // Timerページで時間を計測中にページ遷移を防ぐために使用している
 // ReactRouterPromptを動かすために下記のようなルーディングの書き方をしている。
+// 公式にこの書き方の方が良いとも書かれている気がする（？）のでこのまま
 export const routesConfig = [
   { path: "login",
     element:
@@ -43,7 +44,7 @@ export const routesConfig = [
       </AuthProvider>,
     children: [
       { index: true, element: <RecordItem /> },
-      { path: "worklog", element: <WorkLog /> },
+      { path: "recorditemlog", element: <RecordItemLog /> },
       {
         path: "setting",
         element: <Setting />,

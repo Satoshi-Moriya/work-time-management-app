@@ -1,4 +1,4 @@
-import { getLastDayOfMonth } from "../../../../features/WorkLog/functions/getLastDayOfMonth"
+import { getLastDayOfMonth } from "../../../../features/RecordItemLog/functions/getLastDayOfMonth"
 
 describe("getLastDayOfMonthの単体テスト", () => {
 

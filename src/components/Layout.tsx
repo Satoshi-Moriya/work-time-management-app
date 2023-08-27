@@ -16,7 +16,7 @@ const Layout: React.FC = () => {
             <nav className="mt-2">
               <ul>
                 <MenuItem icon={<ImTable2 />} text="記録項目" url="/" />
-                <MenuItem icon={<TfiWrite />} text="記録表" url="worklog" />
+                <MenuItem icon={<TfiWrite />} text="記録表" url="recorditemlog" />
                 <MenuItem icon={<IoSettingsSharp />} text="設定" url="setting" />
               </ul>
             </nav>

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import MonthlyTotalTime from '../../../features/WorkLog/components/MonthlyTotalTime';
+import MonthlyTotalTime from '../../../features/RecordItemLog/components/MonthlyTotalTime';
 
 describe("MonthlyTotalTimeコンポーネントの単体テスト", () => {
 
