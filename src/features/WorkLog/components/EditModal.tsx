@@ -1,14 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal } from 'flowbite-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import axios from 'axios';
 
 import { createRegisterRecordItemLogValidationSchema } from '../../../lib/zod/validationSchema';
 import { DailyClientRecordItemLog, RecordItemLogTimeRange } from '../types';
 import convertSecondsToTime from '../../../functions/convertSecondsToTime';
-import axios from 'axios';
 import { api } from '../../../lib/api-client/ApiClientProvider';
 import { convertTimeToSeconds } from '../functions/convertTimeToSeconds';
-import { useState } from 'react';
 import Toast from '../../Toast/components/Toast';
 import { convertToClientRecordItemLogList } from '../functions/convertToClientRecordItemLogList';
 
@@ -20,6 +19,8 @@ export type EditModalProps = {
   setEditModalData: React.Dispatch<React.SetStateAction<{yyyymm: Date, date: number, recordItemLog: DailyClientRecordItemLog}>>;
   selectedMonthlyRecordItemLogs: DailyClientRecordItemLog[];
   setSelectedMonthlyRecordItemLogs: React.Dispatch<React.SetStateAction<DailyClientRecordItemLog[]>>;
+  toast: {message: string | null, isSuccess: boolean | null };
+  setToast: React.Dispatch<React.SetStateAction<{message: string | null, isSuccess: boolean | null }>>;
 }
 
 type FormValues = {
@@ -41,8 +42,9 @@ const EditModal: React.FC<EditModalProps> = ({
   setEditModalData,
   selectedMonthlyRecordItemLogs,
   setSelectedMonthlyRecordItemLogs,
+  toast,
+  setToast
 }) => {
-  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
   const modalRecordItemLogs = editModalData.recordItemLog.recordItemLogTime;
   const registerRecordItemLogValidationSchema = createRegisterRecordItemLogValidationSchema(modalRecordItemLogs);
   const hyphenFormatDate = `${editModalData.yyyymm.getFullYear()}-${padZero(editModalData.yyyymm.getMonth() + 1)}-${padZero(editModalData.date)}`;

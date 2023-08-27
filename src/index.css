@@ -16,3 +16,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* toastをmodalの背景より上に持ってくるため */
+div[data-floating-ui-portal] {
+  position: relative;
+  z-index: 30;
+}
