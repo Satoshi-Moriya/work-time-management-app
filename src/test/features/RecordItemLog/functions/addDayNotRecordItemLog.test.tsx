@@ -5,7 +5,7 @@ describe("addDayNotRecordItemLogの単体テスト", () => {
 
   test("月内に、recordItemLogがない日がある場合（2023年6月）", () => {
     const monthlyRecordItemLogList: DailyClientRecordItemLog[] = [
-      { recordItemId: 1, recordItemLogDate: 1, recordItemLogDay: "木", recordItemLogTime: [{recordItemLogId: 1, start: 5400, end: 9000}], recordItemLogSumSeconds: 5400 },
+      { recordItemId: 1, recordItemLogDate: 1, recordItemLogDay: "木", recordItemLogTime: [{recordItemLogId: 1, start: 5400, end: 9000}], recordItemLogSumSeconds: 3600 },
       { recordItemId: 1, recordItemLogDate: 2, recordItemLogDay: "金", recordItemLogTime: [{recordItemLogId: 2, start: 36000, end: 37800}], recordItemLogSumSeconds: 1800 },
     ];
     const expectedOutput = [

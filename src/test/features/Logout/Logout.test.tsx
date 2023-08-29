@@ -3,17 +3,25 @@ import userEvent from "@testing-library/user-event";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { rest } from "msw";
 import { setupServer } from "msw/lib/node";
+
 import { routesConfig } from "../../mock/index";
 
-const router = createMemoryRouter(routesConfig, {initialEntries: ["/"]});
+//  テストに関係ない無駄なapi通信をなくすためsettingに設定
+const router = createMemoryRouter(routesConfig, {initialEntries: ["/setting"]});
 
 const server = setupServer(
+  rest.post("http://localhost:8080/csrf", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        token: "testToken"
+      })
+    );
+  }),
+
   rest.post("http://localhost:8080/logout", (req, res, ctx) => {
     return res(
-      ctx.status(500),
-      ctx.json({
-        status: 500,
-      })
+      ctx.status(403)
     );
   })
 );
@@ -33,7 +41,12 @@ describe("Logoutの単体テスト", () => {
 
   test("ログアウトに失敗した場合", async () => {
     const user = userEvent.setup();
-    render(<RouterProvider router={router} />);
+    // toastのターゲットの要素がid="root"
+    render(
+      <div id="root">
+        <RouterProvider router={router} />
+      </div>
+    );
     const logoutButtonEl = screen.getByRole("button", { name: "ログアウト" });
 
     user.click(logoutButtonEl);
@@ -52,7 +65,11 @@ describe("Logoutの単体テスト", () => {
       })
     );
     const user = userEvent.setup();
-    render(<RouterProvider router={router} />);
+    render(
+      <div id="root">
+        <RouterProvider router={router} />
+      </div>
+    );
     const logoutButtonEl = screen.getByRole("button", { name: "ログアウト" });
 
     user.click(logoutButtonEl);

@@ -1,10 +1,4 @@
-import {
-  render,
-  renderHook,
-  screen,
-  act,
-  waitFor,
-} from "@testing-library/react";
+import { render, renderHook, screen, act, waitFor } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
@@ -26,10 +20,24 @@ const server = setupServer(
         message:
           "メールアドレスかパスワードが間違っており、ログインに失敗しました。",
         data: null,
-      }),
-      ctx.set("Authorization", "")
+      })
     );
-  })
+  }),
+
+  rest.post("http://localhost:8080/csrf", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        token: "testToken"
+      })
+    );
+  }),
+
+  rest.get("http://localhost:8080/record-items/:userId", (req, res, ctx) => {
+    return res(
+      ctx.status(200)
+    );
+  }),
 );
 
 describe("Loginページの単体テスト", () => {
@@ -143,8 +151,7 @@ describe("Loginページの単体テスト", () => {
                 updatedAt: null,
                 deletedAt: null,
               },
-            }),
-            ctx.set("Authorization", "Bearer tokentesthogehoge1")
+            })
           );
         })
       );
@@ -158,7 +165,8 @@ describe("Loginページの単体テスト", () => {
       await user.type(passwordInputEl, "test1234hashhash");
       await user.click(loginButtonEl);
 
-      const textEl = await screen.findByText("00:00:00");
+      // ログイン成功後ページ遷移の確認
+      const textEl = await screen.findByRole("heading", {name: "記録項目"});
       expect(textEl).toBeInTheDocument();
     });
   });

@@ -28,13 +28,15 @@ describe("Cancelコンポーネントの単体テスト", () => {
     const server = setupServer(
       rest.delete("http://localhost:8080/users/:userId", (req, res, ctx) => {
         return res(
-          ctx.status(500),
-          ctx.json(
-            {
-              message: "予期せぬ問題が発生し、アカウントを削除できませんでした。時間をおいて再度お試しください。",
-              isSuccess: false
-            }
-          )
+          ctx.status(403)
+        );
+      }),
+      rest.post("http://localhost:8080/csrf", (req, res, ctx) => {
+        return res(
+          ctx.status(200),
+          ctx.json({
+            token: "testToken"
+          })
         );
       })
     );
@@ -53,7 +55,12 @@ describe("Cancelコンポーネントの単体テスト", () => {
 
     test("アカウント削除が失敗した場合", async () => {
       const user = userEvent.setup();
-      render(<RouterProvider router={router} />);
+      // toastのターゲットの要素がid="root"
+      render(
+        <div id="root">
+          <RouterProvider router={router} />
+        </div>
+      );
       const buttonEl = screen.getByRole("button", {name: "退会する"});
       const confirmMock = jest.spyOn(window, "confirm");
       confirmMock.mockImplementation(() => true);
@@ -76,7 +83,12 @@ describe("Cancelコンポーネントの単体テスト", () => {
         })
       );
       const user = userEvent.setup();
-      render(<RouterProvider router={router} />);
+      // toastのターゲットの要素がid="root"
+      render(
+        <div id="root">
+          <RouterProvider router={router} />
+        </div>
+      );
       const buttonEl = screen.getByRole("button", {name: "退会する"});
       const confirmMock = jest.spyOn(window, "confirm");
       confirmMock.mockImplementation(() => true);
