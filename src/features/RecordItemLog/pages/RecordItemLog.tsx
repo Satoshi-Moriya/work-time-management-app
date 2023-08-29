@@ -13,7 +13,7 @@ import { getDateParams } from "../functions/getDateParams";
 import { convertToClientRecordItemLogList } from "../functions/convertToClientRecordItemLogList";
 import { convertToDailyRecordItemLogData } from "../functions/convertToDailyRecordItemLogData";
 import { addDayNotRecordItemLog } from "../functions/addDayNotRecordItemLog";
-import { RecordItemLog, DailyClientRecordItemLog } from "../types";
+import { RecordItemLogType, DailyClientRecordItemLog } from "../types";
 
 const fetchRecordItemLogsAndConverted = async(
   selectedRecordItemId: number,
@@ -21,7 +21,7 @@ const fetchRecordItemLogsAndConverted = async(
   selectedMonthTo: string
 ): Promise<DailyClientRecordItemLog[]> => {
   const recordItemLogResponse =
-    await api.get<RecordItemLog[]>(`/record-item-logs/${selectedRecordItemId}`, {
+    await api.get<RecordItemLogType[]>(`/record-item-logs/${selectedRecordItemId}`, {
       params: {
         from: selectedMonthFrom,
         to: selectedMonthTo
@@ -32,7 +32,7 @@ const fetchRecordItemLogsAndConverted = async(
     return addDayNotRecordItemLog(selectedRecordItemId, monthlyRecordItemLogsData, selectedMonthTo);
 }
 
-const WorKLog = () => {
+const RecordItemLog = () => {
   const [ userId ] = useContext(AuthContext);
   const [recordItems, setRecordItems] = useState<{recordItemId: number, recordItemName: string}[]>([]);
   const [selectedRecordItem, setSelectedRecordItem] = useState<{text: string, value: string}>();
@@ -48,7 +48,8 @@ const WorKLog = () => {
   const [toQuery, setToQuery] = useState(initToQueryParam);
   const [date, setDate] = useState(currentDate);
   const [selectedMonthlyRecordItemLogs, setSelectedMonthlyRecordItemLogs] = useState<DailyClientRecordItemLog[]>([])
-  const [isLoading, setIsLoading] = useState(true);
+  const [isRecordItemsLoading, setIsRecordItemsLoading] = useState(true);
+  const [isRecordItemLogsLoading, setIsRecordItemLogsLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
 
@@ -60,16 +61,21 @@ const WorKLog = () => {
         const recordItems: RecordItemType[] = recordItemsResponse.data;
         const recordItemsWithoutUserId = recordItems.map(({recordItemId, recordItemName}) => ({recordItemId, recordItemName}));
         setRecordItems(recordItemsWithoutUserId);
-        // /record-items/:userIdで取得してきたデータの1つ目のrecordItemが初期値になるから[0]
-        const initRecordItem = recordItemsWithoutUserId[0];
-        setSelectedRecordItem({text: initRecordItem.recordItemName, value: initRecordItem.recordItemId.toString()})
+        setIsRecordItemsLoading(false);
+        if (recordItems.length !== 0) {
+          // /record-items/:userIdで取得してきたデータの1つ目のrecordItemが初期値になるから[0]
+          const initRecordItem = recordItemsWithoutUserId[0];
+          setSelectedRecordItem({text: initRecordItem.recordItemName, value: initRecordItem.recordItemId.toString()})
 
-        // 記録表のデータ取得&表示
-        const monthlyRecordItemLogDataIncludingDayNotRecordItem =
-          await fetchRecordItemLogsAndConverted(initRecordItem.recordItemId, fromQuery, toQuery);
-        setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
-        setIsLoading(false);
+          // 記録表のデータ取得&表示
+          const monthlyRecordItemLogDataIncludingDayNotRecordItem =
+            await fetchRecordItemLogsAndConverted(initRecordItem.recordItemId, fromQuery, toQuery);
+          setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
+          setIsRecordItemLogsLoading(false);
+        }
       } catch(error) {
+        setIsRecordItemsLoading(false);
+        setIsRecordItemLogsLoading(false);
         setError("接続エラーが起きました。時間をおいて再度お試しください。");
       }
     })();
@@ -82,7 +88,7 @@ const WorKLog = () => {
         const monthlyRecordItemLogDataIncludingDayNotRecordItem =
           await fetchRecordItemLogsAndConverted(Number(selectedRecordItemValue), fromQuery, toQuery);
         setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
-        setIsLoading(false);
+        setIsRecordItemLogsLoading(false);
     } catch(error) {
       setError("接続エラーが起きました。時間をおいて再度お試しください。");
     }
@@ -95,7 +101,7 @@ const WorKLog = () => {
         const monthlyRecordItemLogDataIncludingDayNotRecordItem =
           await fetchRecordItemLogsAndConverted(Number(selectedRecordItem?.value), fromQueryParam, toQueryParam);
         setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
-        setIsLoading(false);
+        setIsRecordItemLogsLoading(false);
     } catch(error) {
       setError("接続エラーが起きました。時間をおいて再度お試しください。");
     }
@@ -113,6 +119,8 @@ const WorKLog = () => {
   return (
     <main className="pl-48 w-full min-h-screen">
       {
+        isRecordItemsLoading ? <Loading/>
+        :
         !error && recordItems.length !== 0 && (
         <div className="my-24 mx-auto px-7 w-[1137px] max-w-full">
           {/* recordItemsのlengthが0でない場合selectedRecordItemはdefinedではない */}
@@ -131,7 +139,7 @@ const WorKLog = () => {
           <div className="mt-10">
             <MonthlyTotalTime dateSumSeconds={selectedMonthlyRecordItemLogs.map(data => data.recordItemLogSumSeconds)} />
             {
-              isLoading ? <Loading/>
+            isRecordItemLogsLoading ? <Loading/>
             :
             <>
               <div className="mt-20 flex justify-end items-center">
@@ -206,10 +214,10 @@ const WorKLog = () => {
           </div>
         </div>
       )}
+      {!error && recordItems.length === 0 && <p className="flex justify-center items-center h-full">記録項目の登録がまだありません。</p>}
       {error && <p className="flex justify-center items-center h-full">{error}</p>}
-      {recordItems.length === 0 && <p className="flex justify-center items-center h-full">記録項目の登録がまだありません。</p>}
     </main>
   );
 }
 
-export default WorKLog;
+export default RecordItemLog;

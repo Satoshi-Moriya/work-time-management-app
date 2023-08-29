@@ -1,4 +1,4 @@
-import { convertTimeToSeconds } from "../../../../features/WorkLog/functions/convertTimeToSeconds"
+import { convertTimeToSeconds } from "../../../../features/RecordItemLog/functions/convertTimeToSeconds"
 
 describe("convertTimeToSecondsの単体テスト", () => {
 

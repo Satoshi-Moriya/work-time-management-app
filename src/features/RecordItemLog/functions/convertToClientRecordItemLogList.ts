@@ -1,9 +1,9 @@
-import { ClientRecordItemLog, RecordItemLog, RecordItemLogTimeRange } from "../types";
+import { ClientRecordItemLog, RecordItemLogType, RecordItemLogTimeRange } from "../types";
 import { convertTimeToSeconds } from "./convertTimeToSeconds";
 import { getWeekdayFromDate } from "./getWeekdayFromDate";
 
-export const convertToClientRecordItemLogList = (convertData: RecordItemLog[]): ClientRecordItemLog[] => {
-  const convertedData = convertData.map((data: RecordItemLog) => {
+export const convertToClientRecordItemLogList = (convertData: RecordItemLogType[]): ClientRecordItemLog[] => {
+  const convertedData = convertData.map((data: RecordItemLogType) => {
     const convertedStartTime: number = convertTimeToSeconds(data.recordItemLogStartTime);
     const convertedEndTime: number = convertTimeToSeconds(data.recordItemLogEndTime);
     const convertedDate: number = Number(data.recordItemLogDate.substring(data.recordItemLogDate.length - 2));
