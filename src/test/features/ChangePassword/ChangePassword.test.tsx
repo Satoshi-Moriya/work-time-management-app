@@ -66,8 +66,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
     await user.type(currentPasswordInputEl, "パスワード");
     user.clear(currentPasswordInputEl);
 
-    const passwordNoEmptyErrorMessageEl = await screen.findByText("現在のパスワードは必須です。");
-    expect(passwordNoEmptyErrorMessageEl).toBeInTheDocument();
+    const expectedPasswordEmptyErrorMessage = await screen.findByText("現在のパスワードは必須です。");
+    expect(expectedPasswordEmptyErrorMessage).toBeInTheDocument();
   });
 
   describe("新しいパスワードのバリデーションチェック", () => {
@@ -83,8 +83,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       });
       user.clear(newPasswordInputEl);
 
-      const newPasswordNoEmptyErrorMessageEl = await screen.findByText("新しいパスワードは必須です。");
-      expect(newPasswordNoEmptyErrorMessageEl).toBeInTheDocument();
+      const expectedNewPasswordEmptyErrorMessage = await screen.findByText("新しいパスワードは必須です。");
+      expect(expectedNewPasswordEmptyErrorMessage).toBeInTheDocument();
     });
 
     test("最低文字数のバリデーションチェック", async() => {
@@ -94,8 +94,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
 
       user.type(newPasswordInputEl, "test123");
 
-      const newPasswordMinErrorMessageEl = await screen.findByText("パスワードは8文字以上で入力してください。");
-      expect(newPasswordMinErrorMessageEl).toBeInTheDocument();
+      const expectedNewPasswordMinErrorMessage = await screen.findByText("パスワードは8文字以上で入力してください。");
+      expect(expectedNewPasswordMinErrorMessage).toBeInTheDocument();
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
       await act(async() => {
@@ -103,7 +103,7 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
         await user.type(newPasswordInputEl, "test1234");
       });
 
-      expect(newPasswordMinErrorMessageEl).not.toBe("パスワードは8文字以上で入力してください。");
+      expect(expectedNewPasswordMinErrorMessage).not.toBe("パスワードは8文字以上で入力してください。");
     });
 
     test("最高文字数のバリデーションチェック", async() => {
@@ -113,8 +113,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
 
       user.type(newPasswordInputEl, "test1234test1234t");
 
-      const newPasswordMaxErrorMessageEl = await screen.findByText("パスワードは16文字以下で入力してください");
-      expect(newPasswordMaxErrorMessageEl).toBeInTheDocument();
+      const expectedNewPasswordMaxErrorMessage = await screen.findByText("パスワードは16文字以下で入力してください");
+      expect(expectedNewPasswordMaxErrorMessage).toBeInTheDocument();
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
       await act(async() => {
@@ -122,7 +122,7 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
         await user.type(newPasswordInputEl, "test1234test1234");
       });
 
-      expect(newPasswordMaxErrorMessageEl).not.toBe("パスワードは16文字以下で入力してください");
+      expect(expectedNewPasswordMaxErrorMessage).not.toBe("パスワードは16文字以下で入力してください");
     });
 
     test("半角英数字混合のバリデーションチェック", async() => {
@@ -132,8 +132,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
 
       user.type(newPasswordInputEl, "testtest");
 
-      const newPasswordHalfWidthAlphanumericErrorMessageEl = await screen.findByText("パスワードは半角英数字混合で入力してください");
-      expect(newPasswordHalfWidthAlphanumericErrorMessageEl).toBeInTheDocument();
+      const expectedNewPasswordHalfWidthAlphanumericErrorMessage = await screen.findByText("パスワードは半角英数字混合で入力してください");
+      expect(expectedNewPasswordHalfWidthAlphanumericErrorMessage).toBeInTheDocument();
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
       await act(async() => {
@@ -141,7 +141,7 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
         await user.type(newPasswordInputEl, "test1234");
       });
 
-      expect(newPasswordHalfWidthAlphanumericErrorMessageEl).not.toBe("パスワードは半角英数字混合で入力してください");
+      expect(expectedNewPasswordHalfWidthAlphanumericErrorMessage).not.toBe("パスワードは半角英数字混合で入力してください");
     });
   });
 
@@ -156,8 +156,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       user.clear(confirmNewPasswordInputEl);
     });
 
-    const passwordNoEmptyErrorMessageEl = await screen.findByText("新しいパスワード（確認）は必須です。");
-    expect(passwordNoEmptyErrorMessageEl).toBeInTheDocument();
+    const expectedPasswordEmptyErrorMessage = await screen.findByText("新しいパスワード（確認）は必須です。");
+    expect(expectedPasswordEmptyErrorMessage).toBeInTheDocument();
   });
 
   test("新しいパスワードと新しいパスワード（確認）の一致チェック", async() => {
@@ -169,8 +169,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
     user.type(newPasswordInputEl, "test1234");
     user.type(confirmNewPasswordInputEl, "test123");
 
-    const passwordNotMatchErrorMessageEl = await screen.findByText("パスワードが一致しません");
-    expect(passwordNotMatchErrorMessageEl).toBeInTheDocument();
+    const expectedPasswordNotMatchErrorMessage = await screen.findByText("パスワードが一致しません");
+    expect(expectedPasswordNotMatchErrorMessage).toBeInTheDocument();
 
     // ToDo ここをactで囲まなければいけない理由がいまいちわからない
     await act(async() => {
@@ -178,7 +178,7 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       await user.type(confirmNewPasswordInputEl, "test1234");
     });
 
-    expect(passwordNotMatchErrorMessageEl).not.toBe("パスワードが一致しません");
+    expect(expectedPasswordNotMatchErrorMessage).not.toBe("パスワードが一致しません");
   });
 
   test("現在のパスワードと新しいパスワードの不一致チェック", async() => {
@@ -193,8 +193,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       await user.type(newPasswordInputEl, "test1234");
     });
 
-    const passwordMatchErrorMessageEl = await screen.findByText("現在のパスワードと同じです");
-    expect(passwordMatchErrorMessageEl).toBeInTheDocument();
+    const expectedPasswordMatchErrorMessage = await screen.findByText("現在のパスワードと同じです");
+    expect(expectedPasswordMatchErrorMessage).toBeInTheDocument();
 
     // ToDo ここをactで囲まなければいけない理由がいまいちわからない
     await act(async() => {
@@ -202,7 +202,7 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       await user.type(newPasswordInputEl, "test12345");
     });
 
-    expect(passwordMatchErrorMessageEl).not.toBe("現在のパスワードと同じです");
+    expect(expectedPasswordMatchErrorMessage).not.toBe("現在のパスワードと同じです");
   });
 
   describe("「変更する」ボタンのクリック後のテスト", () => {
@@ -240,8 +240,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
-      const toastTextEl = await within(alertEl).findByText("パスワードが更新されました。");
-      expect(toastTextEl).toBeInTheDocument();
+      const expectedToastText = await within(alertEl).findByText("パスワードが更新されました。");
+      expect(expectedToastText).toBeInTheDocument();
     })
 
     // ToDo クライアント側の実装で全てのエラーで同じメッセージにしてしまってるのが原因で落ちる（→レスポンスのメッセージによって変えるべき？）
@@ -279,8 +279,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
-      const toastTextEl = await within(alertEl).findByText("無効なパスワードです。");
-      expect(toastTextEl).toBeInTheDocument();
+      const expectedToastText = await within(alertEl).findByText("無効なパスワードです。");
+      expect(expectedToastText).toBeInTheDocument();
     })
 
     test("パスワードの変更が予期せぬエラーで失敗した場合", async () => {
@@ -317,8 +317,8 @@ describe("ChangePasswordコンポーネントの単体テスト", () => {
       user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
-      const toastTextEl = await within(alertEl).findByText("予期せぬエラーが起こり、パスワードの更新ができませんでした。");
-      expect(toastTextEl).toBeInTheDocument();
+      const expectedToastText = await within(alertEl).findByText("予期せぬエラーが起こり、パスワードの更新ができませんでした。");
+      expect(expectedToastText).toBeInTheDocument();
     })
   })
 });
