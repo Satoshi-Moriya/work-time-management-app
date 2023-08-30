@@ -1,10 +1,4 @@
-import {
-  render,
-  renderHook,
-  screen,
-  act,
-  waitFor,
-} from "@testing-library/react";
+import { render, renderHook, screen, act, waitFor } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import userEvent from "@testing-library/user-event";
@@ -15,9 +9,7 @@ import { setupServer } from "msw/lib/node";
 import { signUpValidationSchema } from "../../../lib/zod/validationSchema";
 import { routesConfig } from "../../../pages/Router";
 
-const router = createMemoryRouter(routesConfig, {
-  initialEntries: ["/signup"],
-});
+const router = createMemoryRouter(routesConfig, { initialEntries: ["/signup"] });
 
 const server = setupServer(
   rest.post("http://localhost:8080/auth/signup", (req, res, ctx) => {
@@ -152,10 +144,8 @@ describe("SingUpページの単体テスト", () => {
       });
       user.clear(emailInputEl);
 
-      const emailNoEmptyErrorMessageEl = await screen.findByText(
-        "メールアドレスは必須です。"
-      );
-      expect(emailNoEmptyErrorMessageEl).toBeInTheDocument();
+      const expectedEmailEmptyErrorMessage = await screen.findByText("メールアドレスは必須です。");
+      expect(expectedEmailEmptyErrorMessage).toBeInTheDocument();
     });
 
     test("形式のバリデーションチェック", async () => {
@@ -165,10 +155,8 @@ describe("SingUpページの単体テスト", () => {
 
       user.type(emailInputEl, "email");
 
-      const emailFormatErrorMessageEl = await screen.findByText(
-        "メールアドレスが正しい形式ではありません。"
-      );
-      expect(emailFormatErrorMessageEl).toBeInTheDocument();
+      const expectedEmailFormatErrorMessage = await screen.findByText("メールアドレスが正しい形式ではありません。");
+      expect(expectedEmailFormatErrorMessage).toBeInTheDocument();
     });
   });
 
@@ -184,10 +172,8 @@ describe("SingUpページの単体テスト", () => {
       });
       user.clear(passwordInputEl);
 
-      const passwordNoEmptyErrorMessageEl = await screen.findByText(
-        "パスワードは必須です。"
-      );
-      expect(passwordNoEmptyErrorMessageEl).toBeInTheDocument();
+      const expectedPasswordEmptyErrorMessage = await screen.findByText("パスワードは必須です。");
+      expect(expectedPasswordEmptyErrorMessage).toBeInTheDocument();
     });
 
     test("最低文字数のバリデーションチェック", async () => {
@@ -197,10 +183,8 @@ describe("SingUpページの単体テスト", () => {
 
       user.type(passwordInputEl, "test123");
 
-      const passwordMinErrorMessageEl = await screen.findByText(
-        "パスワードは8文字以上で入力してください。"
-      );
-      expect(passwordMinErrorMessageEl).toBeInTheDocument();
+      const expectedPasswordMinErrorMessage = await screen.findByText("パスワードは8文字以上で入力してください。");
+      expect(expectedPasswordMinErrorMessage).toBeInTheDocument();
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
       await act(async () => {
@@ -208,9 +192,7 @@ describe("SingUpページの単体テスト", () => {
         await user.type(passwordInputEl, "test1234");
       });
 
-      expect(passwordMinErrorMessageEl).not.toBe(
-        "パスワードは8文字以上で入力してください。"
-      );
+      expect(expectedPasswordMinErrorMessage).not.toBe("パスワードは8文字以上で入力してください。");
     });
 
     test("最高文字数のバリデーションチェック", async () => {
@@ -220,10 +202,8 @@ describe("SingUpページの単体テスト", () => {
 
       user.type(passwordInputEl, "test1234test1234t");
 
-      const passwordMaxErrorMessageEl = await screen.findByText(
-        "パスワードは16文字以下で入力してください"
-      );
-      expect(passwordMaxErrorMessageEl).toBeInTheDocument();
+      const expectedPasswordMaxErrorMessage = await screen.findByText("パスワードは16文字以下で入力してください");
+      expect(expectedPasswordMaxErrorMessage).toBeInTheDocument();
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
       await act(async () => {
@@ -231,9 +211,7 @@ describe("SingUpページの単体テスト", () => {
         await user.type(passwordInputEl, "test1234test1234");
       });
 
-      expect(passwordMaxErrorMessageEl).not.toBe(
-        "パスワードは16文字以下で入力してください"
-      );
+      expect(expectedPasswordMaxErrorMessage).not.toBe("パスワードは16文字以下で入力してください");
     });
 
     test("半角英数字混合のバリデーションチェック", async () => {
@@ -243,9 +221,8 @@ describe("SingUpページの単体テスト", () => {
 
       user.type(passwordInputEl, "testtest");
 
-      const passwordHalfWidthAlphanumericErrorMessageEl =
-        await screen.findByText("パスワードは半角英数字混合で入力してください");
-      expect(passwordHalfWidthAlphanumericErrorMessageEl).toBeInTheDocument();
+      const expectedPasswordHalfWidthAlphanumericErrorMessage = await screen.findByText("パスワードは半角英数字混合で入力してください");
+      expect(expectedPasswordHalfWidthAlphanumericErrorMessage).toBeInTheDocument();
 
       // ToDo ここをactで囲まなければいけない理由がいまいちわからない
       await act(async () => {
@@ -253,9 +230,7 @@ describe("SingUpページの単体テスト", () => {
         await user.type(passwordInputEl, "test1234");
       });
 
-      expect(passwordHalfWidthAlphanumericErrorMessageEl).not.toBe(
-        "パスワードは半角英数字混合で入力してください"
-      );
+      expect(expectedPasswordHalfWidthAlphanumericErrorMessage).not.toBe("パスワードは半角英数字混合で入力してください");
     });
   });
 
@@ -271,10 +246,8 @@ describe("SingUpページの単体テスト", () => {
       user.clear(confirmPasswordInputEl);
     });
 
-    const passwordNoEmptyErrorMessageEl = await screen.findByText(
-      "パスワード（確認）は必須です。"
-    );
-    expect(passwordNoEmptyErrorMessageEl).toBeInTheDocument();
+    const expectedPasswordEmptyErrorMessageEl = await screen.findByText("パスワード（確認）は必須です。");
+    expect(expectedPasswordEmptyErrorMessageEl).toBeInTheDocument();
   });
 
   test("パスワードとパスワード（確認）の一致チェック", async () => {
@@ -287,10 +260,8 @@ describe("SingUpページの単体テスト", () => {
     user.type(passwordInputEl, "test1234");
     user.type(confirmPasswordInputEl, "test123");
 
-    const passwordNotMatchErrorMessageEl = await screen.findByText(
-      "パスワードが一致しません"
-    );
-    expect(passwordNotMatchErrorMessageEl).toBeInTheDocument();
+    const expectedPasswordNotMatchErrorMessage = await screen.findByText("パスワードが一致しません");
+    expect(expectedPasswordNotMatchErrorMessage).toBeInTheDocument();
 
     // ToDo ここをactで囲まなければいけない理由がいまいちわからない
     await act(async () => {
@@ -298,7 +269,7 @@ describe("SingUpページの単体テスト", () => {
       await user.type(confirmPasswordInputEl, "test1234");
     });
 
-    expect(passwordNotMatchErrorMessageEl).not.toBe("パスワードが一致しません");
+    expect(expectedPasswordNotMatchErrorMessage).not.toBe("パスワードが一致しません");
   });
 
   describe("api通信のテスト", () => {
@@ -326,15 +297,13 @@ describe("SingUpページの単体テスト", () => {
       await user.type(confirmPasswordInputEl, "test12345");
       await user.click(submitButtonEl);
 
-      const textEl = await screen.findByText("仮登録完了");
-      expect(textEl).toBeInTheDocument();
+      const targetPageText = await screen.findByText("仮登録完了");
+      expect(targetPageText).toBeInTheDocument();
 
-      // ユーザー登録画面に戻る
+      // 次のテストのためにユーザー登録画面に戻る
       const loginPageBackEl = screen.getByText("ログインページへ戻る");
       await user.click(loginPageBackEl);
-      const signupPageForwardEl = await screen.findByText(
-        "アカウントをお持ちでない場合"
-      );
+      const signupPageForwardEl = await screen.findByText("アカウントをお持ちでない場合");
       await user.click(signupPageForwardEl);
     });
 
@@ -357,8 +326,7 @@ describe("SingUpページの単体テスト", () => {
       render(<RouterProvider router={router} />);
       const emailInputEl = screen.getByPlaceholderText("メールアドレス");
       const passwordInputEl = screen.getByPlaceholderText("パスワード");
-      const confirmPasswordInputEl =
-        screen.getByPlaceholderText("パスワード（確認）");
+      const confirmPasswordInputEl = screen.getByPlaceholderText("パスワード（確認）");
       const submitButtonEl = screen.getByRole("button", { name: "送信" });
 
       await user.type(emailInputEl, "test@test.com");
@@ -366,10 +334,8 @@ describe("SingUpページの単体テスト", () => {
       await user.type(confirmPasswordInputEl, "test12345");
       await user.click(submitButtonEl);
 
-      const textEl = await screen.findByText(
-        "Request failed with status code 500"
-      );
-      expect(textEl).toBeInTheDocument();
+      const expectedMessage = await screen.findByText("Request failed with status code 500");
+      expect(expectedMessage).toBeInTheDocument();
     });
   });
 });

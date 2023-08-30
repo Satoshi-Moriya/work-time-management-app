@@ -64,8 +64,8 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
     await user.type(passwordInputEl, "パスワード");
     user.clear(passwordInputEl);
 
-    const passwordErrorMessageEl = await screen.findByText("パスワードは必須です。");
-    expect(passwordErrorMessageEl).toBeInTheDocument();
+    const expectedPasswordErrorMessage = await screen.findByText("パスワードは必須です。");
+    expect(expectedPasswordErrorMessage).toBeInTheDocument();
   });
 
   test("メールアドレスのバリデーションチェック（形式チェック）", async() => {
@@ -75,8 +75,8 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
 
     user.type(emailInputEl, "email");
 
-    const emailFormatErrorMessageEl = await screen.findByText("メールアドレスが正しい形式ではありません。");
-    expect(emailFormatErrorMessageEl).toBeInTheDocument();
+    const expectedEmailFormatErrorMessage = await screen.findByText("メールアドレスが正しい形式ではありません。");
+    expect(expectedEmailFormatErrorMessage).toBeInTheDocument();
   });
 
   test("メールアドレスのバリデーションチェック（必須チェック）", async() => {
@@ -91,8 +91,8 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
       await user.clear(emailInputEl);
     })
 
-    const emailFormatErrorMessageEl = await screen.findByText("メールアドレスは必須です。");
-    expect(emailFormatErrorMessageEl).toBeInTheDocument();
+    const expectedEmailFormatErrorMessage = await screen.findByText("メールアドレスは必須です。");
+    expect(expectedEmailFormatErrorMessage).toBeInTheDocument();
   });
 
   describe("「保存する」ボタンのクリック後のテスト", () => {
@@ -128,8 +128,8 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
       user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
-      const toastTextEl = await within(alertEl).findByText("メールアドレスが更新されました。")
-      expect(toastTextEl).toBeInTheDocument();
+      const expectedToastText = await within(alertEl).findByText("メールアドレスが更新されました。")
+      expect(expectedToastText).toBeInTheDocument();
     })
 
     // ToDo クライアント側の実装で全てのエラーで同じメッセージにしてしまってるのが原因で落ちる（→レスポンスのメッセージによって変えるべき？）
@@ -165,8 +165,8 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
       user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
-      const toastTextEl = await within(alertEl).findByText("無効なパスワードです。")
-      expect(toastTextEl).toBeInTheDocument();
+      const expectedToastText = await within(alertEl).findByText("無効なパスワードです。")
+      expect(expectedToastText).toBeInTheDocument();
     })
 
     test("メールアドレスの変更が予期せぬエラーで失敗した場合", async () => {
@@ -195,8 +195,8 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
       user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
-      const toastTextEl = await within(alertEl).findByText("予期せぬエラーが起こり、メールアドレスの更新ができませんでした。")
-      expect(toastTextEl).toBeInTheDocument();
+      const expectedToastText = await within(alertEl).findByText("予期せぬエラーが起こり、メールアドレスの更新ができませんでした。")
+      expect(expectedToastText).toBeInTheDocument();
     })
   })
 });

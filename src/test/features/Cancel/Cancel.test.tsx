@@ -68,8 +68,8 @@ describe("Cancelコンポーネントの単体テスト", () => {
       user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
-      const toastTextEl = await within(alertEl).findByText("予期せぬ問題が発生し、アカウントを削除できませんでした。時間をおいて再度お試しください。")
-      expect(toastTextEl).toBeInTheDocument();
+      const expectedToastText = await within(alertEl).findByText("予期せぬ問題が発生し、アカウントを削除できませんでした。時間をおいて再度お試しください。")
+      expect(expectedToastText).toBeInTheDocument();
 
       confirmMock.mockRestore();
     })
@@ -95,8 +95,8 @@ describe("Cancelコンポーネントの単体テスト", () => {
 
       user.click(buttonEl);
 
-      const textEl = await screen.findByRole("heading", { name: "ログイン" });
-      expect(textEl).toBeInTheDocument();
+      const expectedTargetPageText = await screen.findByRole("heading", { name: "ログイン" });
+      expect(expectedTargetPageText).toBeInTheDocument();
 
       confirmMock.mockRestore();
     })

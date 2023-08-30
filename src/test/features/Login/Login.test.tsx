@@ -131,8 +131,8 @@ describe("Loginページの単体テスト", () => {
       await user.type(passwordInputEl, "test12345");
       await user.click(loginButtonEl);
 
-      const alertEl = await screen.findByRole("alert");
-      expect(alertEl).toBeInTheDocument();
+      const expectedAlertEl = await screen.findByRole("alert");
+      expect(expectedAlertEl).toBeInTheDocument();
     });
 
     test("ログインに成功した場合", async () => {
@@ -165,9 +165,8 @@ describe("Loginページの単体テスト", () => {
       await user.type(passwordInputEl, "test1234hashhash");
       await user.click(loginButtonEl);
 
-      // ログイン成功後ページ遷移の確認
-      const textEl = await screen.findByRole("heading", {name: "記録項目"});
-      expect(textEl).toBeInTheDocument();
+      const expectedTargetPageText = await screen.findByRole("heading", {name: "記録項目"});
+      expect(expectedTargetPageText).toBeInTheDocument();
     });
   });
 });

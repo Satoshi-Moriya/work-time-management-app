@@ -52,8 +52,8 @@ describe("Logoutの単体テスト", () => {
     user.click(logoutButtonEl);
 
     const alertEl = await screen.findByRole("alert");
-    const toastTextEl = await within(alertEl).findByText("予期せぬエラーが起こり、ログアウトができませんでした。")
-    expect(toastTextEl).toBeInTheDocument();
+    const expectedToastText = await within(alertEl).findByText("予期せぬエラーが起こり、ログアウトができませんでした。")
+    expect(expectedToastText).toBeInTheDocument();
   });
 
   test("ログアウトに成功した場合", async () => {
@@ -74,7 +74,7 @@ describe("Logoutの単体テスト", () => {
 
     user.click(logoutButtonEl);
 
-    const textEl = await screen.findByRole("heading", { name: "ログイン" });
-    expect(textEl).toBeInTheDocument();
+    const expectedTargetPageText = await screen.findByRole("heading", { name: "ログイン" });
+    expect(expectedTargetPageText).toBeInTheDocument();
   });
 });

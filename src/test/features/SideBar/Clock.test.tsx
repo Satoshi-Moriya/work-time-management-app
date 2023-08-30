@@ -24,6 +24,4 @@ describe("Clockコンポーネントの単体テスト", () => {
     const timeAdvEl = screen.getByText("2023/06/05/16:31:25");
     expect(timeAdvEl).toBeInTheDocument();
   })
-
-  //ToDo 日本時間であることの保証が必要？
 });
