@@ -1,6 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 import { changeEmailValidationSchema } from "../../../lib/zod/validationSchema";
@@ -15,15 +15,34 @@ type FormValues = {
 }
 
 const ChangeEmail = () => {
-  const [ userId, userEmail ] = useContext(AuthContext);
+  const [ userId ] = useContext(AuthContext);
   const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
+
+  useEffect(() => {
+    (async() => {
+      try {
+        const csrfToken = await axios.post("http://localhost:8080/csrf");
+        const headers = {
+          "Content-Type": "application/json;charset=utf-8",
+          "X-CSRF-TOKEN": csrfToken.data.token
+        };
+        const responseData = await api.get(`/users/${userId}/email`, {
+          headers: headers
+        });
+        const userEmail: string = responseData.data;
+        reset({password: "", email: userEmail});
+      } catch(error) {
+        setToast({message: "予期せぬエラーが発生し、記録項目を取得できませんでした。", isSuccess: false});
+      }
+    })();
+  }, []);
+
   const {
     register,
     handleSubmit,
     formState: {errors},
     reset
   } = useForm<FormValues>({
-    defaultValues: { email: userEmail },
     mode: "onChange",
     resolver: zodResolver(changeEmailValidationSchema),
   });
@@ -45,7 +64,6 @@ const ChangeEmail = () => {
     } catch(error) {
       setToast({message: "予期せぬエラーが起こり、メールアドレスの更新ができませんでした。", isSuccess: false});
     }
-    reset();
   };
 
   return (

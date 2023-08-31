@@ -15,7 +15,7 @@ type ApiClientProviderProps = {
 
 const ApiClientProvider: React.FC<ApiClientProviderProps> = ({ children }) => {
   const navigate = useNavigate();
-  const [ , , setUserId ] = useContext(AuthContext);
+  const [ , setUserId ] = useContext(AuthContext);
 
   useEffect(() => {
     const responseInterceptor = api.interceptors.response.use(

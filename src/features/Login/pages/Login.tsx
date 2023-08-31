@@ -20,7 +20,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [failAlert, setFailAlert] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [ , ,setUserId, setUserEmail] = useContext(AuthContext);
+  const [ , setUserId] = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -43,7 +43,6 @@ const Login = () => {
         headers: headers
       })
       setUserId(response.data.userId as number | null);
-      setUserEmail(response.data.userEmail as string | null);
       navigate("/");
     } catch(error) {
       let message = "";

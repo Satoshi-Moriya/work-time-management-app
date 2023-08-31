@@ -10,7 +10,7 @@ import { api } from "../../../lib/api-client/ApiClientProvider";
 const Cancel = () => {
   const navigate = useNavigate();
   const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
-  const [userId, , setUserId] = useContext(AuthContext)
+  const [userId, setUserId] = useContext(AuthContext)
 
   const accountDeleteHandler = async () => {
     const confirm = window.confirm("本当にアカウントを削除してもよろしいですか？")
