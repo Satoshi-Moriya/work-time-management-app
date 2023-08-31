@@ -25,6 +25,17 @@ const server = setupServer(
     );
   }),
 
+  rest.get("http://localhost:8080/users/:userId/email", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(
+        {
+          data: "mockEmail@test.com"
+        }
+      )
+    );
+  }),
+
   rest.post("http://localhost:8080/csrf", (req, res, ctx) => {
     return res(
       ctx.status(200),
@@ -58,7 +69,11 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
 
   test("パスワードのバリデーションチェック", async() => {
     const user = userEvent.setup();
-    render(<ChangeEmail />);
+    render(
+      <div id="root">
+        <RouterProvider router={router} />
+      </div>
+    );
     const passwordInputEl = screen.getByPlaceholderText('パスワード');
 
     await user.type(passwordInputEl, "パスワード");
@@ -70,7 +85,11 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
 
   test("メールアドレスのバリデーションチェック（形式チェック）", async() => {
     const user = userEvent.setup();
-    render(<ChangeEmail />);
+    render(
+      <div id="root">
+        <RouterProvider router={router} />
+      </div>
+    );
     const emailInputEl = screen.getByPlaceholderText('メールアドレス');
 
     user.type(emailInputEl, "email");
@@ -81,7 +100,11 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
 
   test("メールアドレスのバリデーションチェック（必須チェック）", async() => {
     const user = userEvent.setup();
-    render(<ChangeEmail />);
+    render(
+      <div id="root">
+        <RouterProvider router={router} />
+      </div>
+    );
     const emailInputEl = screen.getByPlaceholderText('メールアドレス');
 
     // zodで2つバリデーションを設定しているせいかつ、一度文字を入力するという状況を作り出すため、
@@ -121,11 +144,11 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
       const buttonEl = screen.getByRole("button", {name: "保存する"});
 
-      await act(async () => {
-        await user.type(passwordInputEl, "testpassdata001");
-        await user.type(emailInputEl, "newEmail@test.com");
-      });
-      user.click(buttonEl);
+
+      await user.type(passwordInputEl, "testpassdata001");
+      await user.clear(emailInputEl);
+      await user.type(emailInputEl, "newEmail@test.com");
+      await user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
       const expectedToastText = await within(alertEl).findByText("メールアドレスが更新されました。")
@@ -162,7 +185,7 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
         await user.type(passwordInputEl, "testpassdata001");
         await user.type(emailInputEl, "newEmail@test.com");
       });
-      user.click(buttonEl);
+      await user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
       const expectedToastText = await within(alertEl).findByText("無効なパスワードです。")
@@ -188,11 +211,10 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
       const emailInputEl = screen.getByPlaceholderText('メールアドレス');
       const buttonEl = screen.getByRole("button", {name: "保存する"});
 
-      await act(async () => {
-        await user.type(passwordInputEl, "testpassdata001");
-        await user.type(emailInputEl, "newEmail@test.com");
-      });
-      user.click(buttonEl);
+      await user.type(passwordInputEl, "testpassdata001");
+      await user.clear(emailInputEl);
+      await user.type(emailInputEl, "newEmail@test.com");
+      await user.click(buttonEl);
 
       const alertEl = await screen.findByRole("alert");
       const expectedToastText = await within(alertEl).findByText("予期せぬエラーが起こり、メールアドレスの更新ができませんでした。")

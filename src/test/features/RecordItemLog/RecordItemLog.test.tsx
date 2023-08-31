@@ -70,7 +70,7 @@ describe("RecordItemLogのテスト", () => {
 
     test("取得してきた記録項目がある場合、selectboxに記録項目が正しく表示される", async() => {
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
@@ -86,7 +86,7 @@ describe("RecordItemLogのテスト", () => {
 
     test("取得してきた記録項目がない場合、画面に適切なメッセージが表示される", async() => {
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
@@ -106,7 +106,7 @@ describe("RecordItemLogのテスト", () => {
 
     test("記録項目を取得に失敗した場合、画面にエラーメッセージが表示される", async() => {
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
@@ -123,7 +123,7 @@ describe("RecordItemLogのテスト", () => {
 
     test("記録項目と取得してきた記録項目のその月の記録が取得できた場合、記録表が画面に正しく表示される", async () => {
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
@@ -206,7 +206,7 @@ describe("RecordItemLogのテスト", () => {
 
     test("記録項目は取得できたが、取得してきた記録項目のその月の記録が取得に失敗した場合、画面にエラーメッセージが表示される", async () => {
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
@@ -254,7 +254,7 @@ describe("RecordItemLogのテスト", () => {
     test("記録項目を変更した場合、記録表が画面に正しく表示される", async () => {
       const user = userEvent.setup();
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
@@ -321,7 +321,7 @@ describe("RecordItemLogのテスト", () => {
     test("記録項目を変更したとき、データ取得に失敗した場合、画面にエラーメッセージが表示される", async () => {
       const user = userEvent.setup();
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
@@ -400,7 +400,7 @@ describe("RecordItemLogのテスト", () => {
         })
       );
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
@@ -429,7 +429,7 @@ describe("RecordItemLogのテスト", () => {
     test("年月を変更したときにデータ取得に失敗した場合、画面にエラーメッセージが表示される", async () => {
       const user = userEvent.setup();
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
@@ -483,7 +483,7 @@ describe("RecordItemLogのテスト", () => {
         })
       );
       render(
-        <AuthContext.Provider value={[ 1, "mock@email.com", () => {}, () => {}]} >
+        <AuthContext.Provider value={[ 1, () => {}]} >
           <RecordItemLog />
         </AuthContext.Provider>
       );
