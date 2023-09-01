@@ -29,17 +29,9 @@ const RecordItem = () => {
   const recordItemAddHandler = async() => {
     if (recordItemText === "") return;
     try {
-      const csrfToken = await axios.post("http://localhost:8080/csrf");
-      const headers = {
-        "Content-Type": "application/json;charset=utf-8",
-        "X-CSRF-TOKEN": csrfToken.data.token
-      };
-      await api.post("/record-items",
-      {
+      await api.post("/record-items", {
         userId: userId,
         recordItemName: recordItemText
-      } ,{
-        headers: headers
       });
       setToast({message: "記録項目が登録されました。", isSuccess: true});
     } catch(error) {
@@ -57,14 +49,7 @@ const RecordItem = () => {
     const confirm = window.confirm(`本当に「${recordItemText}」を削除してもよろしいですか？削除すると「${recordItemText}」の記録が全て消えます。`)
     if (confirm) {
       try {
-        const csrfToken = await axios.post("http://localhost:8080/csrf");
-        const headers = {
-          "Content-Type": "application/json;charset=utf-8",
-          "X-CSRF-TOKEN": csrfToken.data.token
-        };
-        await api.delete(`/record-items/${recordItemId}`, {
-          headers: headers
-        });
+        await api.delete(`/record-items/${recordItemId}`);
         setToast({message: "記録項目が削除されました。", isSuccess: true});
       } catch(error) {
         setToast({message: "予期せぬエラーが発生し、記録項目が削除できませんでした。", isSuccess: false});

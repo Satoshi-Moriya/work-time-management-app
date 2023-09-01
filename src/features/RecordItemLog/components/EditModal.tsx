@@ -60,20 +60,13 @@ const EditModal: React.FC<EditModalProps> = ({
   });
   const onSubmit: SubmitHandler<FormValues> = async(data) => {
     try {
-      const csrfToken = await axios.post("http://localhost:8080/csrf");
-      const headers = {
-        "Content-Type": "application/json;charset=utf8",
-        "X-CSRF-TOKEN": csrfToken.data.token
-      };
       const recordItemLogResponse = await api.post("/record-item-logs", {
         recordItemId: editModalData.recordItemLog.recordItemId,
         recordItemLogDate: hyphenFormatDate,
         recordItemLogStartTime: `${hyphenFormatDate} ${data.editStartTime}`,
         recordItemLogEndTime: `${hyphenFormatDate} ${data.editEndTime}`,
         recordItemLogSeconds: convertTimeToSeconds(data.editEndTime) - convertTimeToSeconds(data.editStartTime)
-      }, {
-        headers: headers
-      })
+      });
       const recordItemLogsData = convertToClientRecordItemLogList(recordItemLogResponse.data);
       const updatedSelectedMonthlyRecordItemLogs = selectedMonthlyRecordItemLogs.map(item => {
         // recordItemLogsDataは配列だが、登録データは1つなので、レスポンスは必ずデータが1つなので、[0]でOK
@@ -109,15 +102,7 @@ const EditModal: React.FC<EditModalProps> = ({
       const deleteItemId = recordItemLogTime.recordItemLogId;
       const deleteItemSeconds = (recordItemLogTime.end - recordItemLogTime.start);
 
-      const csrfToken = await axios.post("http://localhost:8080/csrf");
-      const headers = {
-        "Content-Type": "application/json;charset=utf-8",
-        "X-CSRF-TOKEN": csrfToken.data.token
-      };
-
-      await api.delete(`/record-item-logs/${deleteItemId}`, {
-        headers: headers
-      });
+      await api.delete(`/record-item-logs/${deleteItemId}`);
       // modalの表示
       // 削除した時間をモーダルから消す
       editModalData.recordItemLog.recordItemLogTime = editModalData.recordItemLog.recordItemLogTime

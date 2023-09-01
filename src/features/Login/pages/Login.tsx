@@ -31,6 +31,7 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
+      // responseのinterceptorsがつけたくないからここだけは直接csrfTokenつけている
       const csrfToken = await axios.post("http://localhost:8080/csrf");
       const headers = {
         "Content-Type": "application/json;charset=utf-8",

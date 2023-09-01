@@ -4,14 +4,29 @@ import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../../features/Auth/components/AuthProvider";
 
+const baseURL = "http://localhost:8080";
+
+const headers = {
+  "Content-Type": "application/json",
+};
+
 export const api = axios.create({
-  baseURL: 'http://localhost:8080',
-  withCredentials: true
+  baseURL: baseURL,
+  withCredentials: true,
+  headers
 });
+
+api.interceptors.request.use(
+  async (request) => {
+    const csrfToken = await axios.post(`${baseURL}/csrf`);
+    request.headers["X-CSRF-TOKEN"] = csrfToken.data.token;
+    return request;
+  }
+);
 
 type ApiClientProviderProps = {
   children: React.ReactElement
-}
+};
 
 const ApiClientProvider: React.FC<ApiClientProviderProps> = ({ children }) => {
   const navigate = useNavigate();
@@ -26,15 +41,11 @@ const ApiClientProvider: React.FC<ApiClientProviderProps> = ({ children }) => {
 
         if (error.response?.status === 403) {
           try {
-            const csrfToken = await axios.post("http://localhost:8080/csrf");
-            const headers = {
-              "Content-Type": "application/json;charset=utf-8",
-              "X-CSRF-TOKEN": csrfToken.data.token
-            };
             // 新しいアクセストークンとリフレッシュトークンをcookieにセット
-            await axios.post('http://localhost:8080/refresh-token', null, {
+            await axios.post(`${baseURL}/refresh-token`, null, {
               withCredentials: true,
-              headers: headers
+              // アクセストークンの有効期限れで通る場所なので、その時のリクエストに設定されているheader情報（csrfトークン）をつける
+              headers: error.config?.headers
             });
             // 新しいアクセストークンで認証リクエストを再実行
             if (error.config) {
@@ -54,11 +65,11 @@ const ApiClientProvider: React.FC<ApiClientProviderProps> = ({ children }) => {
 
     // クリーンアップ
     return () => {
-      api.interceptors.response.eject(responseInterceptor)
+      api.interceptors.response.eject(responseInterceptor);
     }
-  }, [])
+  }, []);
 
-  return <>{children}</>
+  return <>{children}</>;
 }
 
 export default ApiClientProvider;
