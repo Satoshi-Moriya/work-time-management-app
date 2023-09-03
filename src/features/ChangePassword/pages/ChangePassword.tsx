@@ -29,17 +29,10 @@ const ChangePassword = () => {
   });
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      const csrfToken = await axios.post("http://localhost:8080/csrf");
-      const headers = {
-        "Content-Type": "application/json;charset=utf-8",
-        "X-CSRF-TOKEN": csrfToken.data.token
-      };
       const response = await api.put(`/users/${userId}/password`, {
         userId: userId,
         currentPassword: data.currentPassword,
         newPassword: data.newPassword
-      }, {
-        headers: headers
       });
       setToast({message: response.data!.message, isSuccess: true});
     } catch(error) {

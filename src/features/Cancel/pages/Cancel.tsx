@@ -16,14 +16,7 @@ const Cancel = () => {
     const confirm = window.confirm("本当にアカウントを削除してもよろしいですか？")
     if (confirm) {
       try {
-        const csrfToken = await axios.post("http://localhost:8080/csrf");
-        const headers = {
-          "Content-Type": "application/json;charset=utf-8",
-          "X-CSRF-TOKEN": csrfToken.data.token
-        };
-        const response = await api.delete(`/users/${userId}`, {
-          headers: headers
-        });
+        const response = await api.delete(`/users/${userId}`);
         setToast({message: response.data.message, isSuccess: true});
         setUserId(null);
         navigate("/login");

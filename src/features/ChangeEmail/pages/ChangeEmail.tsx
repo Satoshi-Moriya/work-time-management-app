@@ -21,14 +21,7 @@ const ChangeEmail = () => {
   useEffect(() => {
     (async() => {
       try {
-        const csrfToken = await axios.post("http://localhost:8080/csrf");
-        const headers = {
-          "Content-Type": "application/json;charset=utf-8",
-          "X-CSRF-TOKEN": csrfToken.data.token
-        };
-        const responseData = await api.get(`/users/${userId}/email`, {
-          headers: headers
-        });
+        const responseData = await api.get(`/users/${userId}/email`);
         const userEmail: string = responseData.data;
         reset({password: "", email: userEmail});
       } catch(error) {
@@ -48,17 +41,10 @@ const ChangeEmail = () => {
   });
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      const csrfToken = await axios.post("http://localhost:8080/csrf");
-      const headers = {
-        "Content-Type": "application/json;charset=utf-8",
-        "X-CSRF-TOKEN": csrfToken.data.token
-      };
       const response = await api.put(`/users/${userId}/email`, {
         userId: userId,
         email: data.email,
         password: data.password,
-      }, {
-        headers: headers
       });
       setToast({message: response.data!.message, isSuccess: true});
     } catch(error) {

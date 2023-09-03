@@ -15,14 +15,7 @@ const Logout = () => {
 
   const logoutHandler = async () => {
     try {
-      const csrfToken = await axios.post("http://localhost:8080/csrf");
-      const headers = {
-        "Content-Type": "application/json;charset=utf-8",
-        "X-CSRF-TOKEN": csrfToken.data.token
-      };
-      await api.post("/logout", null, {
-        headers: headers
-      });
+      await api.post("/logout");
       setUserId(null);
       navigate("/login");
     } catch(error) {
