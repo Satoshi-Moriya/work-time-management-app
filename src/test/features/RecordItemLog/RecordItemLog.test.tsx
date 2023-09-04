@@ -34,7 +34,7 @@ const server = setupServer(
     const toQuery = req.url.searchParams.get("to");
 
     // ToDo 年月が変わると落ちるからどうにかしたい
-    if (fromQuery === "20230801" && toQuery === "20230831") {
+    if (fromQuery === "20230901" && toQuery === "20230930") {
       return res(
         ctx.status(200),
         ctx.json(
@@ -42,15 +42,24 @@ const server = setupServer(
             {
               recordItemLogId: 1,
               recordItemId: 1,
-              recordItemLogDate: "2023-08-29",
-              recordItemLogStartTime: "2023-08-29 09:00:59",
-              recordItemLogEndTime: "2023-08-29 12:00:00",
+              recordItemLogDate: "2023-09-29",
+              recordItemLogStartTime: "2023-09-29 09:00:59",
+              recordItemLogEndTime: "2023-09-29 12:00:00",
               recordItemLogSeconds: 10741
             },
           ]
         )
       )
     }
+  }),
+
+  rest.post("http://localhost:8080/csrf", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        token: "testToken"
+      })
+    );
   })
 );
 
@@ -154,7 +163,8 @@ describe("RecordItemLogのテスト", () => {
             const fromQuery = req.url.searchParams.get("from");
             const toQuery = req.url.searchParams.get("to");
 
-            if (fromQuery === "20230801" && toQuery === "20230831") {
+            // ToDo 年月が変わると落ちるからどうにかしたい
+            if (fromQuery === "20230901" && toQuery === "20230930") {
               return res(
                 ctx.status(200),
                 ctx.json(
@@ -162,17 +172,17 @@ describe("RecordItemLogのテスト", () => {
                     {
                       recordItemLogId: 1,
                       recordItemId: 1,
-                      recordItemLogDate: "2023-08-29",
-                      recordItemLogStartTime: "2023-08-29 09:00:59",
-                      recordItemLogEndTime: "2023-08-29 12:00:00",
+                      recordItemLogDate: "2023-09-29",
+                      recordItemLogStartTime: "2023-09-29 09:00:59",
+                      recordItemLogEndTime: "2023-09-29 12:00:00",
                       recordItemLogSeconds: 10741
                     },
                     {
                       recordItemLogId: 1,
                       recordItemId: 1,
-                      recordItemLogDate: "2023-08-30",
-                      recordItemLogStartTime: "2023-08-30 13:00:00",
-                      recordItemLogEndTime: "2023-08-30 13:30:00",
+                      recordItemLogDate: "2023-09-30",
+                      recordItemLogStartTime: "2023-09-30 13:00:00",
+                      recordItemLogEndTime: "2023-09-30 13:30:00",
                       recordItemLogSeconds: 1800
                     }
                   ]
@@ -185,8 +195,8 @@ describe("RecordItemLogのテスト", () => {
 
       const expectedOutput1 = await screen.findByText("03:29:01");
       const expectedOutput2 = await screen.findAllByText("稼働時間");
-      const expectedOutput3 = await screen.findByText("29（火）");
-      const expectedOutput4 = await screen.findByText("30（水）");
+      const expectedOutput3 = await screen.findByText("29（金）");
+      const expectedOutput4 = await screen.findByText("30（土）");
       const expectedOutput5 = await screen.findByText("02:59:01");
       const expectedOutput6 = await screen.findByText("00:30:00");
       expect(expectedOutput1).toBeInTheDocument();
@@ -200,7 +210,7 @@ describe("RecordItemLogのテスト", () => {
       const tbodyEl = await within(tableEls[1]).findAllByRole("rowgroup");
       const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
       const cellAllEl = await within(rowEl[0]).findAllByRole("cell");
-      expect((cellAllEl[0]).textContent).toEqual("1（火）");
+      expect((cellAllEl[0]).textContent).toEqual("1（金）");
       expect((cellAllEl[1]).textContent).toEqual("00:00:00");
     });
 
@@ -237,7 +247,7 @@ describe("RecordItemLogのテスト", () => {
             const fromQuery = req.url.searchParams.get("from");
             const toQuery = req.url.searchParams.get("to");
 
-            if (fromQuery === "20230801" && toQuery === "20230831") {
+            if (fromQuery === "20230901" && toQuery === "20230930") {
               return res(ctx.status(403))
             }
           }
@@ -265,7 +275,8 @@ describe("RecordItemLogのテスト", () => {
           const fromQuery = req.url.searchParams.get("from");
           const toQuery = req.url.searchParams.get("to");
 
-          if (fromQuery === "20230801" && toQuery === "20230831") {
+          // ToDo 年月が変わると落ちるからどうにかしたい
+          if (fromQuery === "20230901" && toQuery === "20230930") {
             return res(
               ctx.status(200),
               ctx.json(
@@ -273,25 +284,25 @@ describe("RecordItemLogのテスト", () => {
                   {
                     recordItemLogId: 2,
                     recordItemId: 2,
-                    recordItemLogDate: "2023-08-29",
-                    recordItemLogStartTime: "2023-08-29 09:00:59",
-                    recordItemLogEndTime: "2023-08-29 12:00:00",
+                    recordItemLogDate: "2023-09-29",
+                    recordItemLogStartTime: "2023-09-29 09:00:59",
+                    recordItemLogEndTime: "2023-09-29 12:00:00",
                     recordItemLogSeconds: 10741
                   },
                   {
                     recordItemLogId: 3,
                     recordItemId: 2,
-                    recordItemLogDate: "2023-08-15",
-                    recordItemLogStartTime: "2023-08-15 10:00:00",
-                    recordItemLogEndTime: "2023-08-15 12:00:00",
+                    recordItemLogDate: "2023-09-15",
+                    recordItemLogStartTime: "2023-09-15 10:00:00",
+                    recordItemLogEndTime: "2023-09-15 12:00:00",
                     recordItemLogSeconds: 7200
                   },
                   {
                     recordItemLogId: 4,
                     recordItemId: 2,
-                    recordItemLogDate: "2023-08-31",
-                    recordItemLogStartTime: "2023-08-31 12:00:00",
-                    recordItemLogEndTime: "2023-08-31 13:00:00",
+                    recordItemLogDate: "2023-09-30",
+                    recordItemLogStartTime: "2023-09-30 12:00:00",
+                    recordItemLogEndTime: "2023-09-30 13:00:00",
                     recordItemLogSeconds: 3600
                   },
                 ]
@@ -304,7 +315,7 @@ describe("RecordItemLogのテスト", () => {
       user.selectOptions(selectRecordItemEl, "2")
 
       const expectedOutput1 = await screen.findByText("05:59:01");
-      const expectedOutput2 = await screen.findByText("29（火）");
+      const expectedOutput2 = await screen.findByText("29（金）");
       const expectedOutput3 = await screen.findByText("02:59:01");
       expect(expectedOutput1).toBeInTheDocument();
       expect(expectedOutput2).toBeInTheDocument();
@@ -314,7 +325,7 @@ describe("RecordItemLogのテスト", () => {
       const tbodyEl = await within(tableEls[1]).findAllByRole("rowgroup");
       const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
       const cellAllEl = await within(rowEl[0]).findAllByRole("cell");
-      expect((cellAllEl[0]).textContent).toEqual("1（火）");
+      expect((cellAllEl[0]).textContent).toEqual("1（金）");
       expect((cellAllEl[1]).textContent).toEqual("00:00:00");
     });
 
@@ -332,7 +343,8 @@ describe("RecordItemLogのテスト", () => {
           const toQuery = req.url.searchParams.get("to");
           const { recordItemId } = req.params;
 
-          if (fromQuery === "20230801" && toQuery === "20230831") {
+          // ToDo 年月が変わると落ちるからどうにかしたい
+          if (fromQuery === "20230901" && toQuery === "20230930") {
             if (recordItemId === "1") {
               return res(ctx.status(200),
               ctx.json(
@@ -340,9 +352,9 @@ describe("RecordItemLogのテスト", () => {
                   {
                     recordItemLogId: 2,
                     recordItemId: 1,
-                    recordItemLogDate: "2023-08-29",
-                    recordItemLogStartTime: "2023-08-29 09:00:59",
-                    recordItemLogEndTime: "2023-08-29 12:00:00",
+                    recordItemLogDate: "2023-09-29",
+                    recordItemLogStartTime: "2023-09-29 09:00:59",
+                    recordItemLogEndTime: "2023-09-29 12:00:00",
                     recordItemLogSeconds: 10741
                   },
                 ]
@@ -407,7 +419,7 @@ describe("RecordItemLogのテスト", () => {
       const selectYearAndMonthEl = await screen.findByRole("textbox");
       await user.click(selectYearAndMonthEl);
       // ToDo 年月が変わると落ちるからどうにかしたい
-      const yearOptionEl = await screen.findByLabelText("month 2023-08");
+      const yearOptionEl = await screen.findByLabelText("month 2023-09");
       const monthOptionEl = await within(yearOptionEl).findByText("7月")
       await user.click(monthOptionEl);
 
@@ -447,7 +459,7 @@ describe("RecordItemLogのテスト", () => {
       const selectYearAndMonthEl = await screen.findByRole("textbox");
       await user.click(selectYearAndMonthEl);
       // ToDo 年月が変わると落ちるからどうにかしたい
-      const yearOptionEl = await screen.findByLabelText("month 2023-08");
+      const yearOptionEl = await screen.findByLabelText("month 2023-09");
       const monthOptionEl = await within(yearOptionEl).findByText("7月")
       await user.click(monthOptionEl);
 
@@ -457,7 +469,7 @@ describe("RecordItemLogのテスト", () => {
 
   describe("記録を編集するときのテスト", () => {
 
-    test.only("初期表示の記録表の編集ボタンを押した時、モーダルに正しく表示される", async () => {
+    test("初期表示の記録表の編集ボタンを押した時、モーダルに正しく表示される", async () => {
       const user = userEvent.setup();
       server.use(
         rest.get("http://localhost:8080/record-item-logs/:recordItemId",
@@ -465,16 +477,17 @@ describe("RecordItemLogのテスト", () => {
           const fromQuery = req.url.searchParams.get("from");
           const toQuery = req.url.searchParams.get("to");
 
-          if (fromQuery === "20230801" && toQuery === "20230831") {
+          // ToDo 年月が変わると落ちるからどうにかしたい
+          if (fromQuery === "20230901" && toQuery === "20230930") {
             return res(ctx.status(200),
             ctx.json(
               [
                 {
                   recordItemLogId: 1,
                   recordItemId: 1,
-                  recordItemLogDate: "2023-08-01",
-                  recordItemLogStartTime: "2023-08-01 09:00:00",
-                  recordItemLogEndTime: "2023-08-01 11:00:00",
+                  recordItemLogDate: "2023-09-01",
+                  recordItemLogStartTime: "2023-09-01 09:00:00",
+                  recordItemLogEndTime: "2023-09-01 11:00:00",
                   recordItemLogSeconds: 3600
                 },
               ]
@@ -499,8 +512,8 @@ describe("RecordItemLogのテスト", () => {
 
       await user.click(targetButton1El);
 
-
-      const expectedModal1Title = await screen.findByText("2023年8月1日の稼働時間の編集")
+      // ToDo 年月が変わると落ちるからどうにかしたい
+      const expectedModal1Title = await screen.findByText("2023年9月1日の稼働時間の編集")
       const expectedModal1EL1 = await screen.findByText("登録済みの時間")
       const expectedModal1EL2 = await screen.findByText("09:00:00")
       const expectedModal1EL3 = await screen.findByText("11:00:00")
@@ -511,7 +524,7 @@ describe("RecordItemLogのテスト", () => {
 
       await user.click(targetButton2El);
 
-      const expectedModal2Title = await screen.findByText("2023年8月2日の稼働時間の編集")
+      const expectedModal2Title = await screen.findByText("2023年9月2日の稼働時間の編集")
       expect(expectedModal2Title).toBeInTheDocument();
       expect(expectedModal1EL1).not.toBeInTheDocument();
     });
