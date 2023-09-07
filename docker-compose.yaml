@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  node:
+    build: .
+    container_name: wtm-node
+    volumes:
+      - ./:/usr/src/app
+    command: sh -c "npm start"
+    ports:
+      - "3000:3000"
+    tty: true
