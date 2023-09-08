@@ -1,30 +1,8 @@
-import { useNavigate } from "react-router-dom"
-import { deleteUser } from "../repository/repository";
-import { useContext, useState } from "react";
-import axios from "axios";
-
-import { AuthContext } from "../../Auth/components/AuthProvider";
 import Toast from "../../Toast/components/Toast";
-import { api } from "../../../lib/api-client/ApiClientProvider";
+import { useCancel } from "../hooks/useCancel";
 
 const Cancel = () => {
-  const navigate = useNavigate();
-  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
-  const [userId, setUserId] = useContext(AuthContext)
-
-  const accountDeleteHandler = async () => {
-    const confirm = window.confirm("本当にアカウントを削除してもよろしいですか？")
-    if (confirm) {
-      try {
-        const response = await api.delete(`/users/${userId}`);
-        setToast({message: response.data.message, isSuccess: true});
-        setUserId(null);
-        navigate("/login");
-      } catch(error) {
-        setToast({message: "予期せぬ問題が発生し、アカウントを削除できませんでした。時間をおいて再度お試しください。", isSuccess: false});
-      }
-    }
-  }
+  const [toast, {setToast, accountDeleteHandler}] = useCancel();
 
   return (
     <div className="p-10">
