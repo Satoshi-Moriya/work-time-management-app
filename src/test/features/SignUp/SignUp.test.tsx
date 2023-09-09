@@ -15,17 +15,20 @@ const server = setupServer(
   rest.post("http://localhost:8080/auth/signup", (req, res, ctx) => {
     return res(
       ctx.status(201),
-      ctx.json([
+      ctx.json(
         {
-          status: 201,
-          message: "OK",
-          data: {
-            userEmail: "test@test.com",
-            userPassword: "test1234",
-            createdAt: "",
-          },
-        },
-      ])
+          message: "アカウント登録が完了しました"
+        }
+      )
+    );
+  }),
+
+  rest.post("http://localhost:8080/csrf", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        token: "testToken"
+      })
     );
   })
 );
@@ -311,14 +314,12 @@ describe("SingUpページの単体テスト", () => {
       server.use(
         rest.post("http://localhost:8080/auth/signup", (req, res, ctx) => {
           return res(
-            ctx.status(500),
-            ctx.json([
+            ctx.status(400),
+            ctx.json(
               {
-                status: 500,
-                message:
-                  "登録に失敗しました。少し時間を置いてから、もう一度お試しください。",
-              },
-            ])
+                message: "登録に失敗しました。少し時間を置いてから、もう一度お試しください。"
+              }
+            )
           );
         })
       );
@@ -334,7 +335,7 @@ describe("SingUpページの単体テスト", () => {
       await user.type(confirmPasswordInputEl, "test12345");
       await user.click(submitButtonEl);
 
-      const expectedMessage = await screen.findByText("Request failed with status code 500");
+      const expectedMessage = await screen.findByText("登録に失敗しました。少し時間を置いてから、もう一度お試しください。");
       expect(expectedMessage).toBeInTheDocument();
     });
   });

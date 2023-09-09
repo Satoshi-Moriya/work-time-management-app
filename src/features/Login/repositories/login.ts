@@ -6,7 +6,7 @@ export const login = async(
   email: string | null | undefined,
   password: string
 ) => {
-  // responseのinterceptorsがつけたくないからここだけは直接csrfTokenつけている
+  // responseのinterceptorsがつけたくないから、直接csrfTokenつけている
   const csrfToken = await axios.post("http://localhost:8080/csrf", null, {
     withCredentials: true
   });
