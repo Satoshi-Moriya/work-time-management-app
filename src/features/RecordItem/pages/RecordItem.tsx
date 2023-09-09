@@ -54,6 +54,6 @@ const RecordItem = () => {
       }
     </>
   );
-}
+};
 
 export default RecordItem;

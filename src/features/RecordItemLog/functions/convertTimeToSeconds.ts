@@ -5,4 +5,4 @@ export const convertTimeToSeconds = (dateTimeString: string) => {
     .map(Number);
   const totalSeconds = hours * 3600 +  minutes * 60 + seconds;
   return totalSeconds;
-}
+};

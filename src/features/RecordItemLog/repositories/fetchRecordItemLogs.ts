@@ -12,4 +12,4 @@ export const fetchRecordItemLogs = async(
       to: selectedMonthTo
     }
   });
-}
+};

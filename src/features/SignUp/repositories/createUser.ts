@@ -39,4 +39,4 @@ export const createUser = async (
   });
 
   return response;
-}
+};

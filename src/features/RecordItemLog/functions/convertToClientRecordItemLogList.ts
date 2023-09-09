@@ -22,4 +22,4 @@ export const convertToClientRecordItemLogList = (convertData: RecordItemLogType[
     }
   });
   return convertedData;
-}
+};

@@ -28,7 +28,7 @@ export const useRecordItemLog = (): [
     setToast: React.Dispatch<React.SetStateAction<{message: string | null, isSuccess: boolean | null }>>
   }
 ] => {
-  const [ userId ] = useContext(AuthContext);
+  const [userId] = useContext(AuthContext);
   const [recordItems, setRecordItems] = useState<{recordItemId: number, recordItemName: string}[]>([]);
   const [selectedRecordItem, setSelectedRecordItem] = useState<{text: string, value: string}>();
   const [openModal, setOpenModal] = useState<string | undefined>();
@@ -52,7 +52,6 @@ export const useRecordItemLog = (): [
     (async() => {
       try {
         // 記録項目取得&表示
-        // const recordItemsResponse = await api.get(`/record-items/${userId}`);
         const recordItemsResponse = await fetchRecordItems(userId);
         const recordItems: RecordItemType[] = recordItemsResponse.data;
         const recordItemsWithoutUserId = recordItems.map(({recordItemId, recordItemName}) => ({recordItemId, recordItemName}));
@@ -89,7 +88,7 @@ export const useRecordItemLog = (): [
       setError("接続エラーが起きました。時間をおいて再度お試しください。");
     }
     setSelectedRecordItem({text: selectedRecordItemText, value: selectedRecordItemValue});
-  }
+  };
 
   const dateChangeHandler = async(date: Date) => {
     const [fromQueryParam, toQueryParam] = getDateParams(date);
@@ -104,13 +103,13 @@ export const useRecordItemLog = (): [
     setDate(date);
     setFromQuery(fromQueryParam);
     setToQuery(toQueryParam);
-  }
+  };
 
   const recordItemLogEditHandler = (yyyymm: Date, date: number, selectedRecordItemLog: DailyClientRecordItemLog) => {
     setToast({ message: null, isSuccess: null });
     setOpenModal('default');
     setEditModalData({yyyymm: yyyymm, date: date, recordItemLog: selectedRecordItemLog});
-  }
+  };
 
   return [
     isRecordItemLogsLoading,
@@ -133,4 +132,4 @@ export const useRecordItemLog = (): [
       setToast
     }
   ];
-}
+};

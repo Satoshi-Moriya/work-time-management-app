@@ -24,4 +24,4 @@ export const convertToDailyRecordItemLogData = (convertData: ClientRecordItemLog
     return result;
   }, []);
   return convertedData;
-}
+};

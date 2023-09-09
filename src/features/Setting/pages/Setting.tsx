@@ -22,6 +22,6 @@ const Setting = () => {
       </main>
     </>
   );
-}
+};
 
 export default Setting;

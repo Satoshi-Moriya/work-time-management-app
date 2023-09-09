@@ -12,7 +12,7 @@ const SingUp = () => {
     {
       setFailAlert
     }
-  ] = useSignUp()
+  ] = useSignUp();
 
   return (
     <div className="flex justify-center items-center h-screen flex-col">
@@ -53,6 +53,6 @@ const SingUp = () => {
       </div>
     </div>
   );
-}
+};
 
 export default SingUp;

@@ -9,6 +9,6 @@ export const changeEmail = async (
     return await api.put(`/users/${userId}/email`, {
       userId: userId,
       email: email,
-      password: password,
+      password: password
     });
 };

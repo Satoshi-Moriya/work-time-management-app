@@ -12,7 +12,7 @@ export const useCancel = (): [
   }
 ] => {
   const navigate = useNavigate();
-  const [userId, setUserId] = useContext(AuthContext)
+  const [userId, setUserId] = useContext(AuthContext);
   const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
 
   const accountDeleteHandler = async() => {
@@ -30,4 +30,4 @@ export const useCancel = (): [
   }
 
   return [toast, {setToast, accountDeleteHandler}];
-}
+};

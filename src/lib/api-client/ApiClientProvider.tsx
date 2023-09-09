@@ -72,6 +72,6 @@ const ApiClientProvider: React.FC<ApiClientProviderProps> = ({ children }) => {
   }, []);
 
   return <>{children}</>;
-}
+};
 
 export default ApiClientProvider;

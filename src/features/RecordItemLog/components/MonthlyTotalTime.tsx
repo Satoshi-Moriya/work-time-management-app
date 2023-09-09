@@ -2,7 +2,7 @@ import convertSecondsToTime from "../../../functions/convertSecondsToTime";
 
 type MonthlyTotalTimeProps = {
   dateSumSeconds: number[];
-}
+};
 
 const MonthlyTotalTime: React.FC<MonthlyTotalTimeProps> = ({dateSumSeconds}) => {
 
@@ -16,6 +16,6 @@ const MonthlyTotalTime: React.FC<MonthlyTotalTimeProps> = ({dateSumSeconds}) => 
       </tbody>
     </table>
   );
-}
+};
 
 export default MonthlyTotalTime;

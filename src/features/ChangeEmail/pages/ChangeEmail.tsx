@@ -29,6 +29,6 @@ const ChangeEmail = () => {
       }
     </div>
   );
-}
+};
 
 export default ChangeEmail;

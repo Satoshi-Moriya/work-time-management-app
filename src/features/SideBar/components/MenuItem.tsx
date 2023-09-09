@@ -7,7 +7,7 @@ type MenuItemProps = {
   icon: React.JSX.Element;
   text: string;
   url: string;
-}
+};
 
 const MenuItem: React.FC<MenuItemProps> = ({ icon, text, url }) => {
 

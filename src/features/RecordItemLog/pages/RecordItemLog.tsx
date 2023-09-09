@@ -131,6 +131,6 @@ const RecordItemLog = () => {
       {error && <p className="flex justify-center items-center h-full">{error}</p>}
     </main>
   );
-}
+};
 
 export default RecordItemLog;

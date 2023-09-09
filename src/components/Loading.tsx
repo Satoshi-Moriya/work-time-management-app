@@ -1,4 +1,3 @@
-
 const Loading = () => {
   return (
     <div role="status" className="h-screen flex justify-center items-center">

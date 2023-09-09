@@ -22,10 +22,10 @@ const Clock = () => {
     const seconds = padZero(date.getSeconds());
 
     return `${year}/${month}/${day}/${hours}:${minutes}:${seconds}`;
-  }
+  };
 
   const padZero = (value: number) => {
-    return value.toString().padStart(2, '0');
+    return value.toString().padStart(2, "0");
   };
 
   return (

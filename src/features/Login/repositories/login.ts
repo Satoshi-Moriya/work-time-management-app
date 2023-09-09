@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import { UserData } from "../types";
 
 export const login = async(
@@ -20,4 +21,4 @@ export const login = async(
     withCredentials: true,
     headers: headers
   });
-}
+};

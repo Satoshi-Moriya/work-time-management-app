@@ -16,7 +16,7 @@ export type RecordItemLogType = {
   recordItemLogStartTime: string;
   recordItemLogEndTime: string;
   recordItemLogSeconds: number;
-}
+};
 
 export type ClientRecordItemLog = {
   recordItemId: number;
@@ -24,7 +24,7 @@ export type ClientRecordItemLog = {
   recordItemLogDay: string;
   recordItemLogTime: RecordItemLogTimeRange;
   recordItemLogSeconds: number;
-}
+};
 
 export type DailyClientRecordItemLog = {
   recordItemId: number;
@@ -32,4 +32,4 @@ export type DailyClientRecordItemLog = {
   recordItemLogDay: string;
   recordItemLogTime: RecordItemLogTimeRange[];
   recordItemLogSumSeconds: number;
-}
+};

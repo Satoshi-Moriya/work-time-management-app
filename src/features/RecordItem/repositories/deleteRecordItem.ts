@@ -4,4 +4,4 @@ export const deleteRecordItem = async(
   recordItemId: number
 ) => {
   return await api.delete(`/record-items/${recordItemId}`);
-}
+};

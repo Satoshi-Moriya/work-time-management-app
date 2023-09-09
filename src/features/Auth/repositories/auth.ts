@@ -22,4 +22,4 @@ export const auth = async(): Promise<AuthResponse> => {
   });
 
   return response;
-}
+};

@@ -14,4 +14,4 @@ export const convertToDisplayData = async(
     const recordItemLogsData = convertToClientRecordItemLogList(recordItemLogResponse.data!);
     const monthlyRecordItemLogsData: DailyClientRecordItemLog[] = convertToDailyRecordItemLogData(recordItemLogsData);
     return addDayNotRecordItemLog(selectedRecordItemId, monthlyRecordItemLogsData, selectedMonthTo);
-}
+};

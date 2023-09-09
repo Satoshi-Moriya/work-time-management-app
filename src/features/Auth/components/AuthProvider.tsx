@@ -1,9 +1,10 @@
 import { createContext, useEffect } from "react"
+
 import { useAuth } from "../hooks/useAuth";
 
 type AuthProviderProps = {
   children: React.ReactElement
-}
+};
 
 export const AuthContext = createContext<
     [
@@ -17,9 +18,9 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     isAuthUser();
-  }, [isAuthUser])
+  }, [isAuthUser]);
 
   return <AuthContext.Provider value={[ userId, setUserId ]} >{children}</AuthContext.Provider>
-}
+};
 
 export default AuthProvider;

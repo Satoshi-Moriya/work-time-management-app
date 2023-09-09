@@ -10,7 +10,7 @@ type FormValues = {
   email: string;
   password: string;
   confirmPassword: string;
-}
+};
 
 export const useSignUp = (): [
   boolean,
@@ -47,7 +47,7 @@ export const useSignUp = (): [
       setErrorMessage(response.message);
       setFailAlert(true);
     }
-  }
+  };
 
   return [failAlert, errorMessage, handleSubmit, onSubmit, errors, register, isValid, {setFailAlert}];
-}
+};

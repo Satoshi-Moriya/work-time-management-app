@@ -10,7 +10,7 @@ import { changeEmailValidationSchema } from "../../../lib/zod/validationSchema";
 type FormValues = {
   password: string;
   email: string | null | undefined;
-}
+};
 
 export const useChangeEmail = (): [
   SubmitHandler<FormValues>,
@@ -19,7 +19,7 @@ export const useChangeEmail = (): [
   UseFormHandleSubmit<FormValues, undefined>,
   {message: string | null, isSuccess: boolean | null },
   {
-    setToast: React.Dispatch<React.SetStateAction<{message: string | null, isSuccess: boolean | null }>>,
+    setToast: React.Dispatch<React.SetStateAction<{message: string | null, isSuccess: boolean | null }>>
   }
 ] => {
   const [ userId ] = useContext(AuthContext);
@@ -55,4 +55,4 @@ export const useChangeEmail = (): [
   }, [userId, reset]);
 
   return [onSubmit, errors, register, handleSubmit, toast, {setToast}];
-}
+};

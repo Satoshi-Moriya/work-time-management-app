@@ -11,6 +11,6 @@ const convertSecondsToTime = <T extends number | number[] >(convertSeconds: T): 
   const displaySeconds = remainSumMin.toString().padStart(2, "0");
 
   return `${displayHour}:${displayMin}:${displaySeconds}`;
-}
+};
 
 export default convertSecondsToTime;

@@ -1,15 +1,14 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Modal } from 'flowbite-react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import axios from 'axios';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Modal } from "flowbite-react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-import { createRegisterRecordItemLogValidationSchema } from '../../../lib/zod/validationSchema';
-import { DailyClientRecordItemLog, RecordItemLogTimeRange } from '../types';
-import convertSecondsToTime from '../../../functions/convertSecondsToTime';
-import { api } from '../../../lib/api-client/ApiClientProvider';
-import { convertTimeToSeconds } from '../functions/convertTimeToSeconds';
-import Toast from '../../Toast/components/Toast';
-import { convertToClientRecordItemLogList } from '../functions/convertToClientRecordItemLogList';
+import Toast from "../../Toast/components/Toast";
+import convertSecondsToTime from "../../../functions/convertSecondsToTime";
+import { createRegisterRecordItemLogValidationSchema } from "../../../lib/zod/validationSchema";
+import { DailyClientRecordItemLog, RecordItemLogTimeRange } from "../types";
+import { api } from "../../../lib/api-client/ApiClientProvider";
+import { convertTimeToSeconds } from "../functions/convertTimeToSeconds";
+import { convertToClientRecordItemLogList } from "../functions/convertToClientRecordItemLogList";
 
 export type EditModalProps = {
   openModal: string | undefined;
@@ -21,12 +20,12 @@ export type EditModalProps = {
   setSelectedMonthlyRecordItemLogs: React.Dispatch<React.SetStateAction<DailyClientRecordItemLog[]>>;
   toast: {message: string | null, isSuccess: boolean | null };
   setToast: React.Dispatch<React.SetStateAction<{message: string | null, isSuccess: boolean | null }>>;
-}
+};
 
 type FormValues = {
   editStartTime: string;
   editEndTime: string;
-}
+};
 
 const pattern = "(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]|24:00:00";
 
@@ -95,7 +94,7 @@ const EditModal: React.FC<EditModalProps> = ({
       setToast({message: "予期せぬエラーが起こり、データの登録ができませんでした。", isSuccess: false});
     }
     reset();
-  }
+  };
 
   const recordItemDeleteHandler = async(recordItemLogTime: RecordItemLogTimeRange) => {
     try {
@@ -117,7 +116,7 @@ const EditModal: React.FC<EditModalProps> = ({
     } catch(error) {
       setToast({message: "予期せぬエラーが発生し、登録済みデータを削除できませんでした。", isSuccess: false});
     }
-  }
+  };
 
   return (
     <>
@@ -194,7 +193,7 @@ const EditModal: React.FC<EditModalProps> = ({
         )
       }
     </>
-  )
-}
+  );
+};
 
 export default EditModal;

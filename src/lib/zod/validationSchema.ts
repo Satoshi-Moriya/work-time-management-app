@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { convertTimeToSeconds } from "../../features/RecordItemLog/functions/convertTimeToSeconds";
 import { TimeRange } from "../../features/RecordItemLog/types";
 
@@ -10,7 +11,7 @@ export const changeEmailValidationSchema = z.object({
   .string()
   .nonempty("メールアドレスは必須です。")
   .email("メールアドレスが正しい形式ではありません。")
-})
+});
 
 export const changePasswordValidationSchema = z.object({
   currentPassword: z
@@ -53,7 +54,7 @@ export const loginValidationSchema = z.object({
   password: z
   .string()
   .nonempty("パスワードは必須です。"),
-})
+});
 
 export const signUpValidationSchema = z.object({
   email: z

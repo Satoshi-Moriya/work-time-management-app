@@ -2,8 +2,9 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginValidationSchema } from "../../../lib/zod/validationSchema";
 import { useNavigate } from "react-router-dom";
+
+import { loginValidationSchema } from "../../../lib/zod/validationSchema";
 import { AuthContext } from "../../Auth/components/AuthProvider";
 import { login } from "../repositories/login";
 
@@ -31,7 +32,7 @@ export const useLogin = (): [
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid }
   } = useForm<FormValues>({
     resolver: zodResolver(loginValidationSchema),
   });
@@ -46,7 +47,7 @@ export const useLogin = (): [
       if (axios.isAxiosError(error)) {
         message = "メールアドレスかパスワードが間違っており、ログインに失敗しました。";
       } else {
-        message = "予期せぬエラーが起こり、ログインに失敗しました。時間をおいて再度お試しください。"
+        message = "予期せぬエラーが起こり、ログインに失敗しました。時間をおいて再度お試しください。";
       }
       setErrorMessage(message);
       setFailAlert(true);
@@ -54,4 +55,4 @@ export const useLogin = (): [
   };
 
   return [onSubmit, errors, isValid, register, handleSubmit, failAlert, errorMessage, {setFailAlert}];
-}
+};

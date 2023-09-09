@@ -23,5 +23,6 @@ export const addDayNotRecordItemLog = (
       });
     }
   }
+
   return monthlyRecordItemLogIncludingDayNotRecordIte;
-}
+};

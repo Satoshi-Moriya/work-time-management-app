@@ -10,7 +10,7 @@ type FormValues = {
   currentPassword: string;
   newPassword: string;
   confirmNewPassword: string;
-}
+};
 
 export const useChangePassword = (): [
   SubmitHandler<FormValues>,
@@ -19,7 +19,7 @@ export const useChangePassword = (): [
   UseFormHandleSubmit<FormValues, undefined>,
   {message: string | null, isSuccess: boolean | null },
   {
-    setToast: React.Dispatch<React.SetStateAction<{message: string | null, isSuccess: boolean | null }>>,
+    setToast: React.Dispatch<React.SetStateAction<{message: string | null, isSuccess: boolean | null }>>
   }
 ] => {
   const [ userId ] = useContext(AuthContext);
@@ -44,4 +44,4 @@ export const useChangePassword = (): [
   }
 
   return [onSubmit, errors, register, handleSubmit, toast, {setToast}];
-}
+};

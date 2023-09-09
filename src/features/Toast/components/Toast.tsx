@@ -4,11 +4,11 @@ import { createPortal } from 'react-dom';
 type ToastProps = {
   toast: { message: string | null, isSuccess: boolean | null };
   setToast: React.Dispatch<React.SetStateAction<{ message: string | null, isSuccess: boolean | null }>>;
-}
+};
 
 type ToastPortalProps = {
   children: ReactNode;
-}
+};
 
 const ToastPortal: React.FC<ToastPortalProps> = ({ children }) => {
   const target = document.querySelector("#root");

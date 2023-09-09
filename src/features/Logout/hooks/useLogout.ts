@@ -14,7 +14,7 @@ export const useLogout = (): [
 ] => {
   const navigate = useNavigate();
   const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
-  const [ , setUserId ] = useContext(AuthContext);
+  const [ , setUserId] = useContext(AuthContext);
 
   const logoutHandler = async() => {
     try {
@@ -24,7 +24,7 @@ export const useLogout = (): [
     } catch(error) {
       setToast({message: "予期せぬエラーが起こり、ログアウトができませんでした。", isSuccess: false});
     }
-  }
+  };
 
   return [toast, {setToast, logoutHandler}];
-}
+};

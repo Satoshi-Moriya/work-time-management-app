@@ -297,7 +297,7 @@ describe("SingUpページの単体テスト", () => {
       await user.type(confirmPasswordInputEl, "test12345");
       await user.click(submitButtonEl);
 
-      const targetPageText = await screen.findByText("仮登録完了");
+      const targetPageText = await screen.findByText("登録完了");
       expect(targetPageText).toBeInTheDocument();
 
       // 次のテストのためにユーザー登録画面に戻る

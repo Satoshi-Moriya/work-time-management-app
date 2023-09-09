@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react"
 import { TfiWrite } from "react-icons/tfi";
 import { ImTable2 } from "react-icons/im";
 import { IoSettingsSharp } from "react-icons/io5";
 import { Outlet } from "react-router-dom";
 
 import MenuItem from "../features/SideBar/components/MenuItem";
-import Clock from '../features/SideBar/components/Clock';
-import Logout from '../features/Logout/page/Logout';
+import Clock from "../features/SideBar/components/Clock";
+import Logout from "../features/Logout/page/Logout";
 
 const Layout: React.FC = () => {
     return (
@@ -27,6 +27,6 @@ const Layout: React.FC = () => {
           <Outlet />
         </div>
     )
-}
+};
 
-export default Layout
+export default Layout;
