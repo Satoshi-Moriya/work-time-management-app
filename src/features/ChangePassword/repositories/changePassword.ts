@@ -6,8 +6,7 @@ export const changePassword = async (
   currentPassword: string,
   newPassword: string | null | undefined
 ): Promise<ChangePasswordResponse<ResponseBody>> => {
-  return await api
-    .put(`http://localhost:8080/users/${userId}/password`, {
+  return await api.put(`/users/${userId}/password`, {
       userId: userId,
       currentPassword: currentPassword,
       newPassword: newPassword
