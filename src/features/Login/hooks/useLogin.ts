@@ -44,7 +44,7 @@ export const useLogin = (): [
     } catch(error) {
       let message = "";
       if (axios.isAxiosError(error)) {
-        message = error.message || "メールアドレスかパスワードが間違っており、ログインに失敗しました。";
+        message = "メールアドレスかパスワードが間違っており、ログインに失敗しました。";
       } else {
         message = "予期せぬエラーが起こり、ログインに失敗しました。時間をおいて再度お試しください。"
       }
