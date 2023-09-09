@@ -1,61 +1,9 @@
 import { Link } from "react-router-dom";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
-import axios from "axios";
 
-import { loginValidationSchema } from "../../../lib/zod/validationSchema";
-import { AuthContext } from "../../Auth/components/AuthProvider";
-import { UserData } from "../types";
-
-axios.defaults.withCredentials = true;
-
-type FormValues = {
-  email: string;
-  password: string;
-};
+import { useLogin } from "../hooks/useLogin";
 
 const Login = () => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [failAlert, setFailAlert] = useState<boolean>(false);
-  const navigate = useNavigate();
-  const [ , setUserId] = useContext(AuthContext);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<FormValues>({
-    resolver: zodResolver(loginValidationSchema),
-  });
-
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    try {
-      // responseのinterceptorsがつけたくないからここだけは直接csrfTokenつけている
-      const csrfToken = await axios.post("http://localhost:8080/csrf");
-      const headers = {
-        "Content-Type": "application/json;charset=utf-8",
-        "X-CSRF-TOKEN": csrfToken.data.token
-      };
-      const response = await axios.post<UserData>("http://localhost:8080/login", {
-        userEmail: data.email,
-        userPassword: data.password
-      }, {
-        headers: headers
-      })
-      setUserId(response.data.userId as number | null);
-      navigate("/");
-    } catch(error) {
-      let message = "";
-      if (axios.isAxiosError(error)) {
-        message = error.message || "メールアドレスかパスワードが間違っており、ログインに失敗しました。";
-      } else {
-        message = "予期せぬエラーが起こり、ログインに失敗しました。時間をおいて再度お試しください。"
-      }
-      setErrorMessage(message);
-      setFailAlert(true);
-    }
-  };
+  const [onSubmit, errors, isValid, register, handleSubmit, failAlert, errorMessage, {setFailAlert}] = useLogin();
 
   return (
     <div className='flex justify-center items-center h-screen flex-col'>
