@@ -1,42 +1,18 @@
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
-
-import { signUpValidationSchema } from "../../../lib/zod/validationSchema";
-import { createUser } from "../repository/repository";
-
-type FormValues = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+import { useSignUp } from "../hooks/useSignUp";
 
 const SingUp = () => {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [failAlert, setFailAlert] = useState<boolean>(false);
-  const navigate = useNavigate();
-  const {
-    register,
+  const [
+    failAlert,
+    errorMessage,
     handleSubmit,
-    formState: {errors, isValid}
-  } = useForm<FormValues>({
-    mode: "onChange",
-    resolver: zodResolver(signUpValidationSchema),
-  });
-  const onSubmit: SubmitHandler<FormValues> = async(data) => {
-
-    const response = await createUser(
-      data.email,
-      data.password
-    )
-    if (response.status === 201) {
-      navigate("/preregistrationcomplete");
-    } else {
-      setErrorMessage(response.message);
-      setFailAlert(true);
+    onSubmit,
+    errors,
+    register,
+    isValid,
+    {
+      setFailAlert
     }
-  }
+  ] = useSignUp()
 
   return (
     <div className="flex justify-center items-center h-screen flex-col">
