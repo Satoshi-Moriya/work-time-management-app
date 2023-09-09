@@ -18,7 +18,9 @@ export const api = axios.create({
 
 api.interceptors.request.use(
   async (request) => {
-    const csrfToken = await axios.post(`${baseURL}/csrf`);
+    const csrfToken = await axios.post(`${baseURL}/csrf`, null, {
+      withCredentials: true
+    });
     request.headers["X-CSRF-TOKEN"] = csrfToken.data.token;
     return request;
   }

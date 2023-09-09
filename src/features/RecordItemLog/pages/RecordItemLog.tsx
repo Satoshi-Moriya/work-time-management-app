@@ -1,120 +1,33 @@
-import { useContext, useEffect, useState } from "react";
-
 import CustomDatePicker from "../components/CustomDatePicker";
 import MonthlyTotalTime from "../components/MonthlyTotalTime";
 import StackedBarChart from "../components/StackedBarChart";
 import convertSecondsToTime from "../../../functions/convertSecondsToTime";
 import Loading from "../../../components/Loading";
-import { AuthContext } from "../../Auth/components/AuthProvider";
 import EditModal from "../components/EditModal";
-import { api } from "../../../lib/api-client/ApiClientProvider";
-import { RecordItemType } from "../../../types/index";
-import { getDateParams } from "../functions/getDateParams";
-import { convertToClientRecordItemLogList } from "../functions/convertToClientRecordItemLogList";
-import { convertToDailyRecordItemLogData } from "../functions/convertToDailyRecordItemLogData";
-import { addDayNotRecordItemLog } from "../functions/addDayNotRecordItemLog";
-import { RecordItemLogType, DailyClientRecordItemLog } from "../types";
-
-const fetchRecordItemLogsAndConverted = async(
-  selectedRecordItemId: number,
-  selectedMonthFrom: string,
-  selectedMonthTo: string
-): Promise<DailyClientRecordItemLog[]> => {
-  const recordItemLogResponse =
-    await api.get<RecordItemLogType[]>(`/record-item-logs/${selectedRecordItemId}`, {
-      params: {
-        from: selectedMonthFrom,
-        to: selectedMonthTo
-      }
-    });
-    const recordItemLogsData = convertToClientRecordItemLogList(recordItemLogResponse.data!);
-    const monthlyRecordItemLogsData: DailyClientRecordItemLog[] = convertToDailyRecordItemLogData(recordItemLogsData);
-    return addDayNotRecordItemLog(selectedRecordItemId, monthlyRecordItemLogsData, selectedMonthTo);
-}
+import { useRecordItemLog } from "../hooks/useRecordItemLog";
 
 const RecordItemLog = () => {
-  const [ userId ] = useContext(AuthContext);
-  const [recordItems, setRecordItems] = useState<{recordItemId: number, recordItemName: string}[]>([]);
-  const [selectedRecordItem, setSelectedRecordItem] = useState<{text: string, value: string}>();
-  const [openModal, setOpenModal] = useState<string | undefined>();
-  const [editModalData, setEditModalData] = useState<{yyyymm: Date, date: number, recordItemLog: DailyClientRecordItemLog}>({
-    yyyymm: new Date(),
-    date: 0,
-    recordItemLog: {recordItemId: 0, recordItemLogDate: 0, recordItemLogDay: "", recordItemLogTime: [{recordItemLogId: 0, start: 0, end: 0}], recordItemLogSumSeconds: 0}
-  });
-  const currentDate = new Date();
-  const [initFromQueryParam, initToQueryParam] = getDateParams(currentDate);
-  const [fromQuery, setFromQuery] = useState<string>(initFromQueryParam);
-  const [toQuery, setToQuery] = useState(initToQueryParam);
-  const [date, setDate] = useState(currentDate);
-  const [selectedMonthlyRecordItemLogs, setSelectedMonthlyRecordItemLogs] = useState<DailyClientRecordItemLog[]>([])
-  const [isRecordItemsLoading, setIsRecordItemsLoading] = useState(true);
-  const [isRecordItemLogsLoading, setIsRecordItemLogsLoading] = useState(true);
-  const [error, setError] = useState<string>("");
-  const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null }>({message: null, isSuccess: null});
-
-  useEffect(() => {
-    (async() => {
-      try {
-        // 記録項目取得&表示
-        const recordItemsResponse = await api.get(`/record-items/${userId}`);
-        const recordItems: RecordItemType[] = recordItemsResponse.data;
-        const recordItemsWithoutUserId = recordItems.map(({recordItemId, recordItemName}) => ({recordItemId, recordItemName}));
-        setRecordItems(recordItemsWithoutUserId);
-        setIsRecordItemsLoading(false);
-        if (recordItems.length !== 0) {
-          // /record-items/:userIdで取得してきたデータの1つ目のrecordItemが初期値になるから[0]
-          const initRecordItem = recordItemsWithoutUserId[0];
-          setSelectedRecordItem({text: initRecordItem.recordItemName, value: initRecordItem.recordItemId.toString()})
-
-          // 記録表のデータ取得&表示
-          const monthlyRecordItemLogDataIncludingDayNotRecordItem =
-            await fetchRecordItemLogsAndConverted(initRecordItem.recordItemId, fromQuery, toQuery);
-          setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
-          setIsRecordItemLogsLoading(false);
-        }
-      } catch(error) {
-        setIsRecordItemsLoading(false);
-        setIsRecordItemLogsLoading(false);
-        setError("接続エラーが起きました。時間をおいて再度お試しください。");
-      }
-    })();
-  }, []);
-
-  const selectedRecordItemChangeHandler = async(event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedRecordItemValue = event.target.value;
-    const selectedRecordItemText = event.target.options[event.target.selectedIndex].text;
-    try {
-        const monthlyRecordItemLogDataIncludingDayNotRecordItem =
-          await fetchRecordItemLogsAndConverted(Number(selectedRecordItemValue), fromQuery, toQuery);
-        setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
-        setIsRecordItemLogsLoading(false);
-    } catch(error) {
-      setError("接続エラーが起きました。時間をおいて再度お試しください。");
+  const [
+    isRecordItemLogsLoading,
+    isRecordItemsLoading,
+    error,
+    recordItems,
+    selectedRecordItem,
+    date,
+    selectedMonthlyRecordItemLogs,
+    openModal,
+    editModalData,
+    toast,
+    {
+      selectedRecordItemChangeHandler,
+      dateChangeHandler,
+      recordItemLogEditHandler,
+      setOpenModal,
+      setEditModalData,
+      setSelectedMonthlyRecordItemLogs,
+      setToast
     }
-    setSelectedRecordItem({text: selectedRecordItemText, value: selectedRecordItemValue});
-  }
-
-  const dateChangeHandler = async(date: Date) => {
-    const [fromQueryParam, toQueryParam] = getDateParams(date);
-    try {
-        const monthlyRecordItemLogDataIncludingDayNotRecordItem =
-          await fetchRecordItemLogsAndConverted(Number(selectedRecordItem?.value), fromQueryParam, toQueryParam);
-        setSelectedMonthlyRecordItemLogs(monthlyRecordItemLogDataIncludingDayNotRecordItem)
-        setIsRecordItemLogsLoading(false);
-    } catch(error) {
-      setError("接続エラーが起きました。時間をおいて再度お試しください。");
-    }
-    setDate(date);
-    setFromQuery(fromQueryParam);
-    setToQuery(toQueryParam);
-  }
-
-  const recordItemLogEditHandler = (yyyymm: Date, date: number, selectedRecordItemLog: DailyClientRecordItemLog) => {
-    setToast({ message: null, isSuccess: null });
-    setOpenModal('default');
-    setEditModalData({yyyymm: yyyymm, date: date, recordItemLog: selectedRecordItemLog});
-  }
+  ] = useRecordItemLog();
 
   return (
     <main className="pl-48 w-full min-h-screen">
