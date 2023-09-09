@@ -36,15 +36,11 @@ export const useSignUp = (): [
     resolver: zodResolver(signUpValidationSchema),
   });
   const onSubmit: SubmitHandler<FormValues> = async(data) => {
-
-    const response = await createUser(
-      data.email,
-      data.password
-    )
-    if (response.status === 201) {
+    try {
+      await createUser(data.email, data.password);
       navigate("/preregistrationcomplete");
-    } else {
-      setErrorMessage(response.message);
+    } catch(error: any) {
+      setErrorMessage(error.response.data.message);
       setFailAlert(true);
     }
   };
