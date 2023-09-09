@@ -1,10 +1,10 @@
-import axios, { AxiosError, AxiosResponse } from "axios"
+import { AxiosError, AxiosResponse } from "axios"
 
 import { AuthResponse } from "../types";
+import { api } from "../../../lib/api-client/ApiClientProvider";
 
-export const auth = async (): Promise<AuthResponse> => {
-  const response = await axios
-  .get("http://localhost:8080/auth/user")
+export const auth = async(): Promise<AuthResponse> => {
+  const response = await api.get("/auth/user")
   .then((res: AxiosResponse<AuthResponse>) => {
     return {
       success: res.data.success,

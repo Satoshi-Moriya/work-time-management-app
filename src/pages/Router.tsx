@@ -22,26 +22,26 @@ import ApiClientProvider from "../lib/api-client/ApiClientProvider";
 export const routesConfig = [
   { path: "login",
     element:
+    <ApiClientProvider>
       <AuthProvider>
         <LoginProtectedRoute>
-          <ApiClientProvider>
             <Login />
-          </ApiClientProvider>
         </LoginProtectedRoute>
       </AuthProvider>
+    </ApiClientProvider>
   },
   { path: "signup", element: <SignUp /> },
   { path: "preregistrationcomplete", element: <PreRegistrationComplete /> },
   {
     path: "/",
     element:
-      <AuthProvider>
-        <ProtectedRoute>
-          <ApiClientProvider>
-            <Layout />
-          </ApiClientProvider>
-        </ProtectedRoute>
-      </AuthProvider>,
+      <ApiClientProvider>
+        <AuthProvider>
+          <ProtectedRoute>
+              <Layout />
+          </ProtectedRoute>
+        </AuthProvider>
+      </ApiClientProvider>,
     children: [
       { index: true, element: <RecordItem /> },
       { path: "recorditemlog", element: <RecordItemLog /> },
