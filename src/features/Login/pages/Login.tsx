@@ -39,7 +39,7 @@ const Login = () => {
         </div>
       )}
       <div className="p-10">
-        <h1 className="text-7xl">ログイン</h1>
+        <h1 className="text-center text-4xl md:text-7xl">ログイン</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
           <div className="mt-4">
             <input
