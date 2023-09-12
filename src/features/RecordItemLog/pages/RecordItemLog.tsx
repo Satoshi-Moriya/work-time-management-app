@@ -30,12 +30,12 @@ const RecordItemLog = () => {
   ] = useRecordItemLog();
 
   return (
-    <main className="pl-48 w-full min-h-screen">
+    <main className="md:pl-48 w-full min-h-screen relative z-1">
       {
         isRecordItemsLoading ? <Loading/>
         :
         !error && recordItems.length !== 0 && (
-        <div className="my-24 mx-auto px-7 w-[1137px] max-w-full">
+        <div className="mt-52 mb-24 md:my-24 mx-auto px-7 w-[1137px] max-w-full">
           {/* recordItemsのlengthが0でない場合selectedRecordItemはdefinedではない */}
           <select value={selectedRecordItem!.value} onChange={selectedRecordItemChangeHandler} className="w-[200px] bg-gray-50 border border-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500 block p-1 hover:cursor-pointer">
             {
@@ -60,12 +60,12 @@ const RecordItemLog = () => {
                 <p className="">{selectedRecordItem!.text}</p>
               </div>
               <div className="overflow-x-scroll">
-                <table className="w-[1081px] mt-2 table-fixed border-separate border-spacing-0">
+                <table className="w-[1031px] sm:w-[1081px] mt-2 table-fixed border-separate border-spacing-0 text-sm sm:text-base">
                   <thead>
                     <tr>
-                      <th className="border-t border-l border-gray-500 px-4 py-2 bg-dark-gray w-[100px] sticky left-0 z-10" rowSpan={2}>日付</th>
-                      <th className="border-t border-l border-gray-500 px-4 py-2 bg-dark-gray w-[100px] sticky left-[100px] z-20" rowSpan={2}>時間</th>
-                      <th className="border-t border-x border-gray-500 px-4 py-2 bg-dark-gray sticky left-[200px] z-20" rowSpan={2}>編集</th>
+                      <th className="border-t border-l border-r sm:border-r-0 border-gray-500 px-4 py-2 bg-dark-gray w-[70px] sm:w-[100px] sticky left-0 z-30" rowSpan={2}>日付</th>
+                      <th className="border-t sm:border-l border-gray-500 px-4 py-2 bg-dark-gray w-[80px] sm:w-[100px] sticky left-70px sm:left-[100px] z-20" rowSpan={2}>時間</th>
+                      <th className="border-t border-x border-gray-500 px-4 py-2 bg-dark-gray w-[80px] sm:w-auto sticky left-150px sm:left-[200px] z-20" rowSpan={2}>編集</th>
                       <th className="border-t border-r border-gray-500 px-4 py-2 bg-dark-gray w-[801px]" colSpan={24}>時間グラフ</th>
                     </tr>
                     <tr>
@@ -99,9 +99,9 @@ const RecordItemLog = () => {
                     {
                       selectedMonthlyRecordItemLogs.map((data, index) => (
                         <tr key={index} className="group">
-                          <td className="border-t border-l group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-0 z-10 bg-white">{data.recordItemLogDate}（{data.recordItemLogDay}）</td>
-                          <td className="border-t border-l group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-[100px] z-20 bg-white">{convertSecondsToTime(data.recordItemLogSumSeconds)}</td>
-                          <td className="border-t border-x group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-[200px] z-20 bg-white">
+                          <td className="border-t border-l border-r sm:border-r-0 group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-0 z-30 bg-white">{data.recordItemLogDate}({data.recordItemLogDay})</td>
+                          <td className="border-t sm:border-l group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-70px sm:left-[100px] z-20 bg-white">{convertSecondsToTime(data.recordItemLogSumSeconds)}</td>
+                          <td className="border-t border-x group-last:border-b border-gray-500 px-2 py-3 text-center sticky left-150px sm:left-[200px] z-20 bg-white">
                             <button onClick={() => recordItemLogEditHandler(date, data.recordItemLogDate, data)} className="text-sm bg-orange-400 hover:bg-orange-700 focus:bg-orange-700 border-orange-400 rounded-lg text-white font-bold px-2 py-1">編集</button>
                           </td>
                           <td className="border-t border-r group-last:border-b border-gray-500 px-0 py-3 w-[801px] bg-white relative" colSpan={24} ><StackedBarChart timeData={data.recordItemLogTime} /></td>

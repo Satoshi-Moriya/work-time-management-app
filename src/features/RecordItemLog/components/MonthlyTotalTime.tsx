@@ -7,7 +7,7 @@ type MonthlyTotalTimeProps = {
 const MonthlyTotalTime: React.FC<MonthlyTotalTimeProps> = ({dateSumSeconds}) => {
 
   return (
-    <table className="w-80">
+    <table className="w-80 max-w-full">
       <tbody>
         <tr>
           <th className="border-y border-l border-gray-500 px-4 py-2 bg-dark-gray">月合計稼働時間</th>
