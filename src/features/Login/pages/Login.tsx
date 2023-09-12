@@ -49,7 +49,7 @@ const Login = () => {
               id="email"
               placeholder="メールアドレス"
               {...register("email")}
-              className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 w-full rounded-md sm:text-sm"
+              className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 w-full rounded-md"
             />
             <p className="text-red-500">
               {errors.email && errors.email.message}
@@ -61,7 +61,7 @@ const Login = () => {
               id="password"
               placeholder="パスワード"
               {...register("password")}
-              className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 block w-full rounded-md sm:text-sm"
+              className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 block w-full rounded-md"
             />
             <p className="text-red-500">
               {errors.password && errors.password.message}

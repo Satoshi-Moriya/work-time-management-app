@@ -335,7 +335,7 @@ describe("SingUpページの単体テスト", () => {
       await user.type(confirmPasswordInputEl, "test12345");
       await user.click(submitButtonEl);
 
-      const expectedMessage = await screen.findByText("登録に失敗しました。少し時間を置いてから、もう一度お試しください。");
+      const expectedMessage = await screen.findByText("予期せぬエラーが発生し、ユーザー登録ができませんでした。時間をおいて再度お試しください。");
       expect(expectedMessage).toBeInTheDocument();
     });
   });
