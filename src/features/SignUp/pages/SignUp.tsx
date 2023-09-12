@@ -33,19 +33,19 @@ const SingUp = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
           <div className="mt-4">
             <label htmlFor="email">メールアドレス</label>
-            <input type="email" id="email" placeholder="メールアドレス" {...register("email")} className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 w-full rounded-md sm:text-sm"/>
+            <input type="email" id="email" placeholder="メールアドレス" {...register("email")} className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 w-full rounded-md"/>
             <p className="text-red-500">{errors.email && errors.email.message}</p>
           </div>
           <div className="mt-4">
             <label htmlFor="password">パスワード</label>
             <p className="mt-1 text-sm text-slate-400">※半角英数字8文字以上16文字以下</p>
-            <input type="password" id="password" placeholder="パスワード" {...register("password")} className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 block w-full rounded-md sm:text-sm"/>
+            <input type="password" id="password" placeholder="パスワード" {...register("password")} className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 block w-full rounded-md"/>
             <p className="text-red-500">{errors.password && errors.password.message}</p>
           </div>
           <div className="mt-4">
             <label htmlFor="confirmPassword">パスワード（確認）</label>
             <p className="mt-1 text-sm text-slate-400">※入力したパスワードを再入力してください。</p>
-            <input type="password" id="confirmPassword" placeholder="パスワード（確認）" {...register("confirmPassword")} className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 block w-full rounded-md sm:text-sm"/>
+            <input type="password" id="confirmPassword" placeholder="パスワード（確認）" {...register("confirmPassword")} className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 block w-full rounded-md"/>
             <p className="text-red-500">{errors.confirmPassword && errors.confirmPassword.message}</p>
           </div>
           <div className="mt-8">
