@@ -195,8 +195,8 @@ describe("RecordItemLogのテスト", () => {
 
       const expectedOutput1 = await screen.findByText("03:29:01");
       const expectedOutput2 = await screen.findAllByText("稼働時間");
-      const expectedOutput3 = await screen.findByText("29（金）");
-      const expectedOutput4 = await screen.findByText("30（土）");
+      const expectedOutput3 = await screen.findByText("29(金)");
+      const expectedOutput4 = await screen.findByText("30(土)");
       const expectedOutput5 = await screen.findByText("02:59:01");
       const expectedOutput6 = await screen.findByText("00:30:00");
       expect(expectedOutput1).toBeInTheDocument();
@@ -210,7 +210,7 @@ describe("RecordItemLogのテスト", () => {
       const tbodyEl = await within(tableEls[1]).findAllByRole("rowgroup");
       const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
       const cellAllEl = await within(rowEl[0]).findAllByRole("cell");
-      expect((cellAllEl[0]).textContent).toEqual("1（金）");
+      expect((cellAllEl[0]).textContent).toEqual("1(金)");
       expect((cellAllEl[1]).textContent).toEqual("00:00:00");
     });
 
@@ -315,7 +315,7 @@ describe("RecordItemLogのテスト", () => {
       user.selectOptions(selectRecordItemEl, "2")
 
       const expectedOutput1 = await screen.findByText("05:59:01");
-      const expectedOutput2 = await screen.findByText("29（金）");
+      const expectedOutput2 = await screen.findByText("29(金)");
       const expectedOutput3 = await screen.findByText("02:59:01");
       expect(expectedOutput1).toBeInTheDocument();
       expect(expectedOutput2).toBeInTheDocument();
@@ -325,7 +325,7 @@ describe("RecordItemLogのテスト", () => {
       const tbodyEl = await within(tableEls[1]).findAllByRole("rowgroup");
       const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
       const cellAllEl = await within(rowEl[0]).findAllByRole("cell");
-      expect((cellAllEl[0]).textContent).toEqual("1（金）");
+      expect((cellAllEl[0]).textContent).toEqual("1(金)");
       expect((cellAllEl[1]).textContent).toEqual("00:00:00");
     });
 
@@ -424,7 +424,7 @@ describe("RecordItemLogのテスト", () => {
       await user.click(monthOptionEl);
 
       const expectedOutput1 = await screen.findByText("03:59:01");
-      const expectedOutput2 = await screen.findByText("29（土）");
+      const expectedOutput2 = await screen.findByText("29(土)");
       const expectedOutput3 = await screen.findByText("02:59:01");
       expect(expectedOutput1).toBeInTheDocument();
       expect(expectedOutput2).toBeInTheDocument();
@@ -434,7 +434,7 @@ describe("RecordItemLogのテスト", () => {
       const tbodyEl = await within(tableEls[1]).findAllByRole("rowgroup");
       const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
       const cellAllEl = await within(rowEl[0]).findAllByRole("cell");
-      expect((cellAllEl[0]).textContent).toEqual("1（土）");
+      expect((cellAllEl[0]).textContent).toEqual("1(土)");
       expect((cellAllEl[1]).textContent).toEqual("00:00:00");
     });
 

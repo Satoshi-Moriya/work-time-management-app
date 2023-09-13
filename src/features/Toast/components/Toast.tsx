@@ -37,7 +37,7 @@ const Toast: React.FC<ToastProps> = ({ toast, setToast }) => {
 
   return (
     <ToastPortal>
-      <div id={id} className="flex items-center w-full max-w-md p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 fixed top-4 right-4 z-50" role="alert">
+      <div id={id} className="flex items-center w-full max-w-md p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 fixed top-4 md:right-4 z-50" role="alert">
         <div className={`inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-${iconColor}-500 bg-${iconColor}-100 rounded-lg dark:bg-${iconColor}-800 dark:text-${iconColor}-200`}>
             <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                 <path d={svgPath}/>

@@ -40,7 +40,7 @@ export const useSignUp = (): [
       await createUser(data.email, data.password);
       navigate("/preregistrationcomplete");
     } catch(error: any) {
-      setErrorMessage(error.response.data.message);
+      setErrorMessage("予期せぬエラーが発生し、ユーザー登録ができませんでした。時間をおいて再度お試しください。");
       setFailAlert(true);
     }
   };

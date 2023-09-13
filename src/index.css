@@ -17,6 +17,11 @@ code {
     monospace;
 }
 
+#root {
+  position: relative;
+  z-index: 1;
+}
+
 /* toastをmodalの背景より上に持ってくるため */
 div[data-floating-ui-portal] {
   position: relative;

@@ -5,7 +5,7 @@ const ChangeEmail = () => {
   const [onSubmit, errors, register, handleSubmit, toast, {setToast}] = useChangeEmail();
 
   return (
-    <div className="p-10">
+    <div className="p-6 md:p-10">
       <h3 className="text-l font-bold">メールアドレス変更</h3>
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
         <div>
