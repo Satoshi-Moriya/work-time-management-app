@@ -5,7 +5,7 @@ const Cancel = () => {
   const [toast, {setToast, accountDeleteHandler}] = useCancel();
 
   return (
-    <div className="p-10">
+    <div className="p-6 md:p-10">
       <h3 className="text-l font-bold">解約</h3>
       <p className="mt-8">下記ボタンを押すとアカウントが削除されます。</p>
       <div className="mt-8">
