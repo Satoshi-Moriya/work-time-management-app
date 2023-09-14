@@ -13,5 +13,7 @@ jobs:
       - name: Install packages
         run: npm install
       - name: Show coverage
+        env:
+          REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
         run: npm test -- --bail --maxWorkers=100% --watchAll=false --coverage
 

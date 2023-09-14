@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import Config from "../../../config";
+
 const formatTime = (date: Date): string => {
   const year = date.getFullYear();
   const month = padZero(date.getMonth() + 1);
@@ -20,14 +22,14 @@ export const createUser = async (
     password: string
 ) => {
   // responseのinterceptorsがつけたくないから、直接csrfTokenつけている
-  const csrfToken = await axios.post("http://localhost:8080/csrf", null, {
+  const csrfToken = await axios.post(`${Config.apiBaseUrl}/csrf`, null, {
     withCredentials: true
   });
   const headers = {
     "Content-Type": "application/json;charset=utf-8",
     "X-CSRF-TOKEN": csrfToken.data.token
   };
-  return await axios.post("http://localhost:8080/auth/signup", {
+  return await axios.post(`${Config.apiBaseUrl}/auth/signup`, {
       userEmail: email,
       userPassword: password,
       createdAt: formatTime(new Date())

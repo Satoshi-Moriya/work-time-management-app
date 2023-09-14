@@ -2,23 +2,22 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Config from "../../config";
 import { AuthContext } from "../../features/Auth/components/AuthProvider";
-
-const baseURL = "http://localhost:8080";
 
 const headers = {
   "Content-Type": "application/json",
 };
 
 export const api = axios.create({
-  baseURL: baseURL,
+  baseURL: Config.apiBaseUrl,
   withCredentials: true,
   headers
 });
 
 api.interceptors.request.use(
   async (request) => {
-    const csrfToken = await axios.post(`${baseURL}/csrf`, null, {
+    const csrfToken = await axios.post(`${Config.apiBaseUrl}/csrf`, null, {
       withCredentials: true
     });
     request.headers["X-CSRF-TOKEN"] = csrfToken.data.token;
@@ -44,7 +43,7 @@ const ApiClientProvider: React.FC<ApiClientProviderProps> = ({ children }) => {
         if (error.response?.status === 403) {
           try {
             // 新しいアクセストークンとリフレッシュトークンをcookieにセット
-            await axios.post(`${baseURL}/refresh-token`, null, {
+            await axios.post(`${Config.apiBaseUrl}/refresh-token`, null, {
               withCredentials: true,
               // アクセストークンの有効期限れで通る場所なので、その時のリクエストに設定されているheader情報（csrfトークン）をつける
               headers: error.config?.headers
