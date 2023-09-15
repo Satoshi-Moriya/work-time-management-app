@@ -10,6 +10,7 @@ export const useRecordItem = (): [
   string,
   {recordItemId: number, recordItemName: string}[],
   {message: string | null, isSuccess: boolean | null},
+  string,
   {
     recordItemTextChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void,
     recordItemAddHandler: () => void,
@@ -21,6 +22,7 @@ export const useRecordItem = (): [
   const [recordItems, setRecordItems] = useState<{recordItemId: number, recordItemName: string}[]>([]);
   const [userId] = useContext(AuthContext);
   const [toast, setToast] = useState<{message: string | null, isSuccess: boolean | null}>({message: null, isSuccess: null});
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     (async() => {
@@ -30,7 +32,7 @@ export const useRecordItem = (): [
         const recordItemsWithoutUserId = recordItems.map(({recordItemId, recordItemName}) => ({recordItemId, recordItemName}));
         setRecordItems(recordItemsWithoutUserId);
       } catch(error) {
-        setToast({message: "予期せぬエラーが発生し、記録項目を取得できませんでした。", isSuccess: false});
+        setError("接続エラーが起きました。時間をおいて再度お試しください。");
       }
     })();
   }, []);
@@ -70,5 +72,5 @@ export const useRecordItem = (): [
     }
   }
 
-  return [recordItemText, recordItems, toast, {recordItemTextChangeHandler, recordItemAddHandler, recordItemDeleteHandler, setToast}];
+  return [recordItemText, recordItems, toast, error, {recordItemTextChangeHandler, recordItemAddHandler, recordItemDeleteHandler, setToast}];
 };

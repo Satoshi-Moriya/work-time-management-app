@@ -140,8 +140,8 @@ describe("ChangeEmailコンポーネントの単体テスト", () => {
           <RouterProvider router={router} />
         </div>
       );
-      const passwordInputEl = screen.getByPlaceholderText('パスワード');
-      const emailInputEl = screen.getByPlaceholderText('メールアドレス');
+      const passwordInputEl = screen.getByPlaceholderText("パスワード");
+      const emailInputEl = screen.getByPlaceholderText("メールアドレス");
       const buttonEl = screen.getByRole("button", {name: "保存する"});
 
 
