@@ -7,7 +7,6 @@ export const login = async(
   email: string | null | undefined,
   password: string
 ) => {
-  console.log(Config.apiBaseUrl);
   // responseのinterceptorsがつけたくないから、直接csrfTokenつけている
   const csrfToken = await axios.post(`${Config.apiBaseUrl}/csrf`, null, {
     withCredentials: true
