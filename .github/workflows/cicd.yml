@@ -28,17 +28,17 @@ jobs:
     - name: Show coverage
       env:
         REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
-        run: npm test -- --bail --maxWorkers=100% --watchAll=false --coverage
+      run: npm test -- --bail --maxWorkers=100% --watchAll=false --coverage
   build:
     needs: test
     runs-on: ubuntu-latest
     steps:
     - name: Build
-      run: npm run build
-      # todo とりあえず動くので下記でbuild時に発生するエラーを回避（後々コードを修正）
       env:
-          CI: false
           REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_PRODUCTION_API_BASE_URL }}
+          # todo とりあえず動くので下記でbuild時に発生するエラーを回避（後々コードを修正）
+          CI: false
+      run: npm run build
   deploy:
     needs: build
     runs-on: ubuntu-latest
