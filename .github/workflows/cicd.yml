@@ -1,0 +1,36 @@
+name: CI/CD
+on:
+  push:
+    branches:
+      - main
+
+env:
+  MY_AWS_REGION: "ap-northeast-1"
+  AWS_ROLE_NAME: "GitHubActionsOIDCRole"
+  AWS_S3_BUCKET: "www.jikan-kanri-kun.com"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  test_and_deploy:
+    runs_on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install Nodejs
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18.17.1"
+    - name: Install packages
+      run: npm install
+    - name: Build
+      run: npm run build
+    - name: Configure AWS credentials with IAM Role
+      uses: aws-actions/configure-aws-credentials@main
+      with:
+        role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/${{env.AWS_ROLE_NAME}}
+        aws-region: ${{env.MY_AWS_REGION}}
+    - name: Copy files to S3
+      run: aws s3 cp --recursive build s3://${{env.AWS_S3_BUCKET}}/
