@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  test_and_deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -25,11 +25,23 @@ jobs:
         node-version: "18.17.1"
     - name: Install packages
       run: npm install
+    - name: Show coverage
+      env:
+        REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
+        run: npm test -- --bail --maxWorkers=100% --watchAll=false --coverage
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
     - name: Build
       run: npm run build
       # todo とりあえず動くので下記でbuild時に発生するエラーを回避（後々コードを修正）
       env:
           CI: false
+          REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_PRODUCTION_API_BASE_URL }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
     - name: Configure AWS credentials with IAM Role
       uses: aws-actions/configure-aws-credentials@main
       with:
