@@ -1,5 +1,8 @@
-name: Run jest
-on: [push]
+name: Run test
+on:
+  push:
+    branches:
+      - develop
 
 jobs:
   jest:
