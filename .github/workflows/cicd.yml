@@ -42,6 +42,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    steps:
     - name: Configure AWS credentials with IAM Role
       uses: aws-actions/configure-aws-credentials@main
       with:
