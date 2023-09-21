@@ -17,7 +17,7 @@ const Login = () => {
   ] = useLogin();
 
   return (
-    <div className="flex justify-center items-center h-screen flex-col">
+    <main className="flex justify-center items-center flex-col min-h-screen">
       {failAlert && (
         <div className="px-10">
           <div
@@ -41,7 +41,7 @@ const Login = () => {
         </div>
       )}
       <div className="p-10">
-        <h1 className="text-center text-4xl md:text-7xl">ログイン</h1>
+        <h2 className="text-center text-4xl">ログイン</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
           <div className="mt-4">
             <input
@@ -87,7 +87,7 @@ const Login = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

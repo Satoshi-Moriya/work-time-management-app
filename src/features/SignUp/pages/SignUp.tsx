@@ -15,7 +15,7 @@ const SingUp = () => {
   ] = useSignUp();
 
   return (
-    <div className="flex justify-center items-center h-screen flex-col">
+    <main className="flex justify-center items-center flex-col min-h-screen">
       {
         failAlert && (
           <div className="px-10">
@@ -29,7 +29,7 @@ const SingUp = () => {
         )
       }
       <div className="p-10">
-        <h1 className="text-center text-4xl md:text-7xl">会員登録</h1>
+        <h2 className="text-center text-4xl">会員登録</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
           <div className="mt-4">
             <label htmlFor="email">メールアドレス</label>
@@ -53,7 +53,7 @@ const SingUp = () => {
           </div>
         </form>
       </div>
-    </div>
+    </main>
   );
 };
 
