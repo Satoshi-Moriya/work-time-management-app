@@ -11,6 +11,9 @@ import Cancel from "../features/Cancel/pages/Cancel";
 import Page404 from "../features/NotPage/pages/Page404";
 import SignUp from "../features/SignUp/pages/SignUp";
 import PreRegistrationComplete from "../features/SignUp/pages/PreRegistrationComplete";
+import About from "./About";
+import Terms from "./Terms";
+import PrivacyPolicy from "./PrivacyPolicy";
 import AuthProvider from "../features/Auth/components/AuthProvider"
 import ProtectedRoute from "../features/Auth/components/ProtectedRoute";
 import LoginProtectedRoute from "../features/Auth/components/LoginProtectedRoute";
@@ -32,6 +35,9 @@ export const routesConfig = [
   },
   { path: "signup", element: <SignUp /> },
   { path: "preregistrationcomplete", element: <PreRegistrationComplete /> },
+  { path: "about", element: <About /> },
+  { path: "terms", element: <Terms /> },
+  { path: "privacypolicy", element: <PrivacyPolicy /> },
   {
     path: "/",
     element:
