@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useSignUp } from "../hooks/useSignUp";
 
 const SingUp = () => {
@@ -15,10 +16,21 @@ const SingUp = () => {
   ] = useSignUp();
 
   return (
-    <main className="flex justify-center items-center flex-col min-h-screen">
+    <main className="flex justify-center items-center flex-col min-h-screen mt-40 sm:mt-12">
+      <div className="px-10 pt-10">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-auto max-w-[720px] w-full">
+          <p>会員登録に際し、以下の点にご注意ください。</p>
+          <ul className="mt-3 ml-6 list-disc">
+            <li>現在、メールアドレスを使用した特別な機能は提供しておりません。サービスを試すためには、仮のメールアドレスを使用した登録が可能です（例： "test@example.com"）。</li>
+            <li>なお、将来的には予告なくメールアドレスを使用する新しい機能を追加する可能性があるため、ご了承ください。</li>
+            <li>また、現在の仕組みではパスワードを忘れた場合、アカウントにログインできなくなりますので、パスワードをお忘れにならないようご注意ください。</li>
+            <li>パスワードを忘れた場合は、メールアドレスを記入し、<Link className="p-2 text-sm sm:text-base underline font-bold" to="https://docs.google.com/forms/d/1VkZ6plbTQlcDHEBJ2ND-KEiRKaq6KZKHuu3mWAPqSnI/edit" target="_blank">お問い合わせ</Link>からご連絡いただければと思います。</li>
+          </ul>
+        </div>
+      </div>
       {
         failAlert && (
-          <div className="px-10">
+          <div className="px-10 pt-10">
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded flex" role="alert">
               <span className="block sm:inline">{errorMessage}</span>
               <span>
