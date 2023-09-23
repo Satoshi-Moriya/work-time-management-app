@@ -1,5 +1,5 @@
 import React from "react"
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, ScrollRestoration } from "react-router-dom";
 
 const PublicLayout: React.FC = () => {
     return (
@@ -23,6 +23,7 @@ const PublicLayout: React.FC = () => {
           <footer className="p-3 text-center">
             <small>© 2023 時間管理君</small>
           </footer>
+          <ScrollRestoration />
         </>
     )
 };
