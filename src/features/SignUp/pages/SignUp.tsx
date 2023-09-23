@@ -24,7 +24,7 @@ const SingUp = () => {
             <li>現在、メールアドレスを使用した特別な機能は提供しておりません。サービスを試すためには、仮のメールアドレスを使用した登録が可能です（例： "test@example.com"）。</li>
             <li>なお、将来的には予告なくメールアドレスを使用する新しい機能を追加する可能性があるため、ご了承ください。</li>
             <li>また、現在の仕組みではパスワードを忘れた場合、アカウントにログインできなくなりますので、パスワードをお忘れにならないようご注意ください。</li>
-            <li>パスワードを忘れた場合は、メールアドレスを記入し、<Link className="p-2 text-sm sm:text-base underline font-bold" to="https://docs.google.com/forms/d/1VkZ6plbTQlcDHEBJ2ND-KEiRKaq6KZKHuu3mWAPqSnI/edit" target="_blank">お問い合わせ</Link>からご連絡いただければと思います。</li>
+            <li>パスワードを忘れた場合は、<Link className="p-2 text-sm sm:text-base underline font-bold" to="https://docs.google.com/forms/d/1VkZ6plbTQlcDHEBJ2ND-KEiRKaq6KZKHuu3mWAPqSnI/edit" target="_blank">お問い合わせ</Link>から、連絡の取れるメールアドレスを記入し、ご連絡いただければと思います。</li>
           </ul>
         </div>
       </div>
