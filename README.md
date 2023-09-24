@@ -18,10 +18,13 @@
 
 # URL
 <https://www.jikan-kanri-kun.com/about><br>
-メールアドレス：moriyas@example.com<br>
-パスワード:test1234<br>
+メールアドレス : `moriyas@example.com`<br>
+パスワード : test1234<br>
 でログイン可能です。
 （新規にユーザー登録も可能です。）
+
+サーバサイドのリポジトリ<br>
+https://github.com/Satoshi-Moriya/work-time-management-app-back
 
 # 使用技術（サーバー側も含む）
 - React 18.2.0
