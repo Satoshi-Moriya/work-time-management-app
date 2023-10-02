@@ -44,9 +44,9 @@ const server = setupServer(
             {
               recordItemLogId: 1,
               recordItemId: 1,
-              recordItemLogDate: "2023-09-29",
-              recordItemLogStartTime: "2023-09-29 09:00:59",
-              recordItemLogEndTime: "2023-09-29 12:00:00",
+              recordItemLogDate: "2023-10-29",
+              recordItemLogStartTime: "2023-10-29 09:00:59",
+              recordItemLogEndTime: "2023-10-29 12:00:00",
               recordItemLogSeconds: 10741
             },
           ]
@@ -89,9 +89,9 @@ describe("EditModalのテスト", () => {
     const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
     // 1日の編集ボタン
     const firstRowCellAllEl = await within(rowEl[0]).findAllByRole("cell");
-    const targetButton1El = await within(firstRowCellAllEl[2]).findByRole("button");
+    const editButtonEl = await within(firstRowCellAllEl[2]).findByRole("button");
 
-    await user.click(targetButton1El);
+    user.click(editButtonEl);
 
     const registerButtonEl = await screen.findByRole("button", {name: "保存"});
 
