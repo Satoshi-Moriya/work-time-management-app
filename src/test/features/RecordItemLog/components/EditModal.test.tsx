@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { findByLabelText, getByLabelText, render, screen, within } from "@testing-library/react";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import userEvent from "@testing-library/user-event";
@@ -77,29 +77,60 @@ describe("EditModalのテスト", () => {
 
   afterAll(() => server.close());
 
-  test.only("開始時刻、終了時刻ともに空の場合", async() => {
-    const user = userEvent.setup();
-    render(
-      <AuthContext.Provider value={[ 1, () => {}]} >
-        <RecordItemLog />
-      </AuthContext.Provider>
-    );
-    const tableEls = await screen.findAllByRole("table");
-    const tbodyEl = await within(tableEls[1]).findAllByRole("rowgroup");
-    const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
-    // 1日の編集ボタン
-    const firstRowCellAllEl = await within(rowEl[0]).findAllByRole("cell");
-    const editButtonEl = await within(firstRowCellAllEl[2]).findByRole("button");
+  describe("バリデーションチェック", () => {
 
-    user.click(editButtonEl);
+    test("開始時刻、終了時刻ともに空の場合", async() => {
+      const user = userEvent.setup();
+      render(
+        <AuthContext.Provider value={[ 1, () => {}]} >
+          <RecordItemLog />
+        </AuthContext.Provider>
+      );
+      const tableEls = await screen.findAllByRole("table");
+      // 2つ目のtableElsがグラフなどがある表
+      const tbodyEl = await within(tableEls[1]).findAllByRole("rowgroup");
+      const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
+      // 1日の編集ボタン
+      const firstRowCellAllEl = await within(rowEl[0]).findAllByRole("cell");
+      const editButtonEl = await within(firstRowCellAllEl[2]).findByRole("button");
+      user.click(editButtonEl);
 
-    const registerButtonEl = await screen.findByRole("button", {name: "保存"});
+      const registerButtonEl = await screen.findByRole("button", {name: "保存"});
+      user.click(registerButtonEl);
 
-    user.click(registerButtonEl);
+      const expectedStartTimeEmptyErrorMessage = await screen.findByText("開始時間は必須です。");
+      const expectedEndTimeEmptyErrorMessage = await screen.findByText("終了時間は必須です。");
+      expect(expectedStartTimeEmptyErrorMessage).toBeInTheDocument();
+      expect(expectedEndTimeEmptyErrorMessage).toBeInTheDocument();
+    });
 
-    const expectedStartTimeEmptyErrorMessage = await screen.findByText("開始時間は必須です。");
-    const expectedEndTimeEmptyErrorMessage = await screen.findByText("終了時間は必須です。");
-    expect(expectedStartTimeEmptyErrorMessage).toBeInTheDocument();
-    expect(expectedEndTimeEmptyErrorMessage).toBeInTheDocument();
+    test("開始時刻が空の場合", async() => {
+      const user = userEvent.setup();
+      render(
+        <AuthContext.Provider value={[ 1, () => {}]} >
+          <RecordItemLog />
+        </AuthContext.Provider>
+      );
+      const tableEls = await screen.findAllByRole("table");
+      // 2つ目のtableElsがグラフなどがある表
+      const tbodyEl = await within(tableEls[1]).findAllByRole("rowgroup");
+      const rowEl =  await within(tbodyEl[1]).findAllByRole("row");
+      // 1日の編集ボタン
+      const firstRowCellAllEl = await within(rowEl[0]).findAllByRole("cell");
+      const editButtonEl = await within(firstRowCellAllEl[2]).findByRole("button");
+      user.click(editButtonEl);
+
+      const startTimeInputEl = await screen.findByLabelText("開始時間");
+      const endTimeInputEl = await screen.findByLabelText("終了時間");
+      const registerButtonEl = await screen.findByRole("button", {name: "保存"});
+      await user.type(startTimeInputEl, "08:00:00");
+      await user.type(endTimeInputEl, "09:00:00");
+      await user.clear(startTimeInputEl);
+      await user.click(registerButtonEl);
+
+      const expectedStartTimeEmptyErrorMessage = await screen.findByText("開始時間は必須です。");
+      expect(expectedStartTimeEmptyErrorMessage).toBeInTheDocument();
+      expect("終了時間は必須です。").not.toBe(true);
+    });
   });
 })
