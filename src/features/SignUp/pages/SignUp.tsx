@@ -19,13 +19,17 @@ const SingUp = () => {
     <main className="flex justify-center items-center flex-col min-h-screen mt-40 sm:mt-12">
       <div className="px-10 pt-10">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-auto max-w-[720px] w-full">
-          <p>会員登録に際し、以下の点にご注意ください。</p>
+          {/* <p>会員登録に際し、以下の点にご注意ください。</p>
           <ul className="mt-3 ml-6 list-disc">
             <li>現在、メールアドレスを使用した特別な機能は提供しておりません。サービスを試すためには、仮のメールアドレスを使用した登録が可能です（例： "test@example.com"）。</li>
             <li>なお、将来的には予告なくメールアドレスを使用する新しい機能を追加する可能性があるため、ご了承ください。</li>
             <li>また、現在の仕組みではパスワードを忘れた場合、アカウントにログインできなくなりますので、パスワードをお忘れにならないようご注意ください。</li>
             <li>パスワードを忘れた場合は、<Link className="p-2 text-sm sm:text-base underline font-bold" to="https://docs.google.com/forms/d/1VkZ6plbTQlcDHEBJ2ND-KEiRKaq6KZKHuu3mWAPqSnI/edit" target="_blank">お問い合わせ</Link>から、連絡の取れるメールアドレスを記入し、ご連絡いただければと思います。</li>
-          </ul>
+          </ul> */}
+          <p>現在ユーザー登録はできません。</p>
+          <p>試しに使いたい場合、下記情報でログインが可能です。</p>
+          <p>メールアドレス : moriyas@example.com</p>
+          <p>パスワード : test1234</p>
         </div>
       </div>
       {

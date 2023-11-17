@@ -36,7 +36,7 @@ const server = setupServer(
     const toQuery = req.url.searchParams.get("to");
 
     // ToDo 年月が変わると落ちるからどうにかしたい
-    if (fromQuery === "20231001" && toQuery === "20231031") {
+    if (fromQuery === "20231101" && toQuery === "20231130") {
       return res(
         ctx.status(200),
         ctx.json(
@@ -44,9 +44,9 @@ const server = setupServer(
             {
               recordItemLogId: 1,
               recordItemId: 1,
-              recordItemLogDate: "2023-10-01",
-              recordItemLogStartTime: "2023-10-01 09:00:59",
-              recordItemLogEndTime: "2023-10-01 12:00:00",
+              recordItemLogDate: "2023-11-01",
+              recordItemLogStartTime: "2023-11-01 09:00:59",
+              recordItemLogEndTime: "2023-11-01 12:00:00",
               recordItemLogSeconds: 10741
             },
           ]

@@ -18,8 +18,15 @@ const Login = () => {
 
   return (
     <main className="flex justify-center items-center flex-col min-h-screen">
+      <div className="px-10 pt-10">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-auto max-w-[720px] w-full">
+          <p>試しに使いたい場合、下記情報でログインが可能です。</p>
+          <p>メールアドレス : moriyas@example.com</p>
+          <p>パスワード : test1234</p>
+        </div>
+      </div>
       {failAlert && (
-        <div className="px-10">
+        <div className="px-10 pt-10">
           <div
             className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded flex"
             role="alert"
