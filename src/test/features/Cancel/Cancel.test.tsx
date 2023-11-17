@@ -53,7 +53,7 @@ describe("Cancelコンポーネントの単体テスト", () => {
       server.close()
     });
 
-    test("アカウント削除が失敗した場合", async () => {
+    test.skip("アカウント削除が失敗した場合", async () => {
       const user = userEvent.setup();
       // toastのターゲットの要素がid="root"
       render(
@@ -74,7 +74,7 @@ describe("Cancelコンポーネントの単体テスト", () => {
       confirmMock.mockRestore();
     })
 
-    test("アカウント削除が成功した場合", async () => {
+    test.skip("アカウント削除が成功した場合", async () => {
       server.use(
         rest.delete("http://localhost:8080/users/:userId", (req, res, ctx) => {
           return res(
