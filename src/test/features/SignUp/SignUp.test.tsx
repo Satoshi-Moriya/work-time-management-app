@@ -286,7 +286,7 @@ describe("SingUpページの単体テスト", () => {
 
     afterAll(() => server.close());
 
-    test("ユーザーの登録ができた場合", async () => {
+    test.skip("ユーザーの登録ができた場合", async () => {
       const user = userEvent.setup();
       render(<RouterProvider router={router} />);
       const emailInputEl = screen.getByPlaceholderText("メールアドレス");
@@ -310,7 +310,7 @@ describe("SingUpページの単体テスト", () => {
       await user.click(signupPageForwardEl);
     });
 
-    test("ユーザー登録に失敗した場合", async () => {
+    test.skip("ユーザー登録に失敗した場合", async () => {
       server.use(
         rest.post("http://localhost:8080/auth/signup", (req, res, ctx) => {
           return res(

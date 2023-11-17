@@ -36,13 +36,15 @@ export const useSignUp = (): [
     resolver: zodResolver(signUpValidationSchema),
   });
   const onSubmit: SubmitHandler<FormValues> = async(data) => {
-    try {
-      await createUser(data.email, data.password);
-      navigate("/preregistrationcomplete");
-    } catch(error: any) {
-      setErrorMessage("予期せぬエラーが発生し、ユーザー登録ができませんでした。時間をおいて再度お試しください。");
-      setFailAlert(true);
-    }
+    // try {
+    //   await createUser(data.email, data.password);
+    //   navigate("/preregistrationcomplete");
+    // } catch(error: any) {
+    //   setErrorMessage("予期せぬエラーが発生し、ユーザー登録ができませんでした。時間をおいて再度お試しください。");
+    //   setFailAlert(true);
+    // }
+    setErrorMessage("現在ユーザー登録はできません。");
+    setFailAlert(true);
   };
 
   return [failAlert, errorMessage, handleSubmit, onSubmit, errors, register, isValid, {setFailAlert}];
