@@ -17,7 +17,8 @@
 <br>
 
 # URL
-<https://www.jikan-kanri-kun.com/about><br>
+~~<https://www.jikan-kanri-kun.com/about>~~<br>
+※現在はアクセスできません  
 メールアドレス : `moriyas@example.com`<br>
 パスワード : test1234<br>
 でログイン可能です。
